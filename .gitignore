@@ -11,6 +11,7 @@ zappy_server
 .cache
 compile_commands.json
 *.tmp
+subject/zappy_ref
 
 ## Debug files
 debug
