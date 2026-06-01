@@ -6,7 +6,8 @@ ifeq ($(ENV), dev)
 	CFLAGS	+=	-g3
 endif
 
-SRC	:=	src/main.c
+SRC	:=	src/main.c \
+		src/args.c
 OBJ	:=	$(SRC:.c=.o)
 
 BINARY	:=	zappy_server
