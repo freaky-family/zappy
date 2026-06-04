@@ -1,7 +1,16 @@
+#include "Exception.hpp"
+#include "Parser.hpp"
 #include <iostream>
 
-int main(void)
+int main(int argc, char **argv)
 {
-    std::cout << "Hello world!" << std::endl;
-    return 1;
+    zappy::Parser parser;
+
+    try {
+        parser.parse(argc, argv);
+    } catch (zappy::Exception &e) {
+        std::cerr << e.what() << std::endl;
+        return 84;
+    }
+    return 0;
 }

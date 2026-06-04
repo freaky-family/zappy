@@ -11,7 +11,8 @@ ifeq ($(ENV), dev-asan)
 	LDLIBS	+=	-fsanitize=address
 endif
 
-SRC :=  src/main.cpp
+SRC :=  src/main.cpp	\
+		src/Parser.cpp
 OBJ :=  $(SRC:.cpp=.o)
 
 BINARY  :=  zappy_gui
