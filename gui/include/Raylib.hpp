@@ -6,7 +6,7 @@
 namespace zappy {
     class RaylibGraphical : public IGraphical {
         private:
-            Map _map;
+            Map &_map; // copy the map from the communication object
         public:
             RaylibGraphical();
             ~RaylibGraphical();
