@@ -3,6 +3,8 @@
 
     #include <stddef.h>
 
+    #define TEAM_I(i) server->teams->elems[i]
+
 typedef struct {
     // Name of the team
     const char *name;

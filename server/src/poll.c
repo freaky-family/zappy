@@ -49,13 +49,14 @@ static bool client_first_steps_handler(server_t *server)
         case ENTER_TEAM_NAME: {
             int team_index = teams_find_by_name(server->teams, server->buffer);
 
-            if (team_index == -1 || server->teams->elems[team_index]->clients == 0) {
+            if (team_index == -1 || TEAM_I(team_index)->clients == 0) {
                 write(*CLIENT->fd, ZMSG_KO, strlen(ZMSG_KO));
                 return true;
             }
             CLIENT->current_step = LOGGED_IN;
-            server->teams->elems[team_index]->clients--;
-            dprintf(*CLIENT->fd, "%d" ZMSG_END_SEQ, server->teams->elems[team_index]->clients);
+            TEAM_I(team_index)->clients--;
+            client_associate_team(server->clients, server->index, TEAM_I(team_index));
+            dprintf(*CLIENT->fd, "%d" ZMSG_END_SEQ, TEAM_I(team_index)->clients);
             dprintf(*CLIENT->fd, "%d %d" ZMSG_END_SEQ, server->world->x, server->world->y);
             return true;
         }

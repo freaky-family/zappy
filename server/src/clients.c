@@ -14,6 +14,7 @@ client_data_t *client_data_init(int *fd)
     }
     data->current_step = ENTER_TEAM_NAME;
     data->fd = fd;
+    data->team = NULL;
     return data;
 }
 
@@ -54,6 +55,15 @@ void clients_delete(clients_t *clients, int i)
     client_data_free(clients->elems[i]);
     clients->elems[i] = clients->elems[clients->amount - 1];
     clients->amount--;
+}
+
+void client_associate_team(clients_t *clients, int i, team_data_t *team)
+{
+    if (clients == NULL ||
+        (unsigned int)i >= clients->amount ||
+        clients->elems[i] == NULL)
+        return;
+    clients->elems[i]->team = team;
 }
 
 void clients_free(clients_t *clients)
