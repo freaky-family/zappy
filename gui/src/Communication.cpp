@@ -22,6 +22,7 @@ zappy::Communication::Communication(int port, std::string hostname) : _socket(po
     _commands.insert({"pie", zappy::Communication::pie});
     _commands.insert({"pfk", zappy::Communication::pfk});
     _commands.insert({"pdr", zappy::Communication::pdr});
+    _commands.insert({"pgt", zappy::Communication::pgt});
     _commands.insert({"pdi", zappy::Communication::pdi});
     _commands.insert({"enw", zappy::Communication::enw});
     _commands.insert({"ebo", zappy::Communication::ebo});
