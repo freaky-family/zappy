@@ -4,6 +4,7 @@
 #include "IGraphical.hpp"
 #include <memory>
 #include <string>
+#include <thread>
 
 namespace zappy {
 
@@ -18,8 +19,9 @@ namespace zappy {
             Communication _commuication;
             std::unique_ptr<IGraphical> _graphical;
             bool _exit;
+            std::thread _communicationThread;
 
-            void SocketLoop();
+            void LaunchSocket();
     };
 
 }
