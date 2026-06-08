@@ -17,14 +17,21 @@ def mainLoop(machine, port, name):
             print("Server has stopped. Exiting Program")
             exit(0)
 
-        s = s.decode("UTF-8").strip('\n')
-        if (s == "WELCOME"):
-            id = fork()
-            if id == 0:
-                break
-            else:
-                # mainSocket.send(f"{name}\n".encode())
-                print("I'm the Parent.")
-        print(s)
+        s = s.decode("ascii").strip('\n')
 
-    print("I'm the child.")
+        if (s == "WELCOME"):
+            mainSocket.send(str.encode(name + "\n"))
+            a = mainSocket.recv(4096).decode("ascii").strip('\n')
+            if a != 'ko':
+                id = fork()
+                if id == 0:
+                    break
+
+    gameSocket = skt.socket(skt.AF_INET, skt.SOCK_STREAM)
+    gameSocket.setsockopt(skt.SOL_SOCKET, skt.SO_REUSEADDR, 1)
+    try:
+        gameSocket.connect((machine, port))
+    except ConnectionRefusedError:
+        print("Can't connect the IA")
+    print("IA Connected")
+    # a = 0
