@@ -31,6 +31,8 @@ void args_free(args_t *args)
 
 static void parse_getopt_arg(args_t *args, int argc, char *argv[], int c)
 {
+    if (optind >= argc)
+        return;
     switch (c) {
         case 'p':
             args->port = atoi(argv[optind]);
