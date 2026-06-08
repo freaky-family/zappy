@@ -9,30 +9,30 @@
 zappy::Communication::Communication(int port, std::string hostname) : _socket(port, hostname),
     _commands()
 {
-    _commands.insert({"msz", zappy::Communication::msz});
-    _commands.insert({"bct", zappy::Communication::bct});
-    _commands.insert({"tna", zappy::Communication::tna});
-    _commands.insert({"pnw", zappy::Communication::pnw});
-    _commands.insert({"ppo", zappy::Communication::ppo});
-    _commands.insert({"plv", zappy::Communication::plv});
-    _commands.insert({"pin", zappy::Communication::pin});
-    _commands.insert({"pex", zappy::Communication::pex});
-    _commands.insert({"pbc", zappy::Communication::pbc});
-    _commands.insert({"pic", zappy::Communication::pic});
-    _commands.insert({"pie", zappy::Communication::pie});
-    _commands.insert({"pfk", zappy::Communication::pfk});
-    _commands.insert({"pdr", zappy::Communication::pdr});
-    _commands.insert({"pgt", zappy::Communication::pgt});
-    _commands.insert({"pdi", zappy::Communication::pdi});
-    _commands.insert({"enw", zappy::Communication::enw});
-    _commands.insert({"ebo", zappy::Communication::ebo});
-    _commands.insert({"edi", zappy::Communication::edi});
-    _commands.insert({"sgt", zappy::Communication::sgt});
-    _commands.insert({"sst", zappy::Communication::sst});
-    _commands.insert({"seg", zappy::Communication::seg});
-    _commands.insert({"smg", zappy::Communication::smg});
-    _commands.insert({"suc", zappy::Communication::suc});
-    _commands.insert({"sbp", zappy::Communication::sbp});
+    _commands.insert({"msz", std::bind(&zappy::Communication::msz, this, std::placeholders::_1)});
+    _commands.insert({"bct", std::bind(&zappy::Communication::bct, this, std::placeholders::_1)});
+    _commands.insert({"tna", std::bind(&zappy::Communication::tna, this, std::placeholders::_1)});
+    _commands.insert({"pnw", std::bind(&zappy::Communication::pnw, this, std::placeholders::_1)});
+    _commands.insert({"ppo", std::bind(&zappy::Communication::ppo, this, std::placeholders::_1)});
+    _commands.insert({"plv", std::bind(&zappy::Communication::plv, this, std::placeholders::_1)});
+    _commands.insert({"pin", std::bind(&zappy::Communication::pin, this, std::placeholders::_1)});
+    _commands.insert({"pex", std::bind(&zappy::Communication::pex, this, std::placeholders::_1)});
+    _commands.insert({"pbc", std::bind(&zappy::Communication::pbc, this, std::placeholders::_1)});
+    _commands.insert({"pic", std::bind(&zappy::Communication::pic, this, std::placeholders::_1)});
+    _commands.insert({"pie", std::bind(&zappy::Communication::pie, this, std::placeholders::_1)});
+    _commands.insert({"pfk", std::bind(&zappy::Communication::pfk, this, std::placeholders::_1)});
+    _commands.insert({"pdr", std::bind(&zappy::Communication::pdr, this, std::placeholders::_1)});
+    _commands.insert({"pgt", std::bind(&zappy::Communication::pgt, this, std::placeholders::_1)});
+    _commands.insert({"pdi", std::bind(&zappy::Communication::pdi, this, std::placeholders::_1)});
+    _commands.insert({"enw", std::bind(&zappy::Communication::enw, this, std::placeholders::_1)});
+    _commands.insert({"ebo", std::bind(&zappy::Communication::ebo, this, std::placeholders::_1)});
+    _commands.insert({"edi", std::bind(&zappy::Communication::edi, this, std::placeholders::_1)});
+    _commands.insert({"sgt", std::bind(&zappy::Communication::sgt, this, std::placeholders::_1)});
+    _commands.insert({"sst", std::bind(&zappy::Communication::sst, this, std::placeholders::_1)});
+    _commands.insert({"seg", std::bind(&zappy::Communication::seg, this, std::placeholders::_1)});
+    _commands.insert({"smg", std::bind(&zappy::Communication::smg, this, std::placeholders::_1)});
+    _commands.insert({"suc", std::bind(&zappy::Communication::suc, this, std::placeholders::_1)});
+    _commands.insert({"sbp", std::bind(&zappy::Communication::sbp, this, std::placeholders::_1)});
 }
 
 zappy::Communication::~Communication()
@@ -80,7 +80,7 @@ void zappy::Communication::ParseMessage(std::string msg)
     while (ss >> line) {
         vec.push_back(line);
     }
-    _commands.at(vec.at(0))(this, vec);
+    _commands.at(vec.at(0))(vec);
 }
 
 
