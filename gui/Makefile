@@ -18,6 +18,7 @@ SRC :=  src/main.cpp	\
 		src/Map.cpp		\
 		src/Tile.cpp	\
 		src/Raylib.cpp	\
+		src/TextureUtilityFinderFiller3000.cpp	\
 		# src/entities/AEntity.cpp	\
 		# src/entities/Egg.cpp	\
 		# src/entities/Player.cpp	\

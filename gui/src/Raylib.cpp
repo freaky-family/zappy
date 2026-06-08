@@ -1,6 +1,7 @@
 #include "Raylib.hpp"
 #include "IEntity.hpp"
 #include "Map.hpp"
+#include "TextureUtilityFinderFiller3000.hpp"
 #include <Camera3D.hpp>
 #include <Color.hpp>
 #include <Keyboard.hpp>
@@ -11,7 +12,7 @@
 #include <iostream>
 #include <raylib.h>
 
-zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map): _map(map), _window(), _camera(), _materialModel(), _materialTextures()
+zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map): _map(map), _window(), _camera(), _materialModel(), _materialTextureMap()
 {}
 
 zappy::RaylibGraphical::~RaylibGraphical()
@@ -34,14 +35,14 @@ void zappy::RaylibGraphical::initCamera()
 
 void zappy::RaylibGraphical::initModels()
 {
-    _materialModel.Load("OBJ/stylized_crystal_SM.obj");
-    int i = 0;
-    for (auto file: std::filesystem::directory_iterator("Textures/PNG")) {
-        std::cout << file.path() << std::endl;
-        raylib::Texture2D texture(file.path());
-        _materialTextures.push_back(std::move(texture));
-        _materialModel.materials[0].maps[textNums[i]].texture = _materialTextures.back();
-        i++;
+    std::string file = "assets/OBJ/stylized_crystal_SM.obj";
+    if (!std::filesystem::exists(file)) {
+        file = "gui/assets/OBJ/stylized_crystal_SM.obj";
+    } else {}
+    _materialModel.Load(file);
+    zappy::TUFF::getMaterialsTextures(_materialTextureMap);
+    for (auto &materialTexture: _materialTextureMap) {
+        _materialModel.materials[0].maps[materialTexture.first].texture = materialTexture.second;
     }
 }
 
@@ -93,8 +94,8 @@ void zappy::RaylibGraphical::loop()
 
 void zappy::RaylibGraphical::unloadModels()
 {
-    for (raylib::Texture2D &text: _materialTextures) {
-        text.Unload();
+    for (auto &materialTexture: _materialTextureMap) {
+        materialTexture.second.Unload();
     }
     _materialModel.Unload();
 }

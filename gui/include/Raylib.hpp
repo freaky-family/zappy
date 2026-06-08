@@ -10,7 +10,6 @@
 #include <Model.hpp>
 #include <Mesh.hpp>
 #include <Texture.hpp>
-#include <vector>
 
 namespace zappy {
 
@@ -22,7 +21,7 @@ namespace zappy {
             raylib::Window _window;
             raylib::Camera _camera;
             raylib::Model _materialModel;
-            std::vector<raylib::Texture2D> _materialTextures;
+            std::map<int, raylib::Texture2D> _materialTextureMap;
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map);
