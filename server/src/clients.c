@@ -1,5 +1,6 @@
 #include "clients.h"
 #include "dynamic_arrays.h"
+#include "poller.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -32,6 +33,7 @@ clients_t *clients_init(void)
         exit(84);
     }
     DA_INIT(clients, client_data_t);
+    clients->amount = INITIAL_SOCKET_AMOUNT;
     return clients;
 }
 
