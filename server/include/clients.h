@@ -6,8 +6,16 @@
     // Gets the current client
     #define CLIENT server->clients->elems[server->index]
 
-// Clients
+typedef enum {
+    // Waiting for team name to be entered
+    ENTER_TEAM_NAME,
+    // Team name was entered and client is now playing
+    LOGGED_IN,
+} client_login_step_t;
+
 typedef struct {
+    // Current step of the first step flow
+    client_login_step_t current_step;
     // Pointer to its struct pollfd file descriptor
     int *fd;
 } client_data_t;

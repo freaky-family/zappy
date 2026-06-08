@@ -1,3 +1,4 @@
+#include "clients.h"
 #include "commands.h"
 #include "messages.h"
 #include "server.h"
@@ -41,6 +42,21 @@ void client_quit(server_t *server)
     }
 }
 
+// Returns true if the client just logged in
+static bool client_first_steps_handler(server_t *server)
+{
+    switch (CLIENT->current_step) {
+        case ENTER_TEAM_NAME: {
+            // TODO: only log in if the team name exists, else display KO
+            CLIENT->current_step = LOGGED_IN;
+            return true;
+        }
+        case LOGGED_IN:
+            return false;
+    }
+    return true;
+}
+
 void client_handler(server_t *server)
 {
     size_t read_i = 0;
@@ -59,7 +75,8 @@ void client_handler(server_t *server)
         read_i++;
     }
     server->buffer = buffer;
-    commands_handler(server);
+    if (client_first_steps_handler(server) == false)
+        commands_handler(server);
 }
 
 static void signalfd_handler(bool *running)

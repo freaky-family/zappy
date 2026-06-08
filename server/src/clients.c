@@ -12,6 +12,7 @@ client_data_t *client_data_init(int *fd)
         perror("malloc");
         exit(84);
     }
+    data->current_step = ENTER_TEAM_NAME;
     data->fd = fd;
     return data;
 }
