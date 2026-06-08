@@ -15,11 +15,11 @@ namespace zappy {
             int Poll();
             std::string Receive();
             void Send(std::string msg);
+            struct pollfd _pfds[1];
 
         private:
             int _clientSocket;
             int _port;
             struct sockaddr_in _address;
-            struct pollfd _pfds[2];
     };
 }

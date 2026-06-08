@@ -8,13 +8,15 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-zappy::Socket::Socket(int port, std::string hostname) : _clientSocket(), _port(port),
-    _address(), _pfds()
+zappy::Socket::Socket(int port, std::string hostname) : _pfds(), _clientSocket(),
+    _port(port), _address()
 {
     _clientSocket = socket(AF_INET, SOCK_STREAM, 0);
     _address.sin_family = AF_INET;
     _address.sin_port = htons(_port);
     _address.sin_addr.s_addr = 0;
+    _pfds[0].events = POLLIN;
+    _pfds[0].fd = _clientSocket;
     if (inet_pton(AF_INET, hostname.c_str(), &_address.sin_addr) <= 0) {
         throw zappy::Exception("Socket: Invalid address/ Address not supported \n");
     }
@@ -23,7 +25,6 @@ zappy::Socket::Socket(int port, std::string hostname) : _clientSocket(), _port(p
 
 zappy::Socket::~Socket()
 {
-    Close();
 }
 
 void zappy::Socket::Connect()
@@ -35,7 +36,7 @@ void zappy::Socket::Connect()
 
 int zappy::Socket::Poll()
 {
-    return poll(_pfds, 2, -1);
+    return poll(_pfds, 1, -1);
 }
 
 void zappy::Socket::Close()
@@ -56,3 +57,4 @@ void zappy::Socket::Send(std::string msg)
 {
     send(_clientSocket, msg.c_str(), msg.length(), 0);
 }
+
