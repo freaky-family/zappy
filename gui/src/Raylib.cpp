@@ -50,6 +50,14 @@ void zappy::RaylibGraphical::loop()
             moveCamera = false;
             _camera.Update(CAMERA_CUSTOM);
         }
+        if (moveCamera == false) {
+            float scroll = raylib::Mouse::GetWheelMove();
+            if (scroll != 0) {
+                _camera.Update(CAMERA_THIRD_PERSON);
+            } else {
+                _camera.Update(CAMERA_CUSTOM);
+            }
+        }
 
         //------//
         //-Draw-//
