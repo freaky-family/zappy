@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ModelHolder.hpp"
 #include <utility>
 namespace zappy {
 
@@ -10,6 +11,6 @@ namespace zappy {
             virtual ~IEntity() = default;
 
             virtual tileCoordinates getCoords() const = 0;
-            virtual void draw() = 0;
+            virtual void draw(ModelHolder&) = 0;
     };
 }

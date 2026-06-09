@@ -1,10 +1,10 @@
 #include "entities/AEntity.hpp"
 #include "IEntity.hpp"
 
-zappy::AEntity::AEntity(raylib::Model &model): _coords(tileCoordinates(0, 0)), _model(model)
+zappy::AEntity::AEntity(): _coords(tileCoordinates(0, 0))
 {}
 
-zappy::AEntity::AEntity(zappy::tileCoordinates coords, raylib::Model &model): _model(model)
+zappy::AEntity::AEntity(zappy::tileCoordinates coords)
 {
     _coords = coords;
 }

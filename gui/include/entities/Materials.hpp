@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IEntity.hpp"
+#include "ModelHolder.hpp"
 #include "entities/AEntity.hpp"
 
 namespace zappy {
@@ -18,10 +19,10 @@ namespace zappy {
         private:
             MaterialType _type;
         public:
-            Material(raylib::Model &model);
-            Material(tileCoordinates, raylib::Model &model);
+            Material();
+            Material(tileCoordinates);
             ~Material();
 
-            void draw() override;
+            void draw(ModelHolder&) override;
     };
 }

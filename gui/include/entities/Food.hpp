@@ -1,15 +1,16 @@
 #pragma once
 
 #include "IEntity.hpp"
+#include "ModelHolder.hpp"
 #include "entities/AEntity.hpp"
 
 namespace zappy {
     class Food : public AEntity {
         public:
-            Food(raylib::Model &model);
-            Food(tileCoordinates, raylib::Model &model);
+            Food();
+            Food(tileCoordinates);
             ~Food();
 
-            void draw() override;
+            void draw(ModelHolder&) override;
     };
 }

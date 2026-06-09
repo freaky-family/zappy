@@ -7,10 +7,9 @@ namespace zappy {
     class AEntity : public IEntity {
         protected:
             tileCoordinates _coords;
-            raylib::Model &_model;
         public:
-            AEntity(raylib::Model &);
-            AEntity(tileCoordinates, raylib::Model &);
+            AEntity();
+            AEntity(tileCoordinates);
             ~AEntity();
 
             tileCoordinates getCoords() const override;

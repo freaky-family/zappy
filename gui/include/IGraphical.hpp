@@ -7,10 +7,8 @@ namespace zappy {
         public:
             virtual ~IGraphical() = default;
 
-            virtual void initModels() = 0;
             virtual void initWindow() = 0;
             virtual void initCamera() = 0;
-            virtual void unloadModels() = 0;
             virtual void loop() = 0;
             virtual void drawTiles() = 0;
             virtual void drawText(std::string str, int X, int Y) = 0;

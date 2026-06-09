@@ -14,7 +14,7 @@ zappy::Map::Map(int X, int Y) : _tiles(), _dimensions(std::pair(X, Y))
 zappy::Map::~Map()
 {}
 
-zappy::Tile zappy::Map::getTile(zappy::tileCoordinates coords) const
+zappy::Tile& zappy::Map::getTile(zappy::tileCoordinates coords)
 {
     return _tiles.at(coords);
 }

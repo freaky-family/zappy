@@ -1,15 +1,16 @@
 #pragma once
 
 #include "IEntity.hpp"
+#include "ModelHolder.hpp"
 #include "entities/AEntity.hpp"
 
 namespace zappy {
     class Player : public AEntity {
         public:
-            Player(raylib::Model &model);
-            Player(tileCoordinates, raylib::Model &model);
+            Player();
+            Player(tileCoordinates);
             ~Player();
 
-            void draw() override;
+            void draw(ModelHolder&) override;
     };
 }
