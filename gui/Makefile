@@ -15,6 +15,10 @@ endif
 SRC :=  src/main.cpp	\
 		src/Utils.cpp	\
 		src/Parser.cpp	\
+		src/Socket.cpp	\
+		src/Communication.cpp	\
+		src/Commands.cpp	\
+		src/Zappy.cpp	\
 		src/Map.cpp		\
 		src/Tile.cpp	\
 		src/Raylib.cpp	\
