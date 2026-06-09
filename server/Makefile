@@ -16,6 +16,10 @@ SRC	:=	src/main.c \
 		src/teams.c \
 		src/world.c
 
+# Utils source
+SRC	+=	src/utils/remove_ending_seq.c \
+		src/utils/strcmp_end.c
+
 # Commands source
 SRC	+=	src/commands/handler.c
 

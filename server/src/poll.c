@@ -3,6 +3,7 @@
 #include "messages.h"
 #include "server.h"
 #include "teams.h"
+#include "utils.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -97,11 +98,12 @@ void client_handler(server_t *server)
         bytes_read = read(fd, buffer, BUFFER_SIZE);
         if (bytes_read <= 0 && read_i == 0)
             return client_quit(server);
-        buffer[bytes_read - 1] = 0;
+        buffer[bytes_read] = 0;
         if (bytes_read < BUFFER_SIZE)
             break;
         read_i++;
     }
+    remove_ending_seq(buffer);
     server->buffer = buffer;
     if (client_first_steps_handler(server) == false)
         commands_handler(server);
