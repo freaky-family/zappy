@@ -4,6 +4,7 @@
     #include <stddef.h>
 
     #define TEAM_I(i) server->teams->elems[i]
+    #define TEAM_GRAPHIC_NAME "GRAPHIC"
 
 typedef struct {
     // Name of the team
