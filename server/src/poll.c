@@ -2,6 +2,7 @@
 #include "commands.h"
 #include "messages.h"
 #include "server.h"
+#include "teams.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -43,23 +44,40 @@ void client_quit(server_t *server)
     }
 }
 
+static bool client_login_graphic(server_t *server)
+{
+    CLIENT->is_graphical = true;
+    CLIENT->current_step = LOGGED_IN;
+    // TODO: send all useful informations
+    dprintf(*CLIENT->fd, "msz %d %d" ZMSG_END_SEQ, server->world->x, server->world->y);
+    return true;
+}
+
+static bool client_login_normal(server_t *server)
+{
+    int team_index = teams_find_by_name(server->teams, server->buffer);
+
+    if (team_index == -1 || TEAM_I(team_index)->clients == 0) {
+        write(*CLIENT->fd, ZMSG_KO, strlen(ZMSG_KO));
+        return true;
+    }
+    CLIENT->current_step = LOGGED_IN;
+    TEAM_I(team_index)->clients--;
+    client_associate_team(server->clients, server->index, TEAM_I(team_index));
+    dprintf(*CLIENT->fd, "%d" ZMSG_END_SEQ, TEAM_I(team_index)->clients);
+    dprintf(*CLIENT->fd, "%d %d" ZMSG_END_SEQ, server->world->x, server->world->y);
+    return true;
+}
+
 // Returns true if the client just logged in
 static bool client_first_steps_handler(server_t *server)
 {
     switch (CLIENT->current_step) {
         case ENTER_TEAM_NAME: {
-            int team_index = teams_find_by_name(server->teams, server->buffer);
-
-            if (team_index == -1 || TEAM_I(team_index)->clients == 0) {
-                write(*CLIENT->fd, ZMSG_KO, strlen(ZMSG_KO));
-                return true;
-            }
-            CLIENT->current_step = LOGGED_IN;
-            TEAM_I(team_index)->clients--;
-            client_associate_team(server->clients, server->index, TEAM_I(team_index));
-            dprintf(*CLIENT->fd, "%d" ZMSG_END_SEQ, TEAM_I(team_index)->clients);
-            dprintf(*CLIENT->fd, "%d %d" ZMSG_END_SEQ, server->world->x, server->world->y);
-            return true;
+            if (strcmp(server->buffer, TEAM_GRAPHIC_NAME) == 0)
+                return client_login_graphic(server);
+            else
+                return client_login_normal(server);
         }
         case LOGGED_IN:
             return false;

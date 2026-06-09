@@ -2,6 +2,7 @@
     #define ZAPPY_SERVER_CLIENTS_H_
 
     #include "teams.h"
+    #include <stdbool.h>
     #include <stddef.h>
 
     // Gets the current client
@@ -17,6 +18,8 @@ typedef enum {
 typedef struct {
     // Current step of the first step flow
     client_login_step_t current_step;
+    // The current client a graphical client?
+    bool is_graphical;
     // Pointer to the associated team
     team_data_t *team;
     // Pointer to its struct pollfd file descriptor
