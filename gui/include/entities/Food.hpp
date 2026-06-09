@@ -6,8 +6,8 @@
 namespace zappy {
     class Food : public AEntity {
         public:
-            Food();
-            Food(tileCoordinates);
+            Food(raylib::Model &model);
+            Food(tileCoordinates, raylib::Model &model);
             ~Food();
 
             void draw() override;

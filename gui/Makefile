@@ -19,11 +19,11 @@ SRC :=  src/main.cpp	\
 		src/Tile.cpp	\
 		src/Raylib.cpp	\
 		src/TextureUtilityFinderFiller3000.cpp	\
-		# src/entities/AEntity.cpp	\
-		# src/entities/Egg.cpp	\
-		# src/entities/Player.cpp	\
-		# src/entities/Food.cpp	\
-		# src/entities/Materials.cpp
+		src/entities/AEntity.cpp	\
+		src/entities/Egg.cpp	\
+		src/entities/Player.cpp	\
+		src/entities/Food.cpp	\
+		src/entities/Materials.cpp
 
 OBJ :=  $(SRC:.cpp=.o)
 

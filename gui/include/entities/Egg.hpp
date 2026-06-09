@@ -6,8 +6,8 @@
 namespace zappy {
     class Egg : public AEntity {
         public:
-            Egg();
-            Egg(tileCoordinates);
+            Egg(raylib::Model &model);
+            Egg(tileCoordinates, raylib::Model &model);
             ~Egg();
 
             void draw() override;

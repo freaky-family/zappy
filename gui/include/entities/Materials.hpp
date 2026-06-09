@@ -18,8 +18,8 @@ namespace zappy {
         private:
             MaterialType _type;
         public:
-            Material();
-            Material(tileCoordinates);
+            Material(raylib::Model &model);
+            Material(tileCoordinates, raylib::Model &model);
             ~Material();
 
             void draw() override;

@@ -6,8 +6,8 @@
 namespace zappy {
     class Player : public AEntity {
         public:
-            Player();
-            Player(tileCoordinates);
+            Player(raylib::Model &model);
+            Player(tileCoordinates, raylib::Model &model);
             ~Player();
 
             void draw() override;

@@ -2,6 +2,7 @@
 #include "IEntity.hpp"
 #include "Map.hpp"
 #include "TextureUtilityFinderFiller3000.hpp"
+#include "entities/Materials.hpp"
 #include <Camera3D.hpp>
 #include <Color.hpp>
 #include <Keyboard.hpp>
