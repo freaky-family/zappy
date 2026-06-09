@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Map.hpp"
 #include "Socket.hpp"
 #include <functional>
 #include <map>
@@ -11,7 +12,7 @@ namespace zappy {
     class Communication {
         public:
             Communication() = delete;
-            Communication(int port, std::string hostname);
+            Communication(int port, std::string hostname, zappy::Map &map);
             ~Communication();
 
             void SocketLoop();
@@ -20,6 +21,8 @@ namespace zappy {
             Socket _socket;
 
             std::map<std::string, std::function<void(std::vector<std::string>)>> _commands;
+
+            zappy::Map &_map;
             void UpdateFd(int i);
             void ReadMessage();
             void ParseMessage(std::string msg);

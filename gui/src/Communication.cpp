@@ -1,5 +1,6 @@
 #include "Communication.hpp"
 #include "Exception.hpp"
+#include "Map.hpp"
 #include <exception>
 #include <functional>
 #include <sstream>
@@ -7,8 +8,8 @@
 #include <sys/poll.h>
 #include <vector>
 
-zappy::Communication::Communication(int port, std::string hostname) : _socket(port, hostname),
-    _commands()
+zappy::Communication::Communication(int port, std::string hostname, Map &map) : _socket(port, hostname),
+    _commands(), _map(map)
 {
     _commands.insert({"msz", std::bind(&zappy::Communication::msz, this, std::placeholders::_1)});
     _commands.insert({"bct", std::bind(&zappy::Communication::bct, this, std::placeholders::_1)});

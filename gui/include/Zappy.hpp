@@ -2,6 +2,7 @@
 
 #include "Communication.hpp"
 #include "IGraphical.hpp"
+#include "Map.hpp"
 #include <memory>
 #include <string>
 #include <thread>
@@ -16,6 +17,7 @@ namespace zappy {
             void Run();
 
         private:
+            zappy::Map _map;
             Communication _commuication;
             std::unique_ptr<IGraphical> _graphical;
             bool _exit;

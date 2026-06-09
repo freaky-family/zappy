@@ -1,9 +1,17 @@
 #include "Communication.hpp"
+#include <exception>
 #include <string>
 #include <vector>
 
-void zappy::Communication::msz( std::vector<std::string> )
-{}
+void zappy::Communication::msz(std::vector<std::string> params)
+{
+    try {
+        int x = std::stoi(params.at(1));
+        int y = std::stoi(params.at(2));
+        _map.setDimensions(x, y);
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Communication::bct( std::vector<std::string> )
 {}
