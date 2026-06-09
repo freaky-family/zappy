@@ -1,6 +1,7 @@
 from .Communication import createSocket, handshake
 from .AgenticIntelligenceKpiWorkflow import *
 from select import *
+import socket as skt
 
 
 def initConnection(machine, port, name):
@@ -18,28 +19,29 @@ def initConnection(machine, port, name):
 
 
 def mainLoop(machine, port, name):
-    family = []
+    family = {}
 
     ret = initConnection(machine, port, name)
     while (ret[0] == True):
-        family.append(ret[1])
+        family.update({ret[1].socket.fileno: ret[1]})
         ret = initConnection(machine, port, name)
-    family.append(ret[1])
+    family.update({ret[1].socket.fileno(): ret[1]})
 
     pollObject = poll()
-
-    for freakster in family:
-        pollObject.register(freakster.socket, POLLIN)
+    for freakyAi in family.values():
+        pollObject.register(freakyAi.socket, POLLIN)
 
     while True:
         pollEvent = pollObject.poll(0)
 
-        for fd, event in pollEvent:
-            print(f"{fd} {event}")
+        for socket, event in pollEvent:
+            if (event & POLLIN):
+                s = family[socket].receive()
+                print(s)
 
         if (len(family) == 0):
             break;
-        for i in range(len(family)):
-            family[i].doThing()
+        for freakyAi in family.values():
+            freakyAi.doThing()
 
     print("End of the program.")
