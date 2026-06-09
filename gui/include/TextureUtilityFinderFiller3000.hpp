@@ -9,6 +9,6 @@ namespace zappy {
             TUFF();
             ~TUFF();
 
-            static void getMaterialsTextures(std::map<int, raylib::Texture2D>&);
+            static void getMaterialsTextures(std::map<int, raylib::Texture2D>&, std::string);
     };
 }

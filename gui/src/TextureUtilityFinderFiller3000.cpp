@@ -9,13 +9,12 @@ zappy::TUFF::TUFF()
 zappy::TUFF::~TUFF()
 {}
 
-void zappy::TUFF::getMaterialsTextures(std::map<int, raylib::Texture2D>& textureMap)
+void zappy::TUFF::getMaterialsTextures(std::map<int, raylib::Texture2D>& textureMap, std::string filepath)
 {
-    std::string file = "assets/Textures/PNG";
-    if (!std::filesystem::exists(file)) {
-        file = "gui/assets/Textures/PNG";
+    if (!std::filesystem::exists(filepath)) {
+        filepath = "gui/" + filepath;
     } else {}
-    for (auto file: std::filesystem::directory_iterator(file)) {
+    for (auto file: std::filesystem::directory_iterator(filepath)) {
         raylib::Texture2D texture(file.path());
         if (static_cast<std::string>(file.path()).find("Base_color") != std::string::npos) {
             textureMap.insert({MATERIAL_MAP_ALBEDO, raylib::Texture2D (file.path())});
