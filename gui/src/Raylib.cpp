@@ -17,7 +17,6 @@ zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map): _map(map), _window(),
     initWindow();
     initCamera();
     _modelHolder.initModels();
-
 }
 
 zappy::RaylibGraphical::~RaylibGraphical()
@@ -76,8 +75,8 @@ bool zappy::RaylibGraphical::run()
 
     drawTiles();
 
-    _window.DrawFPS();
     EndMode3D();
+    _window.DrawFPS();
 
     _window.EndDrawing();
     return exit;
@@ -95,7 +94,7 @@ void zappy::RaylibGraphical::drawTiles()
             DrawCubeWires(position, 1.0f, 0.1f, 1.0f, raylib::Color::Black());
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             for (auto &entity: entities) {
-                entity->draw(_modelHolder);
+                entity->draw(_modelHolder, mapDimensions);
             }
         }
     }

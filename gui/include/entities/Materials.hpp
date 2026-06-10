@@ -24,6 +24,7 @@ namespace zappy {
             ~Material();
 
             raylib::Color getMaterialColor();
-            void draw(ModelHolder&) override;
+            Vector3 getMaterialPosition(std::pair<int, int>);
+            void draw(ModelHolder&, std::pair<int, int>) override;
     };
 }

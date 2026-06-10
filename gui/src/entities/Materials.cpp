@@ -16,7 +16,7 @@ raylib::Color zappy::Material::getMaterialColor()
 {
     switch (_type) {
         case Linemate:
-            return raylib::Color::Black();
+            return raylib::Color::Yellow();
         case Deraumere:
             return raylib::Color::Green();
         case Sibur:
@@ -30,7 +30,28 @@ raylib::Color zappy::Material::getMaterialColor()
     }
 }
 
-void zappy::Material::draw(zappy::ModelHolder& modelHolder)
+Vector3 zappy::Material::getMaterialPosition(std::pair<int, int> dimensions)
 {
-    modelHolder.getMaterialModel().Draw(Vector3(_coords.first - 5, 0.1, _coords.second - 5), 1.0f, getMaterialColor());
+    float zComponent = _coords.second - (dimensions.second / 2.0f) - 0.4;
+    switch (_type) {
+        case Linemate:
+            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4, 0.05, zComponent);
+        case Deraumere:
+            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4, 0.05, zComponent + 0.15);
+        case Sibur:
+            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4, 0.05, zComponent + 0.3);
+        case Mendiane:
+            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4, 0.05, zComponent + 0.45);
+        case Phiras:
+            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4, 0.05, zComponent + 0.6);
+        case Thystame:
+            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4, 0.05, zComponent + 0.75);
+    }
+}
+
+void zappy::Material::draw(zappy::ModelHolder& modelHolder, std::pair<int, int> dimensions)
+{
+    const raylib::Color color = getMaterialColor();
+    const Vector3 position = getMaterialPosition(dimensions);
+    modelHolder.getMaterialModel().Draw(position, 0.5f, color);
 }
