@@ -2,6 +2,7 @@
     #define ZAPPY_SERVER_CLIENTS_H_
 
     #include "teams.h"
+    #include "world.h"
     #include <stdbool.h>
     #include <stddef.h>
 
@@ -24,6 +25,8 @@ typedef struct {
     team_data_t *team;
     // Pointer to its struct pollfd file descriptor
     int *fd;
+    // Pointer to the associated tile
+    tile_t *tile;
 } client_data_t;
 
 client_data_t *client_data_init(int *fd);

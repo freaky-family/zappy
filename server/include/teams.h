@@ -22,10 +22,14 @@ typedef struct {
 
     // Location of eggs on the world tiles
     team_tiles_t *tiles;
+
+    // Egg tile index
+    unsigned int egg_tile_i;
 } team_data_t;
 
 team_data_t *team_data_init(const char *name, unsigned int max_clients);
 void team_data_add_tile(team_data_t *team, tile_t *tile);
+tile_t *team_data_get_egg(team_data_t *team);
 void team_data_free(team_data_t *data);
 
 typedef struct {

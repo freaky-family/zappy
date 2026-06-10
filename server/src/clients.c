@@ -16,6 +16,7 @@ client_data_t *client_data_init(int *fd)
     data->is_graphical = false;
     data->fd = fd;
     data->team = NULL;
+    data->tile = NULL;
     return data;
 }
 

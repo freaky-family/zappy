@@ -6,6 +6,7 @@
 #include "utils.h"
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/poll.h>
 #include <arpa/inet.h>
@@ -67,6 +68,11 @@ static bool client_login_normal(server_t *server)
     client_associate_team(server->clients, server->index, TEAM_I(team_index));
     dprintf(*CLIENT->fd, "%d" ZMSG_END_SEQ, TEAM_I(team_index)->clients);
     dprintf(*CLIENT->fd, "%d %d" ZMSG_END_SEQ, server->world->x, server->world->y);
+    CLIENT->tile = team_data_get_egg(CLIENT->team);
+    if (CLIENT->tile == NULL) {
+        CLIENT->current_step = ENTER_TEAM_NAME;
+        return true;
+    }
     return true;
 }
 
