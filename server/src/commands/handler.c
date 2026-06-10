@@ -24,5 +24,5 @@ void commands_handler(server_t *server)
         if (verify_command(server, i))
             return;
     }
-    write(*CLIENT->fd, ZMSG_KO, strlen(ZMSG_KO));
+    WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
 }

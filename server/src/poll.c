@@ -60,7 +60,7 @@ static bool client_login_normal(server_t *server)
     int team_index = teams_find_by_name(server->teams, server->buffer);
 
     if (team_index == -1 || TEAM_I(team_index)->clients == 0) {
-        write(*CLIENT->fd, ZMSG_KO, strlen(ZMSG_KO));
+        WRITE_MESSAGE(*CLIENT->fd, ZMSG_KO);
         return true;
     }
     CLIENT->current_step = LOGGED_IN;
