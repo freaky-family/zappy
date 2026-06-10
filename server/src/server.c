@@ -74,6 +74,7 @@ static void server_loop(server_t *server)
     bool running = true;
 
     while (running) {
+        // TODO add a dynamic time out
         result = poll(server->poller->elems, server->poller->amount, POLL_TIMEOUT);
         printf("caca\n");
         if (result == -1) {
