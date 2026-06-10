@@ -13,6 +13,5 @@ zappy::Egg::~Egg()
 
 void zappy::Egg::draw(zappy::ModelHolder& modelHolder)
 {
-    static_cast<void>(modelHolder);
-    return;
+    modelHolder.getEggModel().Draw(Vector3(_coords.first - 5, 0.025, _coords.second - 5), 0.1);
 }
