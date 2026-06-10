@@ -44,6 +44,8 @@ def mainLoop(machine, port, name):
                             ai.receiveWaiting(s)
                             if ai.status != Status.AVAILABLE:
                                 ai.checkReceive(s)
+                        else:
+                            ai.checkReceive(s)
                     except SocketReceiveError:
                         slimeFreakster(ai, family, socketfd, pollObject)
 
