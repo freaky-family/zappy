@@ -2,18 +2,23 @@ from .Communication import SocketReceiveError
 from enum import Enum
 
 class Direction(Enum):
-    UNDEFINED = 0
-    UP = 1
-    RIGHT = 2
-    DOWN = 3
-    LEFT = 4
+    UP = 0
+    RIGHT = 1
+    DOWN = 2
+    LEFT = 3
+
+class Status(Enum):
+    AVAILABLE = 0
+    WAITING = 1
 
 class Freakster:
     def __init__(self, x, y, socket):
         self.pos_x = x
         self.pos_y = y
-        self.direction = Direction.UNDEFINED
+        self.direction = Direction.UP
         self.socket = socket
+        self.status = Status.AVAILABLE
+        self.receiveWaiting = None
         self.welcome = False
         self.handshake = False
 
@@ -48,7 +53,8 @@ class Freakster:
         self.socket.send(str.encode(s + "\n"))
 
     def doThing(self):
-        self.socket.send(str.encode("Forward" + "\n"))
+        self.Forward()
+        # self.socket.send(str.encode("Forward" + "\n"))
 
     def moveForward(self):
         if self.direction == Direction.UP:
@@ -61,13 +67,35 @@ class Freakster:
             self.pos_x -= 1
 
     def Forward(self):
+        # print("caca")
         self.send("Forward")
-        result = self.receive()
-        if result == "ok":
+        self.status = Status.WAITING
+        self.receiveWaiting = self.ExecuteForward
+
+    def handleBroadcast(self, message):
+        pass
+
+    def handleEject(self, message):
+        pass
+
+    def checkReceive(self, receive):
+        if (receive.split()[0] == "message"):
+            self.handleBroadcast(receive)
+            return False
+        if (receive.split()[0] == "eject"):
+            self.handleEject(receive)
+            return False
+        return True
+
+    def ExecuteForward(self, receive):
+        if (receive == "ok"):
             self.moveForward()
+            self.status = Status.AVAILABLE
+            print("forwarded")
+
 
     def Right(self):
         self.send("Right")
         result = self.receive()
         if result == "ok":
-            self.direction += 1 % 4
+            self.direction = (self.direction + 1) % 4

@@ -1,6 +1,6 @@
-from .AgenticIntelligenceKpiWorkflow import *
+from .AgenticIntelligenceKpiWorkflow import Freakster, Status
 from .Communication import createSocket, SocketReceiveError
-from select import *
+from select import poll, POLLIN
 import socket as skt
 
 
@@ -40,7 +40,10 @@ def mainLoop(machine, port, name):
                 else:
                     try:
                         s = ai.receive()
-                        print(s)
+                        if ai.status == Status.WAITING and ai.receiveWaiting != None:
+                            ai.receiveWaiting(s)
+                            if ai.status != Status.AVAILABLE:
+                                ai.checkReceive(s)
                     except SocketReceiveError:
                         slimeFreakster(ai, family, socketfd, pollObject)
 
