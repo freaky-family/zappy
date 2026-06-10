@@ -1,6 +1,7 @@
 #include "clients.h"
 #include "dynamic_arrays.h"
 #include "poller.h"
+#include "stock.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -14,6 +15,7 @@ client_data_t *client_data_init(int *fd)
     }
     data->current_step = ENTER_TEAM_NAME;
     data->direction = RIGHT;
+    stock_initialize_client(&data->stock);
     data->is_graphical = false;
     data->fd = fd;
     data->team = NULL;

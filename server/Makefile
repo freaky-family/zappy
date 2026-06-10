@@ -14,7 +14,8 @@ SRC	:=	src/main.c \
 		src/server.c \
 		src/socket.c \
 		src/teams.c \
-		src/world.c
+		src/world.c \
+		src/stock.c
 
 # Utils source
 SRC	+=	src/utils/remove_ending_seq.c \
@@ -24,6 +25,7 @@ SRC	+=	src/utils/remove_ending_seq.c \
 SRC	+=	src/commands/handler.c \
 		src/commands/left.c \
 		src/commands/right.c \
+		src/commands/inventory.c \
 		src/commands/graphical/msz.c
 
 OBJ	:=	$(SRC:.c=.o)

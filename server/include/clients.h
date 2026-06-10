@@ -2,6 +2,7 @@
     #define ZAPPY_SERVER_CLIENTS_H_
 
     #include "teams.h"
+    #include "stock.h"
     #include "world.h"
     #include <stdbool.h>
     #include <stddef.h>
@@ -31,7 +32,8 @@ typedef struct {
     // Client direction
     client_direction_t direction;
     // TODO: level
-    // TODO: stock
+    // Stock of the client
+    stock_t stock;
     // Pointer to the associated team
     team_data_t *team;
     // Pointer to its struct pollfd file descriptor

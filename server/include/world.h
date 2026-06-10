@@ -1,26 +1,17 @@
 #ifndef ZAPPY_SERVER_WORLD_H_
     #define ZAPPY_SERVER_WORLD_H_
 
+    #include "stock.h"
     #include <stdbool.h>
 
     #define ZW_POS(width, x, y) width * y + x
 
 typedef struct {
-    unsigned int food;
-    unsigned int linemate;
-    unsigned int deraumere;
-    unsigned int sibur;
-    unsigned int mendiane;
-    unsigned int phiras;
-    unsigned int thystame;
-} stones_stock_t;
-
-typedef struct {
     // Has an egg
     // TODO: must be modified for forks
     bool egg;
-    // Stones stock
-    stones_stock_t stock;
+    // Stock of the tile
+    stock_t stock;
     // Coordinates
     unsigned int x;
     unsigned int y;

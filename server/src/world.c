@@ -1,4 +1,5 @@
 #include "world.h"
+#include "stock.h"
 #include <stdlib.h>
 
 static void tile_init(tile_t *tile, unsigned int x, unsigned int y)
@@ -6,6 +7,7 @@ static void tile_init(tile_t *tile, unsigned int x, unsigned int y)
     tile->egg = false;
     tile->x = x;
     tile->y = y;
+    stock_initialize_world(&tile->stock);
 }
 
 static void world_initialize_tiles(world_t *world)

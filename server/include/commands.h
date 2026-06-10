@@ -4,6 +4,8 @@
     #include "server.h"
     #include <unistd.h>
 
+    #define CMDS_TEMP_BUFFER_SIZE 1024
+
 typedef struct {
     const char *command;
     void (*function)(server_t *server);
@@ -18,6 +20,7 @@ typedef struct {
 // Client prototypes
 void command_left(server_t *server);
 void command_right(server_t *server);
+void command_inventory(server_t *server);
 
 // Graphical prototypes
 void command_graphic_msz(server_t *server);
@@ -33,6 +36,12 @@ static const commands_t cmds[] = {
     {
         .command = "Right",
         .function = &command_right,
+        .args_amount = 0,
+        .graphical_only = false,
+    },
+    {
+        .command = "Inventory",
+        .function = &command_inventory,
         .args_amount = 0,
         .graphical_only = false,
     },
