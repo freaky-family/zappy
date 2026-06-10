@@ -8,19 +8,13 @@ class Freakster:
         self.handshake = False
 
     def firstHandshake(self, name):
-        try:
-            s = self.receive()
-        except SocketReceiveError:
-            return
+        s = self.receive()
         if s == "WELCOME":
             self.send(name)
             self.welcome = True
 
     def finalHandshake(self):
-        try:
-            s = self.receive()
-        except SocketReceiveError:
-            return
+        s = self.receive()
         try:
             arr = [int(tmp) for tmp in s.split()]
         except ValueError:
@@ -28,6 +22,7 @@ class Freakster:
         if len(arr) != 3:
             return
         self.pos = (arr[1], arr[2])
+        self.handshake = True
         if arr[0] > 0:
             return True
         return False
@@ -36,8 +31,6 @@ class Freakster:
     def receive(self):
         s = self.socket.recv(4096)
         if s == b'':
-            print("Server has stopped. Exiting client")
-            #self.socket.close()
             raise SocketReceiveError("Server has stopped.")
         return s.decode("ascii").strip("\n")
 
