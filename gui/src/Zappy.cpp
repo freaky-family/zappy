@@ -1,6 +1,7 @@
 #include "Zappy.hpp"
 #include "Raylib.hpp"
 #include <exception>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -54,5 +55,9 @@ void zappy::Zappy::loop()
 
 void zappy::Zappy::LaunchSocket()
 {
-    _commuication.SocketLoop();
+    try {
+        _commuication.SocketLoop();
+    } catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+    }
 }
