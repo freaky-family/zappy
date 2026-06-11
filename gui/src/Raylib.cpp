@@ -1,6 +1,7 @@
 #include "Raylib.hpp"
 #include "IEntity.hpp"
 #include "Map.hpp"
+#include "RaylibParticles.hpp"
 #include "Tile.hpp"
 #include <Camera3D.hpp>
 #include <Color.hpp>
@@ -11,15 +12,13 @@
 #include <Vector3.hpp>
 #include <memory>
 #include <cstdio>
-#include <filesystem>
-#include <iostream>
 #include <optional>
 #include <raylib.h>
 #include <utility>
 #include <vector>
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map): _map(map), _window(),
-    _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0)
+    _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles()
 {
     initWindow();
     initCamera();
@@ -84,6 +83,7 @@ void zappy::RaylibGraphical::drawTiles()
     for (int y = 0; y < mapDimensions.second; y++) {
         for (int x = 0; x < mapDimensions.first; x++) {
             zappy::Tile& tile = _map.getTile(tileCoordinates(x, y));
+            const tileCoordinates tileCoords = tile.getCoords();
 
             DrawCube(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, (tile.isSelected()) ? raylib::Color::Red() : raylib::Color::Green());
             DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::Black());
@@ -92,15 +92,21 @@ void zappy::RaylibGraphical::drawTiles()
             for (auto &entity: entities) {
                 entity->draw(_modelHolder, mapDimensions);
             }
+            if (tile.isIncantating()) {
+                try {
+                    _particles.at(tileCoords);
+                } catch (std::out_of_range) {
+                    _particles.insert({tileCoords, RaylibParticles(tileCoords, mapDimensions)});
+                }
+                drawParticles(tileCoords);
+            }
         }
     }
 }
 
 void zappy::RaylibGraphical::drawText(std::string str, int X, int Y)
 {
-    static_cast<void>(str);
-    static_cast<void>(X);
-    static_cast<void>(Y);
+    raylib::DrawText(str, X, Y, 20, raylib::Color::Black());
 }
 
 void zappy::RaylibGraphical::updateCamera()
@@ -171,5 +177,20 @@ void zappy::RaylibGraphical::updateCamera()
         Vector3 travelVector = {_cameraTargetTarget.x - _camera.GetTarget().x, _cameraTargetTarget.y - _camera.GetTarget().y, _cameraTargetTarget.z - _camera.GetTarget().z};
         _camera.SetTarget({_camera.GetTarget().x + (travelVector.x / _tickUntilCameraTarget), _camera.GetTarget().y + (travelVector.y / _tickUntilCameraTarget), _camera.GetTarget().z + (travelVector.z / _tickUntilCameraTarget)});
         _tickUntilCameraTarget -= 1;
+    }
+}
+
+void zappy::RaylibGraphical::drawParticles(zappy::tileCoordinates coords)
+{
+    RaylibParticles &particles = _particles.at(coords);
+    particles.update();
+    std::array<std::optional<ParticlesData>, MAX_PARTICLES> dataArray = particles.getDataArray();
+    int head = particles.getHead();
+
+    for (int i = particles.getTail(); i != head; i = (i + 1) % MAX_PARTICLES) {
+        if (dataArray.at(i).has_value()) {
+            ParticlesData data = dataArray.at(i).value();
+            DrawSphere(data._position, data._radius, data._color);
+        }
     }
 }

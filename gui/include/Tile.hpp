@@ -12,6 +12,7 @@ namespace zappy {
             Vector3 _displayCoordinates;
             std::vector<std::shared_ptr<IEntity>> _entities;
             bool _selected;
+            bool _incantating;
         public:
             Tile() = delete;
             Tile(int X, int Y, std::pair<int, int> mapDimensions);
@@ -26,5 +27,6 @@ namespace zappy {
             void clear();
             void setSelectedState(bool selectedState);
             bool isSelected();
+            bool isIncantating();
         };
 }
