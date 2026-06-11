@@ -50,6 +50,7 @@ static server_t *server_init(args_t *args)
     server_append_teams(server, args);
     server_initialize_world(server, args->clients);
     server->freq = args->freq;
+    server->poll_timeout = DEFAULT_POLL_TIMEOUT;
     return server;
 }
 
@@ -74,9 +75,9 @@ static void server_loop(server_t *server)
     bool running = true;
 
     while (running) {
-        // TODO add a dynamic time out
-        result = poll(server->poller->elems, server->poller->amount, POLL_TIMEOUT);
-        printf("caca\n");
+        // TODO test dynamic timeout
+        calculate_timeout(server);
+        result = poll(server->poller->elems, server->poller->amount, server->poll_timeout);
         if (result == -1) {
             perror("poll");
             break;
