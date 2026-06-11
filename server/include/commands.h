@@ -26,6 +26,7 @@ void command_take(server_t *server);
 void command_set(server_t *server);
 void command_connect_nbr(server_t *server);
 void command_fork(server_t *server);
+void command_forward(server_t *server);
 
 // Graphical prototypes
 void command_graphic_msz(server_t *server);
@@ -71,6 +72,12 @@ static const commands_t cmds[] = {
     {
         .command = "Fork",
         .function = &command_fork,
+        .args_amount = 0,
+        .graphical_only = false,
+    },
+    {
+        .command = "Forward",
+        .function = &command_forward,
         .args_amount = 0,
         .graphical_only = false,
     },
