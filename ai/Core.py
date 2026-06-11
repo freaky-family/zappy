@@ -33,10 +33,10 @@ def mainLoop(machine, port, name):
                 elif ai.handshake == False and ai.welcome == True:
                     try:
                         res = ai.finalHandshake()
-                        # if res == True:
-                        #     newAi = Freakster(0, 0, createSocket(machine, port, name))
-                        #     family.update({newAi.socket.fileno: newAi})
-                        #     pollObject.register(newAi.socket, POLLIN)
+                        if res == True:
+                            newAi = Freakster(0, 0, createSocket(machine, port, name))
+                            family.update({newAi.socket.fileno(): newAi})
+                            pollObject.register(newAi.socket, POLLIN)
                         t = threading.Thread(target=ai.MainLoopBum)
                         threads.append(t)
                         t.start()
@@ -52,9 +52,7 @@ def mainLoop(machine, port, name):
 
         if len(family) == 0:
             break
-        # for i in family.values():
-        #     if i.handshake == True:
-        #         i.doThing()
+
     for t in threads:
         t.join()
     print("End of the program.")
