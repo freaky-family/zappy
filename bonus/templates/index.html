@@ -2,22 +2,48 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Zappy Logs</title>
+  <title>Zappy Map</title>
+  <style>
+    body{font-family: monospace; padding: 16px;}
+    table{border-collapse: collapse;}
+    td{
+      width: 32px; height: 32px;
+      border: 1px solid #ccc;
+      text-align: center; vertical-align: middle;
+      font-size: 11px;
+    }
+    td.player{background: #d0eaff;}
+  </style>
 </head>
 <body>
-  <h1>Zappy Logs</h1>
-  <pre id="logs">Je veux du log miam miam</pre>
+  <h2>Zappy Map</h2>
+  <p id="info">En attente...</p>
+  <table id="map"></table>
   <script>
-    let cursor = 0;
     async function poll() {
-      const res = await fetch(`/logs?since=${cursor}`); // à regrder demain il y a un prblm
+      const res = await fetch('/state');
       const data = await res.json();
-      if (data.logs.length > 0) {
-        cursor = data.total;
-        data.logs.forEach(log => {
-          document.getElementById("logs").textContent += `[${log.timestamp}] ${log.level} ${log.message}\n`;
-        });
+      if (data.width === 0)
+        return;
+      document.getElementById('info').textContent =
+        `Map: ${data.width}x${data.height} | Teams: ${data.teams.join(', ')} | Players: ${Object.keys(data.players).length}`;
+      const grid = Array.from({length: data.height}, () => Array(data.width).fill(''));
+      for (const [id, p] of Object.entries(data.players)) {
+        grid[p.y][p.x] += `#${id}`;
       }
+      const ORIENT = { 1: '↑', 2: '→', 3: '↓', 4: '←' };
+      let html = '';
+      for (let y = 0; y < data.height; y++) {
+        html += '<tr>';
+        for (let x = 0; x < data.width; x++) {
+          const content = grid[y][x];
+          html += content
+            ? `<td class="player">${content}</td>`
+            : '<td></td>';
+        }
+        html += '</tr>';
+      }
+      document.getElementById('map').innerHTML = html;
     }
     setInterval(poll, 1000);
     poll();
