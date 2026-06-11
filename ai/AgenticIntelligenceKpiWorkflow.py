@@ -116,6 +116,11 @@ class Freakster:
     #         self.status = Status.AVAILABLE
     #         print("forwarded")
 
+    def MainLoopBum(self):
+        while (True):
+            if self.handshake == True and self.welcome == True:
+                self.Forward()
+
     def Right(self):
         self.send("Right")
         # Wait Thread
