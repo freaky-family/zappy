@@ -35,17 +35,17 @@ Vector3 zappy::Material::getMaterialPosition(std::pair<int, int> dimensions)
     float zComponent = _coords.second - (dimensions.second / 2.0f) - 0.4;
     switch (_type) {
         case Linemate:
-            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4, 0.05, zComponent);
+            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, 0.05, zComponent + 0.5f);
         case Deraumere:
-            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4, 0.05, zComponent + 0.15);
+            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, 0.05, zComponent + 0.15 + 0.5f);
         case Sibur:
-            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4, 0.05, zComponent + 0.3);
+            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, 0.05, zComponent + 0.3 + 0.5f);
         case Mendiane:
-            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4, 0.05, zComponent + 0.45);
+            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, 0.05, zComponent + 0.45 + 0.5f);
         case Phiras:
-            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4, 0.05, zComponent + 0.6);
+            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, 0.05, zComponent + 0.6 + 0.5f);
         case Thystame:
-            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4, 0.05, zComponent + 0.75);
+            return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, 0.05, zComponent + 0.75 + 0.5f);
     }
 }
 

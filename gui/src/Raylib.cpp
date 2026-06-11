@@ -84,9 +84,10 @@ void zappy::RaylibGraphical::drawTiles()
     for (int y = 0; y < mapDimensions.second; y++) {
         for (int x = 0; x < mapDimensions.first; x++) {
             zappy::Tile& tile = _map.getTile(tileCoordinates(x, y));
-            Vector3 position = { static_cast<float>(x) - mapDimensions.first / 2.0f, 0.0f, static_cast<float>(y) - mapDimensions.second / 2.0f};
-            DrawCube(position, 1.0f, 0.1f, 1.0f, (tile.isSelected()) ? raylib::Color::Red() : raylib::Color::Green());
-            DrawCubeWires(position, 1.0f, 0.1f, 1.0f, raylib::Color::Black());
+
+            DrawCube(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, (tile.isSelected()) ? raylib::Color::Red() : raylib::Color::Green());
+            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::Black());
+    
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             for (auto &entity: entities) {
                 entity->draw(_modelHolder, mapDimensions);
@@ -139,9 +140,8 @@ void zappy::RaylibGraphical::updateCamera()
 
                 // Reset selected tiles
                 tile.setSelectedState(false);
-            
-                Vector3 tilePosition = { static_cast<float>(x) - mapDimensions.first / 2.0f, 0.0f, static_cast<float>(y) - mapDimensions.second / 2.0f};
-                RayCollision collision = GetRayCollisionBox(ray, {{tilePosition.x - 1.0f/2.0f, tilePosition.y - 0.1f/2.0f, tilePosition.z - 1.0f/2.0f}, {tilePosition.x + 1.0f/2.0f, tilePosition.y + 0.1f/2.0f, tilePosition.z + 1.0f/2.0f}});
+
+                RayCollision collision = GetRayCollisionBox(ray, {{tile.getDisplayCoordinates().x - 1.0f/2.0f, tile.getDisplayCoordinates().y - 0.1f/2.0f, tile.getDisplayCoordinates().z - 1.0f/2.0f}, {tile.getDisplayCoordinates().x + 1.0f/2.0f, tile.getDisplayCoordinates().y + 0.1f/2.0f, tile.getDisplayCoordinates().z + 1.0f/2.0f}});
                 
                 if (collision.hit == true) {
                     if (closestDistance.has_value() == false || collision.distance < closestDistance) {
