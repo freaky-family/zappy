@@ -13,12 +13,15 @@
 #include "ModelHolder.hpp"
 
 namespace zappy {
+    constexpr float TICK_TO_CAMERA_TARGET = 60;
     class RaylibGraphical : public IGraphical {
         private:
             Map &_map; // copy the map from the communication object
             raylib::Window _window;
             raylib::Camera _camera;
             ModelHolder _modelHolder;
+            Vector3 _cameraTargetTarget;
+            float _tickUntilCameraTarget;
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map);

@@ -19,7 +19,7 @@
 #include <vector>
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map): _map(map), _window(),
-    _camera(), _modelHolder()
+    _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0)
 {
     initWindow();
     initCamera();
@@ -106,12 +106,12 @@ void zappy::RaylibGraphical::drawText(std::string str, int X, int Y)
 void zappy::RaylibGraphical::updateCamera()
 {
     // Camera angle moveable while holding the click.
-    if (raylib::Mouse::IsButtonDown(MOUSE_BUTTON_LEFT)) {
+    if (raylib::Mouse::IsButtonDown(MOUSE_BUTTON_RIGHT)) {
         _camera.Update(CAMERA_THIRD_PERSON);
         // TODO save the cursor pos to put it back at the same place
         // DisableCursor();
     }
-    if (raylib::Mouse::IsButtonUp(MOUSE_BUTTON_LEFT)) {
+    if (raylib::Mouse::IsButtonUp(MOUSE_BUTTON_RIGHT)) {
         _camera.Update(CAMERA_CUSTOM);
         // TODO La suite
         // EnableCursor();
@@ -125,6 +125,7 @@ void zappy::RaylibGraphical::updateCamera()
     }
 
 
+    // Selecte a tile
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         Ray ray = GetScreenToWorldRay(GetMousePosition(), _camera);
         
@@ -151,8 +152,24 @@ void zappy::RaylibGraphical::updateCamera()
                 }
             }
         }
+        // Set new camera target target
         if (closestDistance.has_value() == true) {
             closestTileHit->setSelectedState(true);
+            _cameraTargetTarget = closestTileHit->getDisplayCoordinates();
+            _tickUntilCameraTarget = TICK_TO_CAMERA_TARGET;
+        } else {
+            _cameraTargetTarget = {0, 0, 0};
+            _tickUntilCameraTarget = TICK_TO_CAMERA_TARGET;
         }
+    }
+
+    // Update the camera target
+    if (_tickUntilCameraTarget == 1) {
+        _camera.SetTarget(_cameraTargetTarget);
+        _tickUntilCameraTarget = 0;
+    } else if (_tickUntilCameraTarget > 1) {
+        Vector3 travelVector = {_cameraTargetTarget.x - _camera.GetTarget().x, _cameraTargetTarget.y - _camera.GetTarget().y, _cameraTargetTarget.z - _camera.GetTarget().z};
+        _camera.SetTarget({_camera.GetTarget().x + (travelVector.x / _tickUntilCameraTarget), _camera.GetTarget().y + (travelVector.y / _tickUntilCameraTarget), _camera.GetTarget().z + (travelVector.z / _tickUntilCameraTarget)});
+        _tickUntilCameraTarget -= 1;
     }
 }
