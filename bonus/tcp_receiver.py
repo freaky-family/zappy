@@ -3,7 +3,7 @@ import threading
 import datetime
 from log_buffer import buffer
 
-def handle_client(conn):
+def handle_client(conn) -> None:
     with conn:
         data = ""
         while True:
@@ -15,13 +15,10 @@ def handle_client(conn):
                 line, data = data.split("\n", 1)
                 line = line.strip()
                 if line:
-                    buffer.append({
-                        "timestamp": datetime.datetime.now().isoformat(timespec="seconds"),
-                        "message": line,
-                    })
+                    buffer.parse(line)
 
 def start_tcp_server(host="0.0.0.0", port=4343):
-    def _run():
+    def _run() -> None:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as srv:
             srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             srv.bind((host, port))
