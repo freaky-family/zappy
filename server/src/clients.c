@@ -4,6 +4,7 @@
 #include "stock.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 client_data_t *client_data_init(int *fd)
 {
@@ -20,6 +21,10 @@ client_data_t *client_data_init(int *fd)
     data->fd = fd;
     data->team = NULL;
     data->tile = NULL;
+    data->is_command_running = false;
+    // No need to init that
+    // data->command_start;
+    data->command = NULL;
     return data;
 }
 
@@ -41,6 +46,9 @@ clients_t *clients_init(void)
     }
     DA_INIT(clients, client_data_t);
     clients->amount = INITIAL_SOCKET_AMOUNT;
+    for (size_t i = 0; i < clients->amount; i++) {
+        clients->elems[i] = client_data_init(NULL);
+    }
     return clients;
 }
 

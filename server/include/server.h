@@ -10,6 +10,7 @@
     #include <netinet/in.h>
 
     #define BUFFER_SIZE 2048
+    #define DEFAULT_POLL_TIMEOUT 20 // milliseconds
 
 // Socket
 int socket_init(in_port_t port);
@@ -29,6 +30,10 @@ typedef struct {
     unsigned int index;
     // Represents the current client's buffer being handled.
     char *buffer;
+    // Represents the frequency of commands excetution.
+    int freq;
+    // Reprensents the timeout parameter of the poll, it is calculated dynamically
+    int poll_timeout;
 } server_t;
 
 bool zappy_server(args_t *args);

@@ -1,5 +1,6 @@
 #include "server.h"
 #include "args.h"
+#include "frequency.h"
 #include "teams.h"
 #include "world.h"
 #include <poll.h>
@@ -48,6 +49,8 @@ static server_t *server_init(args_t *args)
     server->signal_fd = -1;
     server_append_teams(server, args);
     server_initialize_world(server, args->clients);
+    server->freq = args->freq;
+    server->poll_timeout = DEFAULT_POLL_TIMEOUT;
     return server;
 }
 
@@ -72,12 +75,21 @@ static void server_loop(server_t *server)
     bool running = true;
 
     while (running) {
-        result = poll(server->poller->elems, server->poller->amount, -1);
+        calculate_timeout(server);
+        result = poll(server->poller->elems, server->poller->amount, server->poll_timeout);
         if (result == -1) {
             perror("poll");
             break;
         }
-        poll_handler(server, &running);
+        // TODO: Add a command queue so that when another command is ran at the same time
+        // the first one isn't overriden by the second one which is faster
+        frequency_handling(server);
+        if (result == 0) {
+            continue;
+        } else {
+            // TODO when the "client_data->is_command_running" est "true", la command doit etre ajouter et non exécuté
+            poll_handler(server, &running);
+        }
     }
 }
 
