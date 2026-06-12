@@ -75,7 +75,6 @@ static void server_loop(server_t *server)
     bool running = true;
 
     while (running) {
-        // TODO test dynamic timeout
         calculate_timeout(server);
         result = poll(server->poller->elems, server->poller->amount, server->poll_timeout);
         if (result == -1) {
