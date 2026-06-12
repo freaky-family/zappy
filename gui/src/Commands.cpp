@@ -5,6 +5,7 @@
 #include "entities/Food.hpp"
 #include "entities/Materials.hpp"
 #include <exception>
+#include <iterator>
 #include <map>
 #include <memory>
 #include <string>
@@ -35,9 +36,7 @@ void zappy::Zappy::bct(std::vector<std::string> params)
         tile.addEntity(std::make_shared<Food>(tileCoordinates(x, y), q[0]));
         for (int i = 1; i < 7; i++) {
             q[i] = std::stoi(params.at(index));
-            if (q[i] != 0) {
-                tile.addEntity(std::make_shared<Material>(static_cast<MaterialType>(i - 1), tileCoordinates(x, y), q[i]));
-            }
+            tile.addEntity(std::make_shared<Material>(static_cast<MaterialType>(i - 1), tileCoordinates(x, y), q[i]));
             index++;
         }
     } catch (std::exception &) {
@@ -64,8 +63,13 @@ void zappy::Zappy::pnw(std::vector<std::string> params)
         level = std::stoi(params.at(5));
         teamName = params.at(6);
 
-        _players.insert({playerNb, PlayerInfo(playerNb, {x, y},
-            orientation, level, teamName)});
+        try {
+            PlayerInfo &player =  _players.at(playerNb);
+            player = PlayerInfo(playerNb, {x, y}, orientation, level, teamName, true);
+        } catch (std::exception &) {
+            _players.insert({playerNb, PlayerInfo(playerNb, {x, y},
+                orientation, level, teamName, false)});
+        }
     } catch (std::exception &) {
     }
 }
@@ -157,8 +161,24 @@ void zappy::Zappy::pgt( std::vector<std::string> )
 void zappy::Zappy::pdi( std::vector<std::string> )
 {}
 
-void zappy::Zappy::enw( std::vector<std::string> )
-{}
+void zappy::Zappy::enw(std::vector<std::string> params)
+{
+    int eggNb, playerNb, x, y = 0;
+
+    try {
+        std::string str(params.at(1));
+        str.erase(str.begin());
+        eggNb = std::stoi(str);
+        str = params.at(2);
+        str.erase(str.begin());
+        playerNb = std::stoi(str);
+
+        x = std::stoi(params.at(3));
+        y = std::stoi(params.at(4));
+        _players.insert({eggNb, PlayerInfo(eggNb, {x, y}, 0, 0, "", true)});
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::ebo( std::vector<std::string> )
 {}
