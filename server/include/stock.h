@@ -23,5 +23,6 @@ typedef struct {
 void stock_initialize_client(stock_t *stock);
 void stock_initialize_world(stock_t *stock);
 bool stock_exchange(stock_t *stock, stock_t *other, const char *element);
+bool stock_verify_amount(stock_t *stock, const char *element, unsigned int amount);
 
 #endif

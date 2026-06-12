@@ -16,7 +16,17 @@ SRC	:=	src/main.c \
 		src/teams.c \
 		src/world.c \
 		src/stock.c \
-		src/frequency.c
+		src/frequency.c \
+		src/level.c
+
+# Levels
+SRC	+=	src/levels/one.c \
+		src/levels/two.c \
+		src/levels/three.c \
+		src/levels/four.c \
+		src/levels/five.c \
+		src/levels/six.c \
+		src/levels/seven.c
 
 # Utils source
 SRC	+=	src/utils/remove_ending_seq.c \

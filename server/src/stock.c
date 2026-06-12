@@ -37,6 +37,18 @@ static void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITE
     vars[6] = (stock_name_var_t){"thystame", &stock->thystame};
 }
 
+bool stock_verify_amount(stock_t *stock, const char *element, unsigned int amount)
+{
+    stock_name_var_t stock_vars[STOCK_ITEMS_AMOUNT];
+
+    stock_associate_vars(stock, stock_vars);
+    for (size_t i = 0; i < STOCK_ITEMS_AMOUNT; i++) {
+        if (strcmp(stock_vars[i].str, element) == 0)
+            return (*stock_vars[i].element) == amount;
+    }
+    return false;
+}
+
 // Returns true if possible
 // Returns false if impossible
 bool stock_exchange(stock_t *stock, stock_t *other, const char *element)

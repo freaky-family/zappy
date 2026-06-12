@@ -17,6 +17,7 @@ client_data_t *client_data_init(int *fd)
     data->current_step = ENTER_TEAM_NAME;
     data->direction = RIGHT;
     stock_initialize_client(&data->stock);
+    data->level = 1;
     data->is_graphical = false;
     data->fd = fd;
     data->team = NULL;
@@ -77,6 +78,19 @@ void client_associate_team(clients_t *clients, int i, team_data_t *team)
         clients->elems[i] == NULL)
         return;
     clients->elems[i]->team = team;
+}
+
+size_t clients_get_amount_at_level(clients_t *clients, unsigned int level)
+{
+    size_t amount = 0;
+
+    if (clients == NULL)
+        return amount;
+    for (size_t i = 0; i < clients->amount; i++) {
+        if (clients->elems[i]->level == level)
+            amount++;
+    }
+    return amount;
 }
 
 void clients_free(clients_t *clients)

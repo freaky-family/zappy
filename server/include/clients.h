@@ -34,7 +34,8 @@ typedef struct {
     bool is_graphical;
     // Client direction
     client_direction_t direction;
-    // TODO: level
+    // Level
+    unsigned int level;
     // Stock of the client
     stock_t stock;
     // Pointer to the associated team
@@ -62,6 +63,7 @@ typedef struct {
 
 clients_t *clients_init(void);
 void client_associate_team(clients_t *clients, int i, team_data_t *team);
+size_t clients_get_amount_at_level(clients_t *clients, unsigned int level);
 void clients_append(clients_t *clients, int *fd);
 void clients_delete(clients_t *clients, int i);
 void clients_free(clients_t *clients);
