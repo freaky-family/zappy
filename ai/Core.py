@@ -5,7 +5,15 @@ import socket as skt
 import threading
 
 
+def createFreakster(family, pollObject, socket):
+    global FreakyId
+    newAi = Freakster(0, 0, socket)
+    family.update({newAi.socket.fileno(): newAi})
+    pollObject.register(newAi.socket, POLLIN)
+
+
 def slimeFreakster(ai, socketfd, pollObject, family):
+    print(ai.freakyId)
     del family[socketfd]
     pollObject.unregister(socketfd)
     ai.threadEvent.set()
@@ -13,11 +21,10 @@ def slimeFreakster(ai, socketfd, pollObject, family):
     ai.socket.close()
 
 
-def mainLoop(machine, port, name):
-    firstConnection = Freakster(0, 0, createSocket(machine, port, name))
-    family = {firstConnection.socket.fileno(): firstConnection}
+def mainLoop(addr, port, name):
     pollObject = poll()
-    pollObject.register(firstConnection.socket, POLLIN)
+    family = {}
+    createFreakster(family, pollObject, createSocket(addr, port, name))
 
     while True:
         pollEvent = pollObject.poll(0)
@@ -25,18 +32,16 @@ def mainLoop(machine, port, name):
         for socketfd, event in pollEvent:
             if (event & POLLIN):
                 ai = family[socketfd]
-                if ai.handshake == False and ai.welcome == False:
+                if not ai.handshake and not ai.welcome:
                     try:
                         ai.firstHandshake(name)
                     except SocketReceiveError:
                         slimeFreakster(ai, socketfd, pollObject, family)
-                elif ai.handshake == False and ai.welcome == True:
+                elif not ai.handshake and ai.welcome:
                     try:
                         res = ai.finalHandshake()
-                        if res == True:
-                            newAi = Freakster(0, 0, createSocket(machine, port, name))
-                            family.update({newAi.socket.fileno(): newAi})
-                            pollObject.register(newAi.socket, POLLIN)
+                        if res:
+                            createFreakster(family, pollObject, createSocket(addr, port, name))
                         ai.startThread()
                     except SocketReceiveError:
                         slimeFreakster(ai, socketfd, pollObject, family)
@@ -44,7 +49,6 @@ def mainLoop(machine, port, name):
                     try:
                         s = ai.receive()
                         ai.threadEvent.set()
-                        print(f"s = {s}")
                     except SocketReceiveError:
                         slimeFreakster(ai, socketfd, pollObject, family)
 

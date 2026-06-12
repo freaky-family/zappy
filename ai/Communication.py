@@ -1,6 +1,7 @@
 from os import fork
 import socket as skt
 
+
 class SocketReceiveError(Exception):
     def __init__(self, message):
         self.message = message

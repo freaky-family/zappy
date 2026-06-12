@@ -23,9 +23,12 @@ class Status(Enum):
 
 
 class Freakster:
+    FreakyId = 0
+
     def __init__(self, x, y, socket):
         # Player game info
-        self.pos_x = x
+        self.freakyId = Freakster.FreakyId
+        self.pos_x = x                         # TODO: Just wrong :/
         self.pos_y = y
         self.inv = {"food": 0, "linemate": 0, "deraumere": 0, "sibur": 0,
                     "mendiane": 0, "phiras": 0, "thystame": 0}
@@ -35,13 +38,15 @@ class Freakster:
         self.received = None
         self.thread = None
         self.threadEvent = threading.Event()
-        self.threadEvent.clear()
 
         # Socket related
         self.socket = socket
         self.welcome = False
         self.handshake = False
 
+        # Update values
+        Freakster.FreakyId += 1
+        self.threadEvent.clear()
 
     def startThread(self):
         t = threading.Thread(target=self.Loop)
@@ -54,16 +59,21 @@ class Freakster:
             self.handleBroadcast()
             self.waitThread()
         # faire la mm chose sur le eject et sur le dead?
-        if (self.received == ""):
+        # TODO better handling of dead ?
+        if (self.received == "" or self.received == "dead"):
             raise SocketReceiveError("Server has stopped, killing thread")
 
     def firstHandshake(self, name):
+        """First step of the Handshake, receive WELCOME and send team name"""
         s = self.receive()
         if s == "WELCOME":
             self.send(name)
             self.welcome = True
 
     def finalHandshake(self):
+        """Final step of the Handshake, receive nb_connection and dimmension of
+        the map
+        Return True if we can connect another AI, False otherwise"""
         s = self.receive()
         try:
             arr = [int(tmp) for tmp in s.split()]
@@ -100,7 +110,6 @@ class Freakster:
         if self.direction == Direction.LEFT:
             self.pos_x -= 1
 
-
     def handleBroadcast(self, message):
         pass
 
@@ -113,7 +122,7 @@ class Freakster:
                 self.mainloop()
         except SocketReceiveError:
             print("Thread terminate")
-            return #terminates thread
+            return                   # thread terminate here
 
     def MainLoopBum(self):
         while (True):
@@ -124,7 +133,7 @@ class Freakster:
             except SocketReceiveError:
                 break
 
-    #TODO: gérer la concurrence sur la variable self.received
+    # TODO: gérer la concurrence sur la variable self.received
     def Forward(self):
         self.send("Forward")
         self.waitThread()
@@ -211,5 +220,5 @@ class Freakster:
             pass
         self.threadEvent.clear()
 
-    def mainloop(self): #method meant to be overriden
+    def mainloop(self):  # method meant to be overriden
         self.Forward()
