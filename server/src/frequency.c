@@ -4,23 +4,26 @@
 #include <stdio.h>
 #include <time.h>
 
-static float time_since_start(clock_t start)
+// Returns the time elapsed in seconds
+static double time_since_start(struct timespec start)
 {
-    clock_t current_clock = clock();
-    return (double)(current_clock - start) / CLOCKS_PER_SEC;
+    struct timespec now;
+    timespec_get(&now, TIME_UTC);
+
+    return (double)(now.tv_sec - start.tv_sec) + (double)(now.tv_nsec - start.tv_nsec) / 1000000000.0;
 }
 
-static void verify_frequency(server_t *server, client_data_t *data)
+static void verify_frequency(server_t *server, size_t i)
 {   
-    double time_elapsed = time_since_start(data->command_start);
+    server->index = i;
+    double time_elapsed = time_since_start(CLIENT->command_start);
 
     // TODO remove, this is for future debug (no command are implemented so it cannot be tested)
-    printf("fd: %d, command current duration: %f (in seconds)\n", *data->fd, time_elapsed);
-    if (time_elapsed >= (double)data->command->time_limit / (double)server->freq) {
-        data->command->function(server);
-        data->is_command_running = false;
-        // TODO maybe change this
-        data->command = NULL;
+    printf("fd: %d, command current duration: %lf (in seconds)\n", *CLIENT->fd, time_elapsed);
+    if (time_elapsed >= (double)CLIENT->command->time_limit / (double)server->freq) {
+        CLIENT->command->function(server);
+        CLIENT->is_command_running = false;
+        CLIENT->command = NULL;
     }
 }
 
@@ -28,7 +31,7 @@ void frequency_handling(server_t *server)
 {
     for (size_t i = 0; i < server->clients->amount; i++) {
         if (server->clients->elems[i]->is_command_running == true) {
-            verify_frequency(server, server->clients->elems[i]);
+            verify_frequency(server, i);
         }
     }
 }
@@ -57,5 +60,4 @@ void calculate_timeout(server_t *server)
     if (has_timeout == false) {
         server->poll_timeout = DEFAULT_POLL_TIMEOUT;
     }
-
 }

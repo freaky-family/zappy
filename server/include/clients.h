@@ -46,7 +46,7 @@ typedef struct {
     // Is the command running?
     bool is_command_running;
     // Start of the command execution
-    clock_t command_start;
+    struct timespec command_start;
     // The command in exectution
     struct commands_s *command;
 } client_data_t;

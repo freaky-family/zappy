@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 // TODO: refactor this function to match zappy specs
@@ -18,7 +19,10 @@ static bool verify_command(server_t *server, int i)
         if (cmds[i].args_amount >= 0 &&
             cmds[i].args_amount + 1 != string_split_amount(server->buffer, CMDS_SPLIT))
             return false;
+        // For command frequency handling
         CLIENT->command = (struct commands_s *)&cmds[i];
+        CLIENT->is_command_running = true;
+        timespec_get(&CLIENT->command_start, TIME_UTC);
         return true;
     }
     return false;
