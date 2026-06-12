@@ -5,14 +5,21 @@ import socket as skt
 import threading
 
 
+def slimeFreakster(ai, socketfd, pollObject, family):
+    del family[socketfd]
+    pollObject.unregister(socketfd)
+    ai.threadEvent.set()
+    ai.thread.join()
+    ai.socket.close()
+
+
 def mainLoop(machine, port, name):
-    Exit = True
     firstConnection = Freakster(0, 0, createSocket(machine, port, name))
     family = {firstConnection.socket.fileno(): firstConnection}
     pollObject = poll()
     pollObject.register(firstConnection.socket, POLLIN)
 
-    while Exit:
+    while True:
         pollEvent = pollObject.poll(0)
 
         for socketfd, event in pollEvent:
@@ -22,7 +29,7 @@ def mainLoop(machine, port, name):
                     try:
                         ai.firstHandshake(name)
                     except SocketReceiveError:
-                        Exit = False
+                        slimeFreakster(ai, socketfd, pollObject, family)
                 elif ai.handshake == False and ai.welcome == True:
                     try:
                         res = ai.finalHandshake()
@@ -32,22 +39,16 @@ def mainLoop(machine, port, name):
                             pollObject.register(newAi.socket, POLLIN)
                         ai.startThread()
                     except SocketReceiveError:
-                        Exit = False
+                        slimeFreakster(ai, socketfd, pollObject, family)
                 else:
                     try:
                         s = ai.receive()
-                        ai.received = s
                         ai.threadEvent.set()
                         print(f"s = {s}")
                     except SocketReceiveError:
-                        Exit = False
+                        slimeFreakster(ai, socketfd, pollObject, family)
 
         if len(family) == 0:
             break
 
-    print("out")
-    for t in family.values():
-        print("family")
-        t.socket.close()
-        t.thread.join()
     print("End of the program.")

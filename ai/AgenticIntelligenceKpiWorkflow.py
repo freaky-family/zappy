@@ -24,23 +24,38 @@ class Status(Enum):
 
 class Freakster:
     def __init__(self, x, y, socket):
+        # Player game info
         self.pos_x = x
         self.pos_y = y
+        self.inv = {"food": 0, "linemate": 0, "deraumere": 0, "sibur": 0,
+                    "mendiane": 0, "phiras": 0, "thystame": 0}
+        self.direction = Direction.UP
+
+        # Thread related
         self.received = None
         self.thread = None
         self.threadEvent = threading.Event()
         self.threadEvent.clear()
-        self.direction = Direction.UP
-        self.inv = {"food": 0, "linemate": 0, "deraumere": 0, "sibur": 0,
-                    "mendiane": 0, "phiras": 0, "thystame": 0}
+
+        # Socket related
         self.socket = socket
         self.welcome = False
         self.handshake = False
 
+
     def startThread(self):
-        t = threading.Thread(target=self.MainLoopBum)
+        t = threading.Thread(target=self.Loop)
         self.thread = t
         self.thread.start()
+
+    def waitThread(self):
+        self.threadEvent.wait()
+        if (self.received == "brodcast"):
+            self.handleBroadcast()
+            self.waitThread()
+        # faire la mm chose sur le eject et sur le dead?
+        if (self.received == ""):
+            raise SocketReceiveError("Server has stopped, killing thread")
 
     def firstHandshake(self, name):
         s = self.receive()
@@ -66,15 +81,14 @@ class Freakster:
     def receive(self):
         s = self.socket.recv(4096)
         if s == b'':
+            self.received = ""
             raise SocketReceiveError("Server has stopped.")
-        return s.decode("ascii").strip("\n")
+        s = s.decode("ascii").strip("\n")
+        self.received = s
+        return s
 
     def send(self, s):
         self.socket.send(str.encode(s + "\n"))
-
-    def doThing(self):
-        self.Forward()
-        # self.socket.send(str.encode("Forward" + "\n"))
 
     def moveForward(self):
         if self.direction == Direction.UP:
@@ -93,32 +107,13 @@ class Freakster:
     def handleEject(self, message):
         pass
 
-    def checkReceive(self, receive):
-        if (receive.split()[0] == "message"):
-            self.handleBroadcast(receive)
-            return False
-        if (receive.split()[0] == "eject"):
-            self.handleEject(receive)
-            return False
-        return True
-
-    def waitThread(self):
-        self.threadEvent.wait()
-        if (self.received == "brodcast"):
-            self.handleBroadcast()
-            self.waitThread()
-        # faire la mm chose sur le eject et sur le dead?
-        if (self.received == ""):
-            raise SocketReceiveError
-        self.waitThread.clear()
-
-    #TODO: gérer la concurrence sur la variable self.received
-    def Forward(self):
-        self.send("Forward")
-        self.threadEvent.wait()
-        if (self.received == "ok"):
-            self.moveForward()
-        self.threadEvent.clear()
+    def Loop(self):
+        try:
+            while (True):
+                self.mainloop()
+        except SocketReceiveError:
+            print("Thread terminate")
+            return #terminates thread
 
     def MainLoopBum(self):
         while (True):
@@ -129,64 +124,92 @@ class Freakster:
             except SocketReceiveError:
                 break
 
+    #TODO: gérer la concurrence sur la variable self.received
+    def Forward(self):
+        self.send("Forward")
+        self.waitThread()
+        if (self.received == "ok"):
+            self.moveForward()
+        self.threadEvent.clear()
+
     def Right(self):
         self.send("Right")
-        self.threadEvent.wait()
+        self.waitThread()
         if self.received == "ok":
             self.direction = Direction((self.direction.value + 1) % 4)
         self.threadEvent.clear()
 
     def Left(self):
         self.send("Left")
-        self.threadEvent.wait()
+        self.waitThread()
         if self.received == "ok":
             self.direction = Direction((self.direction.value - 1) % 4)
         self.threadEvent.clear()
 
     def Look(self):
         self.send("Look")
-        # Wait Thread
+        self.waitThread()
+        if self.received == "ok":
+            pass
+        self.threadEvent.clear()
 
     def Inventory(self):
         self.send("Inventory")
-        # Wait Thread
+        self.waitThread()
+        if self.received == "ok":
+            pass
+        self.threadEvent.clear()
 
     def Broadcast(self, text):
         self.send(f"Broadcast {text}")
-        # Wait Thread
+        self.waitThread()
+        if self.received == "ok":
+            pass
+        self.threadEvent.clear()
 
     def ConnectNbr(self):
         self.send("Connect_nbr")
-        # Wait Thread
+        self.waitThread()
+        if self.received == "ok":
+            pass
+        self.threadEvent.clear()
 
     def Fork(self):
         self.send("Fork")
-        # Wait Thread
+        self.waitThread()
+        if self.received == "ok":
+            pass
+        self.threadEvent.clear()
 
     def Eject(self):
         self.send("Eject")
-        # Wait Thread
+        self.waitThread()
+        if self.received == "ok":
+            pass
+        self.threadEvent.clear()
 
     def Take(self, obj):
         self.send(f"Take {obj}")
-        # Wait Thread
+        self.waitThread()
+        if self.received == "ok":
+            pass
+        self.threadEvent.clear()
 
     def Set(self, obj):
         if self.inv[obj] < 1:
             return
         self.send(f"Set {obj}")
-        # Wait Thread
+        self.waitThread()
+        if self.received == "ok":
+            pass
+        self.threadEvent.clear()
 
     def Incantation(self):
         self.send("Incantation")
-        # Wait Thread
+        self.waitThread()
+        if self.received == "ok":
+            pass
+        self.threadEvent.clear()
 
     def mainloop(self): #method meant to be overriden
         self.Forward()
-
-    def Loop(self):
-        try:
-            while (True):
-                self.mainloop()
-        except SocketReceiveError:
-            return 0 # terminates thread
