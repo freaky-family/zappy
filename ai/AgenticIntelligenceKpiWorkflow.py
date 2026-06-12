@@ -102,6 +102,15 @@ class Freakster:
             return False
         return True
 
+    def waitThread(self):
+        self.threadEvent.wait()
+        if (self.received == "brodcast"):
+            self.handleBroadcast()
+            self.waitThread()
+        # faire la mm chose sur le eject et sur le dead?
+        if (self.received == ""):
+            raise SocketReceiveError
+        self.waitThread.clear()
 
     #TODO: gérer la concurrence sur la variable self.received
     def Forward(self):
@@ -176,5 +185,8 @@ class Freakster:
         self.Forward()
 
     def Loop(self):
-        while (True):
-            self.mainloop()
+        try:
+            while (True):
+                self.mainloop()
+        except SocketReceiveError:
+            return 0 # terminates thread
