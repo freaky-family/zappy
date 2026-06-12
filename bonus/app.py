@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, Response
 from tcp_receiver import start_tcp_server
+from log_buffer import buffer
 
 app = Flask(__name__)
 
@@ -9,8 +10,7 @@ def index() -> str:
 
 @app.route('/state')
 def state() -> Response:
-    from log_buffer import buffer
-    return jsonify(buffer.snapshot())
+    return jsonify(buffer.get_state())
 
 if __name__ == '__main__':
     start_tcp_server()
