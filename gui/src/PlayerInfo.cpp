@@ -4,13 +4,10 @@
 #include <string>
 
 zappy::PlayerInfo::PlayerInfo(int playerNb, tileCoordinates coord,
-    int orientation, int level, std::string teamName) : _playerNb(playerNb),
+    int orientation, int level, std::string teamName, bool isEgg) : _playerNb(playerNb),
     _pos(coord), _orientation(orientation), _level(level), _teamName(teamName),
-    _inventory(), _isEgg(false)
+    _inventory(), _isEgg(isEgg)
 {
-    std::vector<std::string> objets = {"food", "Linemate", "Deraumere",
-        "Sibur", "Mendiane", "Phiras", "Thystame"};
-
 }
 
 zappy::PlayerInfo::~PlayerInfo()

@@ -8,7 +8,7 @@ namespace zappy {
     class PlayerInfo {
         public:
             PlayerInfo() = delete;
-            PlayerInfo(int playerNb, tileCoordinates, int orientation, int level, std::string);
+            PlayerInfo(int playerNb, tileCoordinates, int orientation, int level, std::string, bool);
             ~PlayerInfo();
 
             tileCoordinates getCoords();
