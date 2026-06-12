@@ -27,6 +27,7 @@ class Freakster:
         self.pos_x = x
         self.pos_y = y
         self.received = None
+        self.thread = None
         self.threadEvent = threading.Event()
         self.threadEvent.clear()
         self.direction = Direction.UP
@@ -35,6 +36,11 @@ class Freakster:
         self.socket = socket
         self.welcome = False
         self.handshake = False
+
+    def startThread(self):
+        t = threading.Thread(target=self.MainLoopBum)
+        self.thread = t
+        self.thread.start()
 
     def firstHandshake(self, name):
         s = self.receive()
@@ -107,9 +113,12 @@ class Freakster:
 
     def MainLoopBum(self):
         while (True):
-            self.Forward()
-            self.Forward()
-            self.Right()
+            try:
+                self.Forward()
+                self.Forward()
+                self.Right()
+            except SocketReceiveError:
+                break
 
     def Right(self):
         self.send("Right")
