@@ -38,7 +38,9 @@ namespace zappy {
             void drawTiles() override;
             void drawParticles(tileCoordinates) override;
             void displayTileInfo(tileCoordinates) override;
-            void drawText(std::string str, int X, int Y) override;
+            void displayBroadcast() override;
+            // Maybe get this to interface by creating a zappy::Color object that could interpret more than a raylib color
+            void drawText(std::string str, int X, int Y, raylib::Color color);
             // TODO maybe add in interface
             void updateCamera();
     };
