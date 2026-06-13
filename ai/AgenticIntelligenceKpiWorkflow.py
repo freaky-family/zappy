@@ -25,12 +25,12 @@ class Status(Enum):
 class Freakster:
     FreakyId = 0
 
-    def __init__(self, x, y, socket):
+    def __init__(self, x, y, socket, toAdd):
         # Player game info
         self.freakyId = Freakster.FreakyId
         self.pos_x = x                         # TODO: Just wrong :/
         self.pos_y = y
-        self.inv = {"food": 0, "linemate": 0, "deraumere": 0, "sibur": 0,
+        self.inv = {"food": 10, "linemate": 0, "deraumere": 0, "sibur": 0,
                     "mendiane": 0, "phiras": 0, "thystame": 0}
         self.direction = Direction.UP
 
@@ -38,6 +38,7 @@ class Freakster:
         self.received = None
         self.thread = None
         self.threadEvent = threading.Event()
+        self.toAdd = toAdd
 
         # Socket related
         self.socket = socket
@@ -174,11 +175,11 @@ class Freakster:
             pass
         self.threadEvent.clear()
 
-    def Fork(self):
+    def Fork(self, role: Role):
         self.send("Fork")
         self.waitThread()
         if self.received == "ok":
-            # Renvoyer au Main Thread le fork pour connecter le nouveau client
+            self.toAdd.put(role)
             pass
         self.threadEvent.clear()
 
@@ -193,6 +194,7 @@ class Freakster:
         self.send(f"Take {obj}")
         self.waitThread()
         if self.received == "ok":
+            self.inv[obj] += 1
             pass
         self.threadEvent.clear()
 
@@ -202,6 +204,7 @@ class Freakster:
         self.send(f"Set {obj}")
         self.waitThread()
         if self.received == "ok":
+            self.inv[obj] -= 1
             pass
         self.threadEvent.clear()
 
@@ -214,4 +217,5 @@ class Freakster:
 
     def mainloop(self):  # method meant to be overriden
         self.Forward()
-        self.Fork()
+        self.Forward()
+        self.Right()
