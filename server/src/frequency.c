@@ -64,3 +64,29 @@ void calculate_timeout(server_t *server)
         server->poll_timeout = DEFAULT_POLL_TIMEOUT;
     }
 }
+
+// TODO
+
+/* ¡¡Restocking!!
+The server spawns resources upon starting and every 20 time units.
+It follows this set of rules:
+    - on Trantor you must find at least one of each ressource and food on the floor.
+    - resources should be evenly spread across the map.
+    - the ressource quantity can be found with the following formula: map_width * map_height * density
+Resource density:
+    food        0.5
+    linemate    0.3
+    deraumere   0.15
+    sibur       0.1
+    mendiane    0.1
+    phiras      0.08
+    thystame    0.05
+for instance on a 10 by 10 world there is 50 food and 5 thystame.
+*/
+
+/* ¡¡Player life span!!
+1 food = 126 time units
+need to handle the food consuming
+add a field in the client data for thenumber of food available to eat
+consume it in this file
+*/
