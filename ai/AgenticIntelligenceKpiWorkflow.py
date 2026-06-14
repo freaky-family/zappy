@@ -56,6 +56,7 @@ class Freakster:
 
     def waitThread(self):
         self.threadEvent.wait()
+        self.threadEvent.clear()
         if (self.received == "brodcast"):
             self.handleBroadcast()
             self.waitThread()
@@ -85,9 +86,7 @@ class Freakster:
         self.pos_x = arr[1]
         self.pos_y = arr[2]
         self.handshake = True
-        if arr[0] > 0:
-            return True
-        return False
+        return arr[0]
 
     def receive(self):
         s = self.socket.recv(4096)
@@ -131,49 +130,42 @@ class Freakster:
         self.waitThread()
         if (self.received == "ok"):
             self.moveForward()
-        self.threadEvent.clear()
 
     def Right(self):
         self.send("Right")
         self.waitThread()
         if self.received == "ok":
             self.direction = Direction((self.direction.value + 1) % 4)
-        self.threadEvent.clear()
 
     def Left(self):
         self.send("Left")
         self.waitThread()
         if self.received == "ok":
             self.direction = Direction((self.direction.value - 1) % 4)
-        self.threadEvent.clear()
 
     def Look(self):
         self.send("Look")
         self.waitThread()
         if self.received == "ok":
             pass
-        self.threadEvent.clear()
 
     def Inventory(self):
         self.send("Inventory")
         self.waitThread()
         if self.received == "ok":
             pass
-        self.threadEvent.clear()
 
     def Broadcast(self, text):
         self.send(f"Broadcast {text}")
         self.waitThread()
         if self.received == "ok":
             pass
-        self.threadEvent.clear()
 
     def ConnectNbr(self):
         self.send("Connect_nbr")
         self.waitThread()
         if self.received == "ok":
             pass
-        self.threadEvent.clear()
 
     def Fork(self, role: Role):
         self.send("Fork")
@@ -181,22 +173,20 @@ class Freakster:
         if self.received == "ok":
             self.toAdd.put(role)
             pass
-        self.threadEvent.clear()
 
     def Eject(self):
         self.send("Eject")
         self.waitThread()
         if self.received == "ok":
             pass
-        self.threadEvent.clear()
 
     def Take(self, obj):
         self.send(f"Take {obj}")
         self.waitThread()
         if self.received == "ok":
             self.inv[obj] += 1
-            pass
-        self.threadEvent.clear()
+            return True
+        return False
 
     def Set(self, obj):
         if self.inv[obj] < 1:
@@ -213,7 +203,6 @@ class Freakster:
         self.waitThread()
         if self.received == "ok":
             pass
-        self.threadEvent.clear()
 
     def mainloop(self):  # method meant to be overriden
         self.Forward()

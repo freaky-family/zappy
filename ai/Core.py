@@ -38,7 +38,19 @@ def mainLoop(addr, port, name):
     pollObject = poll()
     family = {}
     toAdd = Queue()
-    createFreakster(family, pollObject, createSocket(addr, port, name), toAdd, Role.FOOD_FACTORY)
+    socket = createSocket(addr, port, name)
+    createFreakster(family, pollObject, socket, toAdd, Role.FOOD_FACTORY)
+    ai = family[socket.fileno()]
+    while (not ai.welcome):
+        pollEvent = pollObject.poll(0)
+        if (len(pollEvent) > 0 and pollEvent[0][1] & POLLIN):
+            ai = family[pollEvent[0][0]]
+            ai.firstHandshake(name)
+            nbLeft = ai.finalHandshake()
+            #TODO: error handling if nbLeft == None
+            for i in range(nbLeft):
+                createFreakster(family, pollObject, createSocket(addr, port, name), toAdd, Role.FOOD_FACTORY)
+    ai.startThread()
     while True:
         if (toAdd.qsize() > 0):
             role = toAdd.get()
@@ -54,9 +66,7 @@ def mainLoop(addr, port, name):
                         slimeFreakster(ai, socketfd, pollObject, family)
                 elif not ai.handshake and ai.welcome:
                     try:
-                        res = ai.finalHandshake()
-                        if res:
-                            createFreakster(family, pollObject, createSocket(addr, port, name), toAdd, Role.FOOD_FACTORY)
+                        ai.finalHandshake()
                         ai.startThread()
                     except SocketReceiveError:
                         slimeFreakster(ai, socketfd, pollObject, family)
