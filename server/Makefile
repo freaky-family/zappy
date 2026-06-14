@@ -33,6 +33,8 @@ SRC	+=	src/utils/remove_ending_seq.c \
 		src/utils/strcmp_end.c \
 		src/utils/string_vec/free.c \
 		src/utils/string_vec/init.c \
+		src/utils/string_vec/append.c \
+		src/utils/string_vec/str.c \
 		src/utils/string_vec/split.c
 
 # Commands source
