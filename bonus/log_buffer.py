@@ -28,6 +28,15 @@ class GameState:
                     "level": int(parts[5]),
                     "team": parts[6],
                 }
+            elif cmd == "ppo" and len(parts) == 5:
+                pid = parts[1].lstrip('#')
+                if pid in self.players:
+                    self.players[pid]["x"] = int(parts[2])
+                    self.players[pid]["y"] = int(parts[3])
+                    self.players[pid]["orientation"] = int(parts[4])
+            elif cmd == "pdi" and len(parts) == 2:
+                pid = parts[1].lstrip('#')
+                self.players.pop(pid, None)
 
     def get_state(self) -> dict[str,int|list[str]|dict[str, int | list[str]]]:
         with self._lock:
