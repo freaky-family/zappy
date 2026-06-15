@@ -153,7 +153,7 @@ class Freakster:
         self.send("Inventory")
         self.waitThread()
         inventory = self.received.replace(",", " ").replace("[", " ").replace("]", " ").split()
-        for i in range(len(inventory), 2):
+        for i in range(0, len(inventory), 2):
             self.inv[inventory[i]] = int(inventory[i + 1])
 
     def Broadcast(self, text):
