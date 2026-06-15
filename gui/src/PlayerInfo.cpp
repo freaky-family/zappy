@@ -8,28 +8,13 @@
 
 zappy::PlayerInfo::PlayerInfo(int playerNb, tileCoordinates coord,
     int orientation, int level, std::string teamName) : APlayer( playerNb, coord, teamName, PlayerType::PLAYER), _playerNb(playerNb),
-    _pos(coord), _orientation(orientation), _level(level), _teamName(teamName),
+    _orientation(orientation), _level(level), _teamName(teamName),
     _isIncantating(false), _inventory()
 {
 }
 
 zappy::PlayerInfo::~PlayerInfo()
 {}
-
-zappy::tileCoordinates zappy::PlayerInfo::getCoords()
-{
-    return _pos;
-}
-
-zappy::floatCoordinates zappy::PlayerInfo::getDisplayCoords()
-{
-    return _displayPos;
-}
-
-std::string zappy::PlayerInfo::getTeamName()
-{
-    return _teamName;
-}
 
 int zappy::PlayerInfo::getOrientation()
 {

@@ -13,11 +13,7 @@ namespace zappy {
             PlayerInfo(int playerNb, tileCoordinates, int orientation, int level, std::string);
             ~PlayerInfo();
 
-            std::string getTeamName() override;
-
-            void updatePos(tileCoordinates pos, int orientation) override;
-            tileCoordinates getCoords();
-            floatCoordinates getDisplayCoords();
+            void updatePos(tileCoordinates pos, int orientation) override final;
             int getOrientation();
 
             bool isIncantating();
@@ -29,9 +25,7 @@ namespace zappy {
 
         private:
             int _playerNb;
-            tileCoordinates _pos;
             std::vector<PositionHolder> _posVector;
-            floatCoordinates _displayPos;
             int _orientation;
             int _level;
             std::string _teamName;
