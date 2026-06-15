@@ -1,6 +1,7 @@
 #include "clients.h"
 #include "dynamic_arrays.h"
 #include "poller.h"
+#include "server.h"
 #include "stock.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +28,40 @@ client_data_t *client_data_init(int *fd)
     // data->command_start;
     data->command = NULL;
     return data;
+}
+
+void client_move_in_direction(client_data_t *data, world_t *world, client_direction_t direction)
+{
+    unsigned int new_x = data->tile->x;
+    unsigned int new_y = data->tile->y;
+
+    switch (direction) {
+        case RIGHT:
+            if (new_x + 1 >= world->width)
+                new_x = 0;
+            else
+                new_x++;
+            break;
+        case UP:
+            if (new_y != 0)
+                new_y--;
+            else
+                new_y = world->height - 1;
+            break;
+        case LEFT:
+            if (new_x != 0)
+                new_x--;
+            else
+                new_x = world->width - 1;
+            break;
+        case DOWN:
+            if (new_y + 1 >= world->height)
+                new_y = 0;
+            else
+                new_y++;
+            break;
+    }
+    data->tile = &world->tiles[ZW_POS(world->width, new_x, new_y)];
 }
 
 void client_data_free(client_data_t *data)
