@@ -61,6 +61,7 @@ void command_graphic_msz(server_t *server);
 void command_graphic_bct(server_t *server);
 void command_graphic_bct_coordinates(server_t *server, int client_index, int x, int y);
 void command_graphic_mct(server_t *server);
+void command_graphic_tna(server_t *server);
 
 static const commands_t cmds[] = {
     // Client
@@ -175,6 +176,14 @@ static const commands_t cmds[] = {
         .command = "mct",
         .check = NULL,
         .function = &command_graphic_mct,
+        .args_amount = 0,
+        .graphical_only = true,
+        .time_limit = -1,
+    },
+    {
+        .command = "tna",
+        .check = NULL,
+        .function = &command_graphic_tna,
         .args_amount = 0,
         .graphical_only = true,
         .time_limit = -1,
