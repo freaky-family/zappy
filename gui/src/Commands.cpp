@@ -200,7 +200,9 @@ void zappy::Zappy::pie(std::vector<std::string> params)
 }
 
 void zappy::Zappy::pfk( std::vector<std::string> )
-{}
+{
+    //random à verifié plus tard
+}
 
 void zappy::Zappy::pdr(std::vector<std::string>)
 {
@@ -257,8 +259,19 @@ void zappy::Zappy::ebo(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::edi( std::vector<std::string> )
-{}
+void zappy::Zappy::edi(std::vector<std::string> params)
+{
+    int eggNb = 0;
+
+    try {
+        std::string str(params.at(1));
+        str.erase(str.begin());
+        eggNb = std::stoi(str);
+
+        _geh.removeEgg(eggNb);
+    } catch (std::exception &) {
+    }
+}
 
 void zappy::Zappy::sgt(std::vector<std::string> params)
 {
