@@ -67,6 +67,22 @@ void client_move_in_direction(client_data_t *data, world_t *world, client_direct
     data->tile = &world->tiles[ZW_POS(world->width, new_x, new_y)];
 }
 
+// Used by graphical functions
+int client_get_direction_number(client_data_t *data)
+{
+    switch (data->direction) {
+        case UP:
+            return 1;
+        case RIGHT:
+            return 2;
+        case DOWN:
+            return 3;
+        case LEFT:
+            return 4;
+    }
+    return -1;
+}
+
 void client_data_free(client_data_t *data)
 {
     if (data == NULL)

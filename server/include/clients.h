@@ -64,6 +64,7 @@ typedef struct {
 
 client_data_t *client_data_init(int *fd);
 void client_move_in_direction(client_data_t *data, world_t *world, client_direction_t direction);
+int client_get_direction_number(client_data_t *data);
 void client_data_free(client_data_t *data);
 
 typedef struct {
