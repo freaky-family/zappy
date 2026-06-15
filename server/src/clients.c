@@ -27,6 +27,10 @@ client_data_t *client_data_init(int *fd)
     // No need to init that
     // data->command_start;
     data->command = NULL;
+    // Food init
+    data->food = 10;
+    data->food_freq_offset = 0;
+    timespec_get(&data->food_clock, TIME_UTC);
     return data;
 }
 
@@ -75,7 +79,7 @@ void client_data_free(client_data_t *data)
 clients_t *clients_init(void)
 {
     clients_t *clients = malloc(sizeof(clients_t));
-
+    
     if (clients == NULL) {
         perror("malloc");
         exit(84);
@@ -84,6 +88,8 @@ clients_t *clients_init(void)
     clients->amount = INITIAL_SOCKET_AMOUNT;
     for (size_t i = 0; i < clients->amount; i++) {
         clients->elems[i] = client_data_init(NULL);
+        // -1 food is for fake client
+        clients->elems[i]->food = -1;
     }
     return clients;
 }

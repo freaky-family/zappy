@@ -3,6 +3,8 @@
 
     #include "server.h"
 
+    #define FOOD_CONSUMING_FREQ 126
+
 void frequency_handling(server_t *server);
 void calculate_timeout(server_t *server);
 
