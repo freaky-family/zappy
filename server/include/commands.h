@@ -65,6 +65,8 @@ void command_graphic_tna(server_t *server);
 void command_graphic_ppo(server_t *server);
 void command_graphic_plv(server_t *server);
 void command_graphic_pin(server_t *server);
+void command_graphic_sgt(server_t *server);
+void command_graphic_sst(server_t *server);
 
 static const commands_t cmds[] = {
     // Client
@@ -211,6 +213,22 @@ static const commands_t cmds[] = {
         .command = "pin",
         .check = NULL,
         .function = &command_graphic_pin,
+        .args_amount = 1,
+        .graphical_only = true,
+        .time_limit = -1,
+    },
+    {
+        .command = "sgt",
+        .check = NULL,
+        .function = &command_graphic_sgt,
+        .args_amount = 0,
+        .graphical_only = true,
+        .time_limit = -1,
+    },
+    {
+        .command = "sst",
+        .check = NULL,
+        .function = &command_graphic_sst,
         .args_amount = 1,
         .graphical_only = true,
         .time_limit = -1,
