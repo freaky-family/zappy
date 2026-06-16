@@ -13,8 +13,14 @@
     {% endfor %}
     </ul>
   {% else %}
-    <p>Rien a voir circulez</p>
+    <p>Aucun joueur sur cette case.</p>
   {% endif %}
-  <p><a href="/">Retour a la map frr</a></p>
+  {% if resources %}
+    <p>Ressources : food {{ resources[0] }}, linemate {{ resources[1] }}, deraumere {{ resources[2] }},
+       sibur {{ resources[3] }}, mendiane {{ resources[4] }}, phiras {{ resources[5] }}, thystame {{ resources[6] }}</p>
+  {% else %}
+    <p>Aucune ressource connue sur cette case.</p>
+  {% endif %}
+  <p><a href="/">Retour à la carte</a></p>
 </body>
 </html>
