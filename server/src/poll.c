@@ -50,9 +50,11 @@ static bool client_login_graphic(server_t *server)
     CLIENT->current_step = LOGGED_IN;
     // TODO: send all useful informations
     command_graphic_msz(server);
+    command_graphic_sgt_index(server, server->index);
     for (size_t i = 0; i < server->players->amount; i++)
         command_graphic_pnw_index(server, server->index, i);
     command_graphic_mct_index(server, server->index);
+    command_graphic_tna_index(server, server->index);
     return true;
 }
 
