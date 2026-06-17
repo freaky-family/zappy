@@ -4,6 +4,7 @@
 #include "server.h"
 #include "teams.h"
 #include "utils.h"
+#include "world.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,6 +45,22 @@ void client_quit(server_t *server)
     }
 }
 
+static void login_list_all_eggs(server_t *server, int graphic_i)
+{
+    eggs_t *eggs = NULL;
+
+    for (unsigned int y = 0; y < server->world->height; y++) {
+        for (unsigned int x = 0; x < server->world->width; x++) {
+            eggs = server->world->tiles[ZW_POS(server->world->width, x, y)].eggs;
+            if (eggs == NULL)
+                continue;
+            for (size_t i = 0; i < eggs->amount; i++) {
+                command_graphic_enw_index(server, graphic_i, -1, eggs->elems[i], x, y);
+            }
+        }
+    }
+}
+
 static bool client_login_graphic(server_t *server)
 {
     CLIENT->is_graphical = true;
@@ -55,6 +72,7 @@ static bool client_login_graphic(server_t *server)
         command_graphic_pnw_index(server, server->index, i);
     command_graphic_mct_index(server, server->index);
     command_graphic_tna_index(server, server->index);
+    login_list_all_eggs(server, server->index);
     return true;
 }
 
