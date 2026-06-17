@@ -2,6 +2,7 @@
 #include "GameplatEntitiesHolder.hpp"
 #include "IEntity.hpp"
 #include "Map.hpp"
+#include "RaylibModelHolder.hpp"
 #include "RaylibParticles.hpp"
 #include "Tile.hpp"
 #include "entities/Materials.hpp"
@@ -22,8 +23,9 @@
 #include "Utils.hpp"
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder &GEH): _map(map), _GEH(GEH),
-    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap()
+    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap(), _playerAnimationsMap()
 {
+    srand(time(NULL));
     initWindow();
     initCamera();
     _modelHolder.initModels();
@@ -161,7 +163,7 @@ void zappy::RaylibGraphical::updateCamera()
 
         for (auto &player: _GEH.getPlayers()) {
             const floatCoordinates pos = player.second.getDisplayCoords();
-            player.second.setSelected(getModelCollision(_modelHolder.getFoodModel(), pos, ray, mapDimensions, 0.1, Vector3(2.5, 2.5, 2.5)));
+            player.second.setSelected(getModelCollision(_modelHolder.getPlayerModel(), pos, ray, mapDimensions, 0.1, Vector3(0.1, 0.1, 0.1)));
         }
         for (auto &egg: _GEH.getEggs()) {
             const floatCoordinates pos = egg.second.getDisplayCoords();
@@ -282,9 +284,9 @@ void zappy::RaylibGraphical::drawPlayers()
         float rotationAngle = static_cast<float>(zappy::Utils::getOrientation(player.second.getOrientation()));
 
         Vector3 playerPosition(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5);
-        Vector3 playerScale(2.5, 2.5, 2.5);
+        Vector3 playerScale(0.1, 0.1, 0.1);
 
-        _modelHolder.getFoodModel().Draw(playerPosition, rotationAxis, rotationAngle, playerScale);
+        _modelHolder.getPlayerModel().Draw(playerPosition, rotationAxis, rotationAngle, playerScale);
 
         if (player.second.isIncantating()) {
             try {
@@ -296,16 +298,38 @@ void zappy::RaylibGraphical::drawPlayers()
         }
         if (player.second.getSelected()) {
             // Highlight the player skeleton
-            _modelHolder.getFoodModel().DrawWires(playerPosition, playerScale.x + 0.5, raylib::Color::RayWhite());
+            _modelHolder.getPlayerModel().DrawWires(playerPosition, playerScale.x, raylib::Color::RayWhite());
 
             highlightPlayerFOV(player.second);
         }
+        updatePlayerAnimations(player.second);
     }
     for (auto &egg: _GEH.getEggs()) {
         const floatCoordinates eggCoords = egg.second.getDisplayCoords();
         _modelHolder.getEggModel().Draw(Vector3(eggCoords.first - mapDimensions.first / 2.0f + 0.5, 0.15, eggCoords.second - mapDimensions.second / 2.0f + 0.8), 0.1f);
     }
     return;
+}
+
+void zappy::RaylibGraphical::updatePlayerAnimations(PlayerInfo &info)
+{
+    const int playerID = info.getId();
+
+    try {
+        _playerAnimationsMap.at(playerID);
+    } catch (std::out_of_range) {
+        _playerAnimationsMap.insert({playerID, std::pair(ROBOT_IDLE, 0)});
+    }
+    std::pair<int, int> &animIndexAndFrame = _playerAnimationsMap.at(playerID);
+    if (info.isMoving()) {
+        animIndexAndFrame.first = ROBOT_RUN;
+    } else if (info.isIncantating()) {
+        animIndexAndFrame.first = ROBOT_INCANTATION;
+    } else {
+        animIndexAndFrame.first = ROBOT_IDLE;
+    }
+    _modelHolder.getPlayerModel().UpdateAnimation(_modelHolder.getPlayerAnimations()[animIndexAndFrame.first], animIndexAndFrame.second);
+    animIndexAndFrame.second++;
 }
 
 void zappy::RaylibGraphical::drawPlayerInfo(PlayerInfo &info)

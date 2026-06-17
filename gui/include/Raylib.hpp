@@ -15,7 +15,7 @@
 #include <Texture.hpp>
 #include <Text.hpp>
 #include <Shader.hpp>
-#include "ModelHolder.hpp"
+#include "RaylibModelHolder.hpp"
 #include "RaylibParticles.hpp"
 
 namespace zappy {
@@ -34,12 +34,13 @@ namespace zappy {
             GameplayEntitiesHolder &_GEH;
             raylib::Window _window;
             raylib::Camera _camera;
-            ModelHolder _modelHolder;
+            RaylibModelHolder _modelHolder;
             Vector3 _cameraTargetTarget;
             float _tickUntilCameraTarget;
             std::map<tileCoordinates, RaylibParticles> _particles;
             std::vector<std::string> _broadcastToDisplay;
             std::map<std::string, raylib::Color> _colorMap;
+            std::map<int, std::pair<int, int>> _playerAnimationsMap;
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map, GameplayEntitiesHolder& GEH);
@@ -54,6 +55,7 @@ namespace zappy {
             void displayBroadcast() override;
             void drawPlayers() override;
             void drawGEHInfos() override;
+            void updatePlayerAnimations(PlayerInfo &);
             void drawPlayerInfo(PlayerInfo &);
             void drawEggInfo(Egg &);
             void highlightPlayerFOV(PlayerInfo &);
