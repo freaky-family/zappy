@@ -63,10 +63,10 @@ void zappy::RaylibParticles::update()
         std::optional<ParticlesData> &data = _dataArray.at(i);
         if (data.has_value()) {
             data.value()._lifetime += 1.0f/70.0f;
-            data.value()._position.x += data.value()._velocity.x / 3.0f;
+            data.value()._position.x += data.value()._velocity.x / 5.0f;
             data.value()._position.y += data.value()._velocity.y;
-            data.value()._position.z += data.value()._velocity.z / 3.0f;
-            data.value()._radius += 0.01f;
+            data.value()._position.z += data.value()._velocity.z / 5.0f;
+            data.value()._radius += 0.005f;
             data.value()._color.a -= 3;
 
             if (data.value()._lifetime > 1.0f) {
