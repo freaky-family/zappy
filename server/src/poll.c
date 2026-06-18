@@ -104,7 +104,7 @@ static bool client_login_normal(server_t *server)
     }
     int egg_id = eggs_consume_one(CLIENT->tile->eggs);
     for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)
-        if (server->clients->elems[i]->is_graphical == true)
+        if (CLIENT_I(i)->is_graphical == true)
             command_graphic_ebo_index(server, i, egg_id);
     players_append(server->players, CLIENT);
     CLIENT->player_nb = server->players->amount - 1;
