@@ -49,5 +49,26 @@ namespace zappy {
                 }
                 return coords;
             };
+
+            static bool floatCoordsCompare(floatCoordinates pos, floatCoordinates reach, floatCoordinates iterationValues) {
+                if (iterationValues.first < 0) {
+                    if (pos.first + iterationValues.first <= reach.first)
+                        return true;
+                }
+                if (iterationValues.second < 0) {
+                    if (pos.second + iterationValues.second <= reach.second) {
+                        return true;
+                    }
+                }
+                if (iterationValues.first > 0) {
+                    if (pos.first + iterationValues.first >= reach.first)
+                        return true;
+                }
+                if (iterationValues.second > 0) {
+                    if (pos.second + iterationValues.second >= reach.second)
+                        return true;
+                }
+                return false;
+            };
     };
 }

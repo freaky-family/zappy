@@ -208,17 +208,19 @@ void zappy::RaylibGraphical::updateCamera()
     }
 }
 
-void zappy::RaylibGraphical::drawParticles(zappy::tileCoordinates coords)
+void zappy::RaylibGraphical::drawParticles(PlayerInfo &info)
 {
-    RaylibParticles &particles = _particles.at(coords);
+    RaylibParticles &particles = _particles.at(info.getDisplayCoords());
     particles.update();
     std::array<std::optional<ParticlesData>, MAX_PARTICLES> dataArray = particles.getDataArray();
     int head = particles.getHead();
+    raylib::Color color = getTeamColor(info);
 
     for (int i = particles.getTail(); i != head; i = (i + 1) % MAX_PARTICLES) {
         if (dataArray.at(i).has_value()) {
             ParticlesData data = dataArray.at(i).value();
-            DrawSphere(data._position, data._radius, data._color);
+            color.SetA(data._color.GetA());
+            DrawSphere(data._position, data._radius, color);
         }
     }
 }
@@ -294,7 +296,7 @@ void zappy::RaylibGraphical::drawPlayers()
             } catch (std::out_of_range) {
                 _particles.insert({playerCoords, RaylibParticles(playerCoords, mapDimensions)});
             }
-            drawParticles(playerCoords);
+            drawParticles(player.second);
         }
         if (player.second.getSelected()) {
             // Highlight the player skeleton

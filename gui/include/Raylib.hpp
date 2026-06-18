@@ -50,7 +50,7 @@ namespace zappy {
             void initCamera() override;
             bool run() override;
             void drawTiles() override;
-            void drawParticles(tileCoordinates) override;
+            void drawParticles(PlayerInfo &) override;
             void displayTileInfo(tileCoordinates) override;
             void displayBroadcast() override;
             void drawPlayers() override;
