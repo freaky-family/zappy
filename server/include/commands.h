@@ -88,6 +88,7 @@ void command_graphic_pdi_index(server_t *server, int graphic_i, int player_i);
 void command_graphic_pie_index(server_t *server, int graphic_i, int x, int y, bool result);
 void command_graphic_pic_index(server_t *server, int graphic_i, int x, int y, int level, int *player_array, size_t player_array_amount);
 void command_graphic_pin_index(server_t *server, int graphic_i, int player_i);
+void command_graphic_ppo_index(server_t *server, int graphic_i, int player_i);
 
 static const commands_t cmds[] = {
     // Client

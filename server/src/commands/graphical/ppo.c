@@ -6,11 +6,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void command_graphic_ppo_index(server_t *server, int graphic_i, int player_i)
+{
+    client_data_t *player = PLAYER_I(player_i);
+
+    dprintf(*CLIENT_I(graphic_i)->fd, "ppo #%d %d %d %d" ZMSG_END_SEQ,
+        player_i,
+        player->tile->x, player->tile->y,
+        client_get_direction_number(player)
+    );
+}
+
 void command_graphic_ppo(server_t *server)
 {
     string_vec_t *vec = string_split(server->buffer, CMDS_SPLIT);
     int player_nb = -1;
-    client_data_t *player;
 
     if (vec == NULL)
         return;
@@ -20,10 +30,5 @@ void command_graphic_ppo(server_t *server)
         WRITE_MESSAGE(*CLIENT->fd, ZMSG_SBP);
         return;
     }
-    player = PLAYER_I(player_nb);
-    dprintf(*CLIENT->fd, "ppo #%d %d %d %d" ZMSG_END_SEQ,
-        player_nb,
-        player->tile->x, player->tile->y,
-        client_get_direction_number(player)
-    );
+    command_graphic_ppo_index(server, server->index, player_nb);
 }
