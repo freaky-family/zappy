@@ -1,11 +1,71 @@
 body{font-family: monospace; padding: 16px;}
 table{border-collapse: collapse;}
 td{
-    width: 32px; height: 32px;
+    width: 60px; height: 30px;
     border: 1px solid #000000;
     text-align: center; vertical-align: middle;
     font-size: 11px;
-    grid-template-columns: 25px 25px 25px 25px;
 }
-td.player{background: #d0eaff;}
-td a{display: block; width: 100%; height: 100%; color: inherit; text-decoration: none;}
+td.player{background: #d0eaff; border:#ffffff}
+td.defaultp{background: #ffffff; border:#ffffff}
+td a{
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+}
+td.food{
+    background: #1e9c26;
+    border:#ffffff;
+    width: 20px;
+    height: 10px
+}
+td.linemate{
+    background: #565653;
+    border:#ffffff;
+    width: 20px;
+    height: 10px
+}
+td.deraumere{
+    background: #40ff00;
+    border: #ffffff;
+    width: 20px;
+    height: 10px
+}
+td.sibur{
+    background: #a32424;
+    border:#ffffff;
+    width: 20px;
+    height: 10px
+}
+td.phiras{
+    background: #2d4ab4;
+    border:#ffffff;
+    width: 20px;
+    height: 10px
+}
+td.thystame{
+    background: #8a1aac;
+    border:#ffffff;
+    width: 20px;
+    height: 10px
+}
+td.mendiane{
+    background: #fb06da;
+    border:#ffffff;
+    width: 20px;
+    height: 10px
+}
+td.default{
+    background: #ffffff;
+    border:#ffffff;
+    width: 20px;
+    height: 10px
+}
+td.playerl{
+    background: #d0eaff;
+    border:#d0eaff;
+    width: 20px;
+    height: 10px
+}

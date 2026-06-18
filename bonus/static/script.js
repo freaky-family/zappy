@@ -2,6 +2,7 @@ async function poll()
 {
     const data = await fetch('/state').then(r => r.json());
     const cells = {};
+    const resources = data.resources;
     let html = '';
 
     if (!data.width)
@@ -14,7 +15,25 @@ async function poll()
         html += '<tr>';
         for (let x = 0; x < data.width; x++) {
             const p = cells[`${x},${y}`];
-            html += `<td colspan="2" class="${p ? 'player' : ''}"><a href="/tile/${x}/${y}">${p || ''}</a></td>`;
+            const r = resources[`${x},${y}`];
+            html += `<td class="${p ? 'player' : ''}">
+                        <a href="/tile/${x}/${y}">${p || ''}</a>
+                        <table>
+                            <tr>
+                                <td class="${r && r[0] ? 'food' : p ? 'playerl' : 'default'}"></td>
+                            </tr>
+                            <tr>
+                                <td class="${r && r[1] ? 'linemate' : p ? 'playerl' : 'default'}"></td>
+                                <td class="${r && r[2] ? 'deraumere' : p ? 'playerl' : 'default'}"></td>
+                                <td class="${r && r[3] ? 'sibur' : p ? 'playerl' : 'default'}"></td>
+                            </tr>
+                            <tr>
+                                <td class="${r && r[4] ? 'mendiane' : p ? 'playerl' : 'default'}"></td>
+                                <td class="${r && r[5] ? 'phiras' : p ? 'playerl' : 'default'}"></td>
+                                <td class="${r && r[6] ? 'thystame' : p ? 'playerl' : 'default'}"></td>
+                            </tr>
+                        </table>
+                    </td>`;
         }
         html += '</tr>';
     }
