@@ -1,8 +1,10 @@
 #include "server.h"
 #include "args.h"
 #include "frequency.h"
+#include "players.h"
 #include "teams.h"
 #include "world.h"
+#include <string.h>
 #include <poll.h>
 #include <signal.h>
 #include <stdio.h>
@@ -40,8 +42,10 @@ static server_t *server_init(args_t *args)
     server->clients = clients_init();
     server->teams = teams_init(args->clients);
     server->world = world_init(args->x, args->y);
+    server->players = players_init();
     if (server->poller == NULL || server->clients == NULL
-        || server->teams == NULL || server->world == NULL) {
+        || server->teams == NULL || server->world == NULL
+        || server->players == NULL) {
         free(server);
         return NULL;
     }
@@ -49,6 +53,7 @@ static server_t *server_init(args_t *args)
     server->signal_fd = -1;
     server_append_teams(server, args);
     server_initialize_world(server, args->clients);
+    memset(server->buffer, 0, BUFFER_SIZE + 1);
     server->freq = args->freq;
     server->poll_timeout = DEFAULT_POLL_TIMEOUT;
     return server;
@@ -66,6 +71,8 @@ void server_free(server_t *server)
         teams_free(server->teams);
     if (server->world)
         world_free(server->world);
+    if (server->players)
+        players_free(server->players);
     free(server);
 }
 

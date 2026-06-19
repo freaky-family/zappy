@@ -4,6 +4,7 @@
     #include "server.h"
     #include <unistd.h>
 
+    #define CMDS_TEMP_ARRAY_SIZE 256
     #define CMDS_TEMP_BUFFER_SIZE 1024
     #define CMDS_TEMP_BIG_BUFFER_SIZE 8192
     #define CMDS_SPLIT " "
@@ -58,6 +59,36 @@ void command_eject(server_t *server);
 
 // Graphical prototypes
 void command_graphic_msz(server_t *server);
+void command_graphic_bct(server_t *server);
+void command_graphic_mct(server_t *server);
+void command_graphic_tna(server_t *server);
+void command_graphic_ppo(server_t *server);
+void command_graphic_plv(server_t *server);
+void command_graphic_pin(server_t *server);
+void command_graphic_sgt(server_t *server);
+void command_graphic_sst(server_t *server);
+
+// Graphical events, not actual commands
+void command_graphic_bct_coordinates(server_t *server, int graphic_i, int x, int y);
+void command_graphic_mct_index(server_t *server, int graphic_i);
+void command_graphic_pnw_index(server_t *server, size_t graphic_i, size_t player_i);
+void command_graphic_tna_index(server_t *server, int graphic_i);
+void command_graphic_sgt_index(server_t *server, int graphic_i);
+void command_graphic_smg_str(server_t *server, size_t graphic_i, const char *str);
+void command_graphic_enw_index(server_t *server, int graphic_i, int player_i, int egg_id, int x, int y);
+void command_graphic_ebo_index(server_t *server, int graphic_i, int egg_id);
+void command_graphic_pex_index(server_t *server, int graphic_i, int player_i);
+void command_graphic_pdr_index(server_t *server, int graphic_i, int player_i, const char *element);
+void command_graphic_pgt_index(server_t *server, int graphic_i, int player_i, const char *element);
+void command_graphic_pbc_index(server_t *server, int graphic_i, int player_i, const char *element);
+void command_graphic_pfk_index(server_t *server, int graphic_i, int player_i);
+void command_graphic_seg_index(server_t *server, int graphic_i, const char *team_name);
+void command_graphic_edi_index(server_t *server, int graphic_i, int egg_id);
+void command_graphic_pdi_index(server_t *server, int graphic_i, int player_i);
+void command_graphic_pie_index(server_t *server, int graphic_i, int x, int y, bool result);
+void command_graphic_pic_index(server_t *server, int graphic_i, int x, int y, int level, int *player_array, size_t player_array_amount);
+void command_graphic_pin_index(server_t *server, int graphic_i, int player_i);
+void command_graphic_ppo_index(server_t *server, int graphic_i, int player_i);
 
 static const commands_t cmds[] = {
     // Client
@@ -157,6 +188,70 @@ static const commands_t cmds[] = {
         .check = NULL,
         .function = &command_graphic_msz,
         .args_amount = 0,
+        .graphical_only = true,
+        .time_limit = -1,
+    },
+    {
+        .command = "bct",
+        .check = NULL,
+        .function = &command_graphic_bct,
+        .args_amount = 2,
+        .graphical_only = true,
+        .time_limit = -1,
+    },
+    {
+        .command = "mct",
+        .check = NULL,
+        .function = &command_graphic_mct,
+        .args_amount = 0,
+        .graphical_only = true,
+        .time_limit = -1,
+    },
+    {
+        .command = "tna",
+        .check = NULL,
+        .function = &command_graphic_tna,
+        .args_amount = 0,
+        .graphical_only = true,
+        .time_limit = -1,
+    },
+    {
+        .command = "ppo",
+        .check = NULL,
+        .function = &command_graphic_ppo,
+        .args_amount = 1,
+        .graphical_only = true,
+        .time_limit = -1,
+    },
+    {
+        .command = "plv",
+        .check = NULL,
+        .function = &command_graphic_plv,
+        .args_amount = 1,
+        .graphical_only = true,
+        .time_limit = -1,
+    },
+    {
+        .command = "pin",
+        .check = NULL,
+        .function = &command_graphic_pin,
+        .args_amount = 1,
+        .graphical_only = true,
+        .time_limit = -1,
+    },
+    {
+        .command = "sgt",
+        .check = NULL,
+        .function = &command_graphic_sgt,
+        .args_amount = 0,
+        .graphical_only = true,
+        .time_limit = -1,
+    },
+    {
+        .command = "sst",
+        .check = NULL,
+        .function = &command_graphic_sst,
+        .args_amount = 1,
         .graphical_only = true,
         .time_limit = -1,
     },

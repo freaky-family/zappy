@@ -4,6 +4,7 @@
 #include "server.h"
 #include "teams.h"
 #include "utils.h"
+#include "world.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,6 +32,13 @@ void new_client_handler(server_t *server)
     write(*cfdr, ZMSG_WELCOME, strlen(ZMSG_WELCOME));
 }
 
+static void client_send_death_message(server_t *server)
+{
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)
+        if (CLIENT_I(i)->is_graphical == true)
+            command_graphic_pdi_index(server, i, CLIENT->player_nb);
+}
+
 void client_quit(server_t *server)
 {
     int fd = *CLIENT->fd;
@@ -38,9 +46,27 @@ void client_quit(server_t *server)
     if (fd != server->control_fd && fd != server->signal_fd) {
         if (close(fd) == -1)
             perror("close");
+        if (CLIENT->is_graphical == false)
+            client_send_death_message(server);
         poller_delete(server->poller, server->index);
         clients_delete(server->clients, server->index);
         server->index--;
+    }
+}
+
+static void login_list_all_eggs(server_t *server, int graphic_i)
+{
+    eggs_t *eggs = NULL;
+
+    for (unsigned int y = 0; y < server->world->height; y++) {
+        for (unsigned int x = 0; x < server->world->width; x++) {
+            eggs = server->world->tiles[ZW_POS(server->world->width, x, y)].eggs;
+            if (eggs == NULL)
+                continue;
+            for (size_t i = 0; i < eggs->amount; i++) {
+                command_graphic_enw_index(server, graphic_i, -1, eggs->elems[i], x, y);
+            }
+        }
     }
 }
 
@@ -48,8 +74,15 @@ static bool client_login_graphic(server_t *server)
 {
     CLIENT->is_graphical = true;
     CLIENT->current_step = LOGGED_IN;
-    // TODO: send all useful informations
     command_graphic_msz(server);
+    command_graphic_sgt_index(server, server->index);
+    for (size_t i = 0; i < server->players->amount; i++) {
+        command_graphic_pnw_index(server, server->index, i);
+        command_graphic_pin_index(server, server->index, i);
+    }
+    command_graphic_mct_index(server, server->index);
+    command_graphic_tna_index(server, server->index);
+    login_list_all_eggs(server, server->index);
     return true;
 }
 
@@ -70,6 +103,18 @@ static bool client_login_normal(server_t *server)
     if (CLIENT->tile == NULL) {
         CLIENT->current_step = ENTER_TEAM_NAME;
         return true;
+    }
+    int egg_id = eggs_consume_one(CLIENT->tile->eggs);
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++)
+        if (CLIENT_I(i)->is_graphical == true)
+            command_graphic_ebo_index(server, i, egg_id);
+    players_append(server->players, CLIENT);
+    CLIENT->player_nb = server->players->amount - 1;
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
+        if (CLIENT_I(i)->is_graphical == true) {
+            command_graphic_pnw_index(server, i, CLIENT->player_nb);
+            command_graphic_pin_index(server, i, CLIENT->player_nb);
+        }
     }
     return true;
 }
@@ -108,7 +153,7 @@ void client_handler(server_t *server)
         read_i++;
     }
     remove_ending_seq(buffer);
-    server->buffer = buffer;
+    strncpy(server->buffer, buffer, BUFFER_SIZE);
     if (client_first_steps_handler(server) == false)
         commands_handler(server);
 }

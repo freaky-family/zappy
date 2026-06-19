@@ -1,7 +1,6 @@
 #include "clients.h"
 #include "dynamic_arrays.h"
 #include "poller.h"
-#include "server.h"
 #include "stock.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,6 +23,7 @@ client_data_t *client_data_init(int *fd)
     data->team = NULL;
     data->tile = NULL;
     data->is_command_running = false;
+    data->player_nb = -1;
     // No need to init that
     // data->command_start;
     data->command = NULL;
@@ -67,6 +67,22 @@ void client_move_in_direction(client_data_t *data, world_t *world, client_direct
     data->tile = &world->tiles[ZW_POS(world->width, new_x, new_y)];
 }
 
+// Used by graphical functions
+int client_get_direction_number(client_data_t *data)
+{
+    switch (data->direction) {
+        case UP:
+            return 1;
+        case RIGHT:
+            return 2;
+        case DOWN:
+            return 3;
+        case LEFT:
+            return 4;
+    }
+    return -1;
+}
+
 void client_data_free(client_data_t *data)
 {
     if (data == NULL)
@@ -78,7 +94,7 @@ void client_data_free(client_data_t *data)
 clients_t *clients_init(void)
 {
     clients_t *clients = malloc(sizeof(clients_t));
-    
+
     if (clients == NULL) {
         perror("malloc");
         exit(84);
@@ -138,4 +154,13 @@ void clients_free(clients_t *clients)
     if (clients == NULL)
         return;
     DA_FREE(clients, client_data_free);
+}
+
+int clients_find_by_player_nb(clients_t *clients, size_t player_nb)
+{
+    for (size_t i = CLIENT_INITIAL_INDEX; i < clients->amount; i++) {
+        if (clients->elems[i]->is_graphical == false && clients->elems[i]->player_nb == player_nb)
+            return i;
+    }
+    return -1;
 }
