@@ -48,6 +48,7 @@ void client_quit(server_t *server)
             perror("close");
         if (CLIENT->is_graphical == false)
             client_send_death_message(server);
+        players_delete(server->players, CLIENT->player_nb);
         poller_delete(server->poller, server->index);
         clients_delete(server->clients, server->index);
         server->index--;

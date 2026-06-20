@@ -24,3 +24,14 @@ void players_free(players_t *players)
     free(players->elems);
     free(players);
 }
+
+void players_delete(players_t *players, int i)
+{
+    if (players == NULL ||
+        (unsigned int)i >= players->amount ||
+        players->elems[i] == NULL)
+        return;
+    players->elems[players->amount - 1]->player_nb = i;
+    players->elems[i] = players->elems[players->amount - 1];
+    players->amount--;
+}
