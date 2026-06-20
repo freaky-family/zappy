@@ -1,6 +1,7 @@
 #include "ShaderHolder.hpp"
 #include <filesystem>
 #include "Utils.hpp"
+#include <string>
 
 zappy::ShaderHolder::ShaderHolder(): _shaderVec()
 {
