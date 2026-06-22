@@ -215,8 +215,6 @@ class Freakster:
             while arr != []:
                 case_content = []
                 for i in range(length):
-                    if arr == []:
-                        break
                     if arr[0] == '' or arr[0] == ' ':
                         case_content.append({})
                     else:
@@ -278,6 +276,15 @@ class Freakster:
             self.Forward()
             self.Forward()
             self.Right()
+
+def fill_case(s):
+    d = {}
+    for i in s:
+        if d.get(i) != None:
+            d[i] = d[i] + 1
+        else:
+            d[i] = 1
+    return d
 
     def xor(self, message, key):
         return ''.join(chr(ord(c)^ord(k)) for c,k in zip(message, cycle(key)))
