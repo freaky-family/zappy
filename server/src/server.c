@@ -53,7 +53,6 @@ static server_t *server_init(args_t *args)
     server->signal_fd = -1;
     server_append_teams(server, args);
     server_initialize_world(server, args->clients);
-    memset(server->buffer, 0, BUFFER_SIZE + 1);
     server->freq = args->freq;
     server->poll_timeout = DEFAULT_POLL_TIMEOUT;
     return server;
@@ -88,13 +87,10 @@ static void server_loop(server_t *server)
             perror("poll");
             break;
         }
-        // TODO: Add a command queue so that when another command is ran at the same time
-        // the first one isn't overriden by the second one which is faster
         frequency_handling(server);
         if (result == 0) {
             continue;
         } else {
-            // TODO when the "client_data->is_command_running" est "true", la command doit etre ajouter et non exécuté
             poll_handler(server, &running);
         }
     }
