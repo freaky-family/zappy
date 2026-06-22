@@ -1,5 +1,6 @@
 #include "PlayerCommunication.hpp"
 #include "SafeQueue.hpp"
+#include <exception>
 #include <iostream>
 #include <string>
 #include <unistd.h>
@@ -10,18 +11,24 @@ zappy::PlayerCommunication::PlayerCommunication(int port, std::string hostname, 
 }
 
 zappy::PlayerCommunication::~PlayerCommunication()
-{}
+{
+}
 
 void zappy::PlayerCommunication::communicationLoop()
 {
     _communication.sendMessage("team1\n");
     while (!_exit) {
         std::string message("");
+        std::string msg;
 
         if (_safeQueue.tryPop(message)) {
             _communication.sendMessage(message);
         }
-        std::string msg(_communication.runSocket(1));
+        try {
+            msg = _communication.runSocket(1);
+        } catch (std::exception &) {
+            break;
+        }
         if (!msg.empty())
             std::cout << msg << std::endl;
     }
