@@ -16,7 +16,9 @@ zappy::RaylibBonus::~RaylibBonus()
 
 bool zappy::RaylibBonus::runMenu(zappy::SafeQueue<std::string> &)
 {
-    return true;
+    if (_window.ShouldClose())
+        return true;
+    return false;
 }
 
 bool zappy::RaylibBonus::runGameplay(zappy::SafeQueue<std::string> &cmds)
@@ -38,7 +40,7 @@ bool zappy::RaylibBonus::runGameplay(zappy::SafeQueue<std::string> &cmds)
     return run();
 }
 
-bool zappy::RaylibBonus::runCommands(zappy::SafeQueue<std::string> &cmds)
+bool zappy::RaylibBonus::runScreens(zappy::SafeQueue<std::string> &cmds)
 {
     switch (_screen) {
         case screen::MENU:

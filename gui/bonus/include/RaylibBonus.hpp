@@ -19,7 +19,7 @@ namespace zappy {
             RaylibBonus(Map &map, GameplayEntitiesHolder &GEH);
             ~RaylibBonus();
 
-            bool runCommands(SafeQueue<std::string> &);
+            bool runScreens(SafeQueue<std::string> &);
 
         private:
             screen _screen;
