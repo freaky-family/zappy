@@ -1,9 +1,12 @@
 from .Communication import SocketReceiveError
+from itertools import cycle
 from enum import Enum
 import threading
 
 
 OLIGARCH_STASH = 20
+CALL_MESSAGE = "tung tung tung sahur"
+
 
 class Role(Enum):
     LEADER = 0
@@ -64,6 +67,7 @@ class Freakster:
         self.threadEvent.wait()
         self.threadEvent.clear()
         if (self.received.startswith("message")):
+            print(self.received)
             self.handleBroadcast()
             self.waitThread()
         if (self.received == "Elevation underway"):
@@ -81,14 +85,15 @@ class Freakster:
         s = self.receive()
         if s == "WELCOME":
             self.send(name)
+            self.name = name
             self.welcome = True
 
     def finalHandshake(self):
         """Final step of the Handshake, receive nb_connection and dimmension of
         the map
         Return True if we can connect another AI, False otherwise"""
-        nb = self.receive()
-        dim = self.receive()
+        s = self.receive()
+        print(s)
         try:
             nb = int(nb)
             arr = [int(tmp) for tmp in dim.split()]
@@ -210,6 +215,8 @@ class Freakster:
             self.inv[inventory[i]] = int(inventory[i + 1])
 
     def Broadcast(self, text):
+        encoded = self.xor(text, self.name)
+        print("encoded: ", encoded)
         self.send(f"Broadcast {text}")
         self.waitThread()
         if self.received == "ok":
@@ -260,6 +267,9 @@ class Freakster:
             self.Forward()
             self.Forward()
             self.Right()
+
+    def xor(self, message, key):
+        return ''.join(chr(ord(c)^ord(k)) for c,k in zip(message, cycle(key)))
 
 def fill_case(s):
     d = {}
