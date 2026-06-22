@@ -5,11 +5,18 @@ function make_table(r, has_player)
 {
     const table = document.createElement('table');
 
+    table.className = "map";
+
     for (const row of RES_ROWS) {
         const tr = document.createElement('tr');
         for (const i of row) {
             const td = document.createElement('td');
-            td.className = r && r[i] ? 'item ' + RESOURCES[i] : has_player ? 'playerl' : 'default';
+            if (r && r[i])
+                td.className += "item " + RESOURCES[i];
+            else if (has_player)
+                td.className += "playerl"
+            else
+                td.className = "default";
             tr.append(td);
         }
         table.append(tr);
