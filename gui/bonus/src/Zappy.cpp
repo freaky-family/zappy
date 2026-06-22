@@ -56,7 +56,7 @@ void zappy::ZappyBonus::loop()
             _commands.at(vec.at(0))(vec);
         } catch (std::exception &) {
         }
-        _exit = _graphical.runCommands(_playerMovesQueue);
+        _exit = _graphical.runScreens(_playerMovesQueue);
     }
 }
 
