@@ -1,9 +1,40 @@
+const RESOURCES = ['food', 'linemate', 'deraumere', 'sibur', 'mendiane', 'phiras', 'thystame'];
+const RES_ROWS = [[0], [1, 2, 3], [4, 5, 6]];
+
+function make_table(r, has_player)
+{
+    const table = document.createElement('table');
+
+    for (const row of RES_ROWS) {
+        const tr = document.createElement('tr');
+        for (const i of row) {
+            const td = document.createElement('td');
+            td.className = r && r[i] ? 'item ' + RESOURCES[i] : has_player ? 'playerl' : 'default';
+            tr.append(td);
+        }
+        table.append(tr);
+    }
+    return table;
+}
+
+function make_cell(x, y, player_text, r)
+{
+    const td = document.createElement('td');
+    const a = document.createElement('a');
+
+    if (player_text)
+        td.className = 'player';
+    a.href = `/tile/${x}/${y}`;
+    a.textContent = player_text || '';
+    td.append(a);
+    td.append(make_table(r, player_text));
+    return td;
+}
+
 async function poll()
 {
     const data = await fetch('/state').then(r => r.json());
     const cells = {};
-    const resources = data.resources;
-    let html = '';
 
     if (!data.width)
         return;
@@ -11,33 +42,14 @@ async function poll()
         `${data.width}x${data.height} | teams: ${data.teams.join(', ')} | players: ${Object.keys(data.players).length}`;
     for (const [id, p] of Object.entries(data.players))
         cells[`${p.x},${p.y}`] = (cells[`${p.x},${p.y}`] || '') + `#${id}`;
+    const map = document.getElementById('map');
+    map.innerHTML = '';
     for (let y = 0; y < data.height; y++) {
-        html += '<tr>';
-        for (let x = 0; x < data.width; x++) {
-            const p = cells[`${x},${y}`];
-            const r = resources[`${x},${y}`];
-            html += `<td class="${p ? 'player' : ''}">
-                        <a href="/tile/${x}/${y}">${p || ''}</a>
-                        <table>
-                            <tr>
-                                <td class="${r && r[0] ? 'food' : p ? 'playerl' : 'default'}"></td>
-                            </tr>
-                            <tr>
-                                <td class="${r && r[1] ? 'linemate' : p ? 'playerl' : 'default'}"></td>
-                                <td class="${r && r[2] ? 'deraumere' : p ? 'playerl' : 'default'}"></td>
-                                <td class="${r && r[3] ? 'sibur' : p ? 'playerl' : 'default'}"></td>
-                            </tr>
-                            <tr>
-                                <td class="${r && r[4] ? 'mendiane' : p ? 'playerl' : 'default'}"></td>
-                                <td class="${r && r[5] ? 'phiras' : p ? 'playerl' : 'default'}"></td>
-                                <td class="${r && r[6] ? 'thystame' : p ? 'playerl' : 'default'}"></td>
-                            </tr>
-                        </table>
-                    </td>`;
-        }
-        html += '</tr>';
+        const tr = document.createElement('tr');
+        for (let x = 0; x < data.width; x++)
+            tr.append(make_cell(x, y, cells[`${x},${y}`], data.resources[`${x},${y}`]));
+        map.append(tr);
     }
-    document.getElementById('map').innerHTML = html;
 }
 setInterval(poll, 1000);
 poll();
