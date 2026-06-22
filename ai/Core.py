@@ -1,5 +1,5 @@
 from .AgenticIntelligenceKpiWorkflow import Freakster, Role
-from .roles import Oligarch, FoodFactory, Explorer, Sacrifice, Leader, Stranded
+from .roles import Oligarch, FoodFactory, Explorer, Sacrifice, Leader, Stranded, Spetsnaz
 from .Communication import createSocket, SocketReceiveError
 from select import poll, POLLIN
 import socket as skt
@@ -21,6 +21,8 @@ def createFreakster(family, pollObject, socket, toAdd, role: Role):
             newAI = FoodFactory.FoodFactory(socket, toAdd)
         case Role.SACRIFICE:
             newAI = Sacrifice.Sacrifice(socket, toAdd)
+        case Role.SPETSNAZ:
+            newAI = Spetsnaz.Spetsnaz(socket, toAdd)
         case _:
             newAI = Freakster(socket, toAdd)
     family.update({newAI.socket.fileno(): newAI})

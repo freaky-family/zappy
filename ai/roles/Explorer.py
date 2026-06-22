@@ -12,6 +12,11 @@ class Explorer(Freakster):
         self.Look()
         self.gloutonTypeShit()
 
+    def should_go_back(self):
+        if self.inv["food"] <= 5: #5 à revoir dans le futur
+            return True
+        return False
+
     def gloutonTypeShit(self):
         while True:
             idx = 1
@@ -19,11 +24,7 @@ class Explorer(Freakster):
             val = []
 
             self.Inventory()
-            if self.freakyId < 12 and self.inv["linemate"] >= 1:
-                self.returnKremlin()
-            if self.freakyId < 50 and self.freakyId > 12 and self.inv["food"] < 6:
-                self.returnKremlin()
-            if self.inv["food"] <= 3:
+            if self.should_go_back():
                 self.returnKremlin()
             if len(self.vision) < 2:
                 self.Look()
@@ -92,7 +93,7 @@ class Explorer(Freakster):
             self.Forward()
 
         # refills and drop
-        for i in range(15):
+        for i in range(10):
             self.Take("food")
         self.Fork(Role.SACRIFICE)
         for (key, value) in self.inv.items():

@@ -12,13 +12,17 @@ class Oligarch(Freakster):
             self.Fork(Role.FOOD_FACTORY)
         elif (nb_player <= 4):
             self.Fork(Role.OLIGARCH)
+        self.Fork(Role.SPETSNAZ)
+        self.Fork(Role.EXPLORER)
+        self.Fork(Role.EXPLORER)
         while (True):
-            if (create_explorer % 2 == 0):
-                self.Fork(Role.SACRIFICE)
-            else:
-                self.Fork(Role.EXPLORER)
-            create_explorer += 1
             self.Inventory()
             while (self.inv["food"] < OLIGARCH_STASH):
                 if (not self.Take("food")):
                     break
+            # if (create_explorer % 2 == 0):
+            self.Fork(Role.SACRIFICE)
+            # else:
+                # self.Fork(Role.EXPLORER)
+            # create_explorer += 1
+

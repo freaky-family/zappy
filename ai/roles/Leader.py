@@ -17,9 +17,10 @@ class Leader(Freakster):
         self.Fork(Role.OLIGARCH)
         self.Fork(Role.OLIGARCH)
         self.Fork(Role.FOOD_FACTORY)
+        self.Fork(Role.SPETSNAZ)
+        self.Fork(Role.EXPLORER)
         self.Fork(Role.EXPLORER)
         while (True):
-            self.Fork(Role.EXPLORER)
             self.Inventory()
             while (self.inv["food"] < OLIGARCH_STASH):
                 if (not self.Take("food")):

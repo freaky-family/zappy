@@ -268,7 +268,7 @@ class Freakster:
         return False
 
     def Set(self, obj):
-        if self.inv[obj] < 1:
+        if obj not in self.inv or self.inv[obj] < 1:
             return
         self.send(f"Set {obj}")
         self.waitThread()
@@ -285,15 +285,6 @@ class Freakster:
             self.Forward()
             self.Forward()
             self.Right()
-
-def fill_case(s):
-    d = {}
-    for i in s:
-        if d.get(i) != None:
-            d[i] = d[i] + 1
-        else:
-            d[i] = 1
-    return d
 
     def xor(self, message, key):
         return ''.join(chr(ord(c)^ord(k)) for c,k in zip(message, cycle(key)))
