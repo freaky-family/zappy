@@ -33,9 +33,19 @@ function make_cell(x, y, player_text, r)
 
 async function poll()
 {
-    const data = await fetch('/state').then(r => r.json());
+    let data;
     const cells = {};
 
+    try {
+        const reponse = await fetch('/state');
+        if (!reponse.ok) {
+            throw new Error(`Fetch status : ${reponse.status}`);
+        }
+        data = await reponse.json();
+    } catch (erreur) {
+        console.error(erreur.message);
+        return
+    }
     if (!data.width)
         return;
     document.getElementById('info').textContent =
