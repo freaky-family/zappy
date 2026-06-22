@@ -1,19 +1,21 @@
 from .Communication import SocketReceiveError
 from itertools import cycle
 from enum import Enum
+import base64
 import threading
-
+import re
 
 OLIGARCH_STASH = 20
-CALL_MESSAGE = "tung tung tung sahur"
+CALL_MESSAGE = "hop on diddyboy 🥭"
 
 
 class Role(Enum):
     LEADER = 0
     OLIGARCH = 1
     EXPLORER = 2
-    FOOD_FACTORY = 3
-    SACRIFICE = 4
+    STRANDED = 3
+    FOOD_FACTORY = 4
+    SACRIFICE = 5
 
 
 class Direction(Enum):
@@ -67,7 +69,6 @@ class Freakster:
         self.threadEvent.wait()
         self.threadEvent.clear()
         if (self.received.startswith("message")):
-            print(self.received)
             self.handleBroadcast()
             self.waitThread()
         if (self.received == "Elevation underway"):
@@ -93,7 +94,6 @@ class Freakster:
         the map
         Return True if we can connect another AI, False otherwise"""
         s = self.receive()
-        print(s)
         try:
             nb = int(nb)
             arr = [int(tmp) for tmp in dim.split()]
@@ -144,7 +144,24 @@ class Freakster:
             self.pos_y = -self.pos_y - 2
 
     def handleBroadcast(self):
-        pass
+        message = re.match(r"message (\d), \"(.*)\"", self.received)
+        tile = int(message.group(1))
+        message = message.group(2)
+        message = base64.b64decode(message).decode()
+        message = self.xor(message, self.name)
+        print(f"Freakster n°{self.freakyId} received message \"{message}\"")
+        return (tile, message)
+
+
+    def Broadcast(self, text):
+        encoded = self.xor(text, self.name)
+        encoded = bytes(encoded, "utf-8")
+        encoded = base64.b64encode(encoded).decode()
+        self.send(f"Broadcast \"{encoded}\"")
+        self.waitThread()
+        if self.received != "ok":
+            pass
+
 
     def handleEject(self):
         pass
@@ -198,6 +215,8 @@ class Freakster:
             while arr != []:
                 case_content = []
                 for i in range(length):
+                    if arr == []:
+                        break
                     if arr[0] == '' or arr[0] == ' ':
                         case_content.append({})
                     else:
@@ -213,14 +232,6 @@ class Freakster:
         inventory = self.received.replace(",", " ").replace("[", " ").replace("]", " ").split()
         for i in range(0, len(inventory), 2):
             self.inv[inventory[i]] = int(inventory[i + 1])
-
-    def Broadcast(self, text):
-        encoded = self.xor(text, self.name)
-        print("encoded: ", encoded)
-        self.send(f"Broadcast {text}")
-        self.waitThread()
-        if self.received == "ok":
-            pass
 
     def ConnectNbr(self):
         self.send("Connect_nbr")
