@@ -12,7 +12,7 @@
 #include <unistd.h>
 
 zappy::Socket::Socket(int port, std::string hostname) : ANetwork(port), _pfds(), _clientSocket(),
-    _address()
+    _address(), _closed(false)
 {
     _clientSocket = socket(AF_INET, SOCK_STREAM, 0);
     _address.sin_family = AF_INET;
@@ -28,7 +28,8 @@ zappy::Socket::Socket(int port, std::string hostname) : ANetwork(port), _pfds(),
 
 zappy::Socket::~Socket()
 {
-    closeSocket();
+    if (!_closed)
+        closeSocket();
 }
 
 void zappy::Socket::connectSocket()
@@ -51,7 +52,11 @@ void zappy::Socket::closeSocket()
 std::string zappy::Socket::receive()
 {
     char buffer[BUFSIZ] = {0};
-    recv(_clientSocket, buffer, BUFSIZ, 0);
+    int retVal = 0;
+
+    retVal = recv(_clientSocket, buffer, BUFSIZ, 0);
+    if (retVal == -1)
+        _closed = true;
     std::string msg(buffer);
     return msg;
 }
@@ -63,6 +68,8 @@ void zappy::Socket::sendMsg(std::string msg)
 
 zappy::stateFd zappy::Socket::updateFd()
 {
+    if (_closed)
+        return stateFd::CLOSE;
     if (_pfds[0].revents & POLLIN) {
         return stateFd::READY;
     } else if (_pfds[0].revents & POLLHUP || _pfds[0].revents & POLLERR) {
