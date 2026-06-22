@@ -28,8 +28,10 @@ bool zappy::RaylibBonus::runMenu(zappy::SafeQueue<std::string> &)
 
 bool zappy::RaylibBonus::runGameplay(zappy::SafeQueue<std::string> &cmds)
 {
-    if (raylib::Keyboard::IsKeyPressed(KEY_W))
+    if (raylib::Keyboard::IsKeyPressed(KEY_W)) {
         cmds.push("Forward\n");
+        cmds.push("Take food\n");
+    }
     if (raylib::Keyboard::IsKeyPressed(KEY_A))
         cmds.push("Left\n");
     if (raylib::Keyboard::IsKeyPressed(KEY_D))

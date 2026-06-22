@@ -28,8 +28,7 @@ zappy::Socket::Socket(int port, std::string hostname) : ANetwork(port), _pfds(),
 
 zappy::Socket::~Socket()
 {
-    if (!_closed)
-        closeSocket();
+    closeSocket();
 }
 
 void zappy::Socket::connectSocket()
@@ -41,29 +40,38 @@ void zappy::Socket::connectSocket()
 
 int zappy::Socket::pollConnections(int timeout)
 {
+    if (_closed)
+        return -1;
     return poll(_pfds, 1, timeout);
 }
 
 void zappy::Socket::closeSocket()
 {
-    close(_clientSocket);
+    if (!_closed) {
+        close(_clientSocket);
+        _closed = true;
+    }
 }
 
 std::string zappy::Socket::receive()
 {
     char buffer[BUFSIZ] = {0};
-    int retVal = 0;
 
-    retVal = recv(_clientSocket, buffer, BUFSIZ, 0);
-    if (retVal == -1)
-        _closed = true;
+    if (_closed)
+        return "";
+    recv(_clientSocket, buffer, BUFSIZ, 0);
     std::string msg(buffer);
     return msg;
 }
 
 void zappy::Socket::sendMsg(std::string msg)
 {
-    send(_clientSocket, msg.c_str(), msg.length(), 0);
+    int retVal = 0;
+    if (!_closed)
+        retVal = send(_clientSocket, msg.c_str(), msg.length(), 0);
+    std::cout << retVal << std::endl;
+    if (retVal == -1)
+        throw zappy::Exception("Socket closed");
 }
 
 zappy::stateFd zappy::Socket::updateFd()

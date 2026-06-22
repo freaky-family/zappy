@@ -22,13 +22,19 @@ void zappy::PlayerCommunication::communicationLoop()
         std::string msg;
 
         if (_safeQueue.tryPop(message)) {
-            _communication.sendMessage(message);
+            try {
+                _communication.sendMessage(message);
+            } catch (std::exception &) {
+                break;
+            }
         }
         try {
             msg = _communication.runSocket(1);
         } catch (std::exception &) {
             break;
         }
+        if (msg == "dead" || msg == "dead\n")
+            break;
         if (!msg.empty())
             std::cout << msg << std::endl;
     }
