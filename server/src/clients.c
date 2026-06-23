@@ -232,6 +232,8 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
         return apply_client_orientation(x_direction, source->direction);
     } else {
         // TODO do this better
+        // 🤮
+        // return apply_client_orientation((x_direction == 3) ? ((y_direction == 1) ? 2 : 4) : ((y_direction == 1) ? 8 : 6), source->direction);
         if (x_direction == 3) {
             if (y_direction == 1) {
                 return apply_client_orientation(2, source->direction);
