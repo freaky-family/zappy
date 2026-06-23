@@ -1,10 +1,11 @@
 #include "RaylibModelHolder.hpp"
+#include <Image.hpp>
 #include <filesystem>
 #include <raylib.h>
 #include "TextureUtilityFinderFiller3000.hpp"
 #include "Utils.hpp"
 
-zappy::RaylibModelHolder::RaylibModelHolder(): _materialModel(), _foodModel(), _eggModel(), _playerModel(), _materialTextureMap(), _foodTextureMap(), _eggTextureMap(), _playerAnimations(), _bkg(), _bkgScroll(0)
+zappy::RaylibModelHolder::RaylibModelHolder(): _materialModel(), _foodModel(), _eggModel(), _playerModel(), _materialTextureMap(), _foodTextureMap(), _eggTextureMap(), _playerAnimations(), _grassModel(), _bkg(), _grassTexture(), _bkgScroll(0)
 {}
 
 zappy::RaylibModelHolder::~RaylibModelHolder()
@@ -43,6 +44,9 @@ void zappy::RaylibModelHolder::initModels()
         _eggModel.materials[0].maps[eggTexture.first].texture = eggTexture.second;
     }
     _bkg.Load(zappy::Utils::pathVerify("assets/bkg.png"));
+    _grassTexture.Load(zappy::Utils::pathVerify("assets/grass.png"));
+    _grassModel = LoadModelFromMesh(GenMeshCube(1, 0.1f, 1));
+    _grassModel.materials[0].maps[MATERIAL_MAP_ALBEDO].texture = _grassTexture;
 }
 
 void zappy::RaylibModelHolder::unloadModels()
@@ -62,11 +66,13 @@ void zappy::RaylibModelHolder::unloadModels()
     UnloadModelAnimations(_playerAnimations, playerAnimationsCount);
     _playerModel.Unload();
     _bkg.Unload();
+    _grassTexture.Unload();
+    _grassModel.Unload();
 }
 
 int zappy::RaylibModelHolder::updateBackgroundScroll()
 {
-    _bkgScroll += 2.0f;
+    _bkgScroll += 0.75f;
     if (_bkgScroll >= _bkg.width * 2)
         _bkgScroll = 0;
     return _bkgScroll;
@@ -75,6 +81,11 @@ int zappy::RaylibModelHolder::updateBackgroundScroll()
 raylib::Texture2D& zappy::RaylibModelHolder::getBackground()
 {
     return _bkg;
+}
+
+raylib::Model& zappy::RaylibModelHolder::getGrassModel()
+{
+    return _grassModel;
 }
 
 raylib::Model& zappy::RaylibModelHolder::getMaterialModel()

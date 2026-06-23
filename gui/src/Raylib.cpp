@@ -46,7 +46,7 @@ zappy::RaylibGraphical::~RaylibGraphical()
 void zappy::RaylibGraphical::initWindow()
 {
     _window.Init(1000, 800, "zappy");
-    _window.SetTargetFPS(120);
+    _window.SetTargetFPS(180);
 }
 
 void zappy::RaylibGraphical::initCamera()
@@ -118,14 +118,12 @@ bool zappy::RaylibGraphical::run()
 void zappy::RaylibGraphical::drawTiles()
 {
     const std::pair<int, int> mapDimensions = _map.getDimensions();
-    DrawCube(Vector3(-mapDimensions.first / (2.0f * mapDimensions.first) + 0.5f, 0, -mapDimensions.second / (2.0f * mapDimensions.second) + 0.5f), mapDimensions.first, 0.1f, mapDimensions.second, raylib::Color::Green());
 
     for (int y = 0; y < mapDimensions.second; y++) {
         for (int x = 0; x < mapDimensions.first; x++) {
             zappy::Tile& tile = _map.getTile(tileCoordinates(x, y));
 
-            if (tile.isSelected())
-                DrawCube(tile.getDisplayCoordinates(), 1.0f, 0.11f, 1.0f, raylib::Color::Red());
+            _modelHolder.getGrassModel().Draw(tile.getDisplayCoordinates(), 1, tile.isSelected() ? raylib::Color::Blue() : raylib::Color::Green());
             DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::Black());
 
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();

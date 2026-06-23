@@ -33,11 +33,10 @@ bool zappy::PlayerInfo::isMoving()
 
 void zappy::PlayerInfo::updatePos(zappy::tileCoordinates pos, int orientation)
 {
-    // if (_pos != pos) {
-    //     _moving = true;
-    //     _posVector.push_back(PositionHolder(_pos, pos, orientation));
-    // }
-    _displayPos = pos;
+    if (_pos != pos) {
+        _moving = true;
+        _posVector.push_back(PositionHolder(_pos, pos, orientation));
+    }
     _pos = pos;
     _orientation = orientation;
 }
@@ -51,6 +50,7 @@ void zappy::PlayerInfo::updateDisplayPos()
     PositionHolder &posHolder = _posVector.front();
 
     if (zappy::Utils::floatCoordsCompare(_displayPos, posHolder._posToReach, posHolder._iterationAddedValue)) {
+        _displayPos = posHolder._posToReach;
         _posVector.erase(_posVector.begin());
         if (_posVector.empty())
             return;
