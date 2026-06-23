@@ -77,7 +77,7 @@ void client_move_in_direction(client_data_t *data, world_t *world, client_direct
                 new_y++;
             break;
     }
-    data->tile = &world->tiles[ZW_POS(world->width, new_x, new_y)];
+    data->tile = &world->tiles[new_y][new_x];
 }
 
 // Used by graphical functions
@@ -212,16 +212,16 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
     if (ABS(x_distance) < ABS(opposite_x_distance)) {
         x_direction = (x_distance < 0) ? 3 : 7;
     } else {
-        x_direction = (opposite_x_distance < 0) ? 3 : 7; 
+        x_direction = (opposite_x_distance < 0) ? 3 : 7;
     }
 
     // y
     long y_distance = (long)destination->tile->y - (long)source->tile->y;
-    long opposite_y_distance = y_distance + ((y_distance < 0) ? world->height : -world->height);    
+    long opposite_y_distance = y_distance + ((y_distance < 0) ? world->height : -world->height);
     if (ABS(y_distance) < ABS(opposite_y_distance)) {
         y_direction = (y_distance < 0) ? 1 : 5;
     } else {
-        y_direction = (opposite_y_distance < 0) ? 1 : 5; 
+        y_direction = (opposite_y_distance < 0) ? 1 : 5;
     }
 
     if (source->tile->x == destination->tile->x && source->tile->y == destination->tile->y) {

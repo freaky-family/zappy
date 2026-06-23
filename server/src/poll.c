@@ -61,7 +61,7 @@ static void login_list_all_eggs(server_t *server, int graphic_i)
 
     for (unsigned int y = 0; y < server->world->height; y++) {
         for (unsigned int x = 0; x < server->world->width; x++) {
-            eggs = server->world->tiles[ZW_POS(server->world->width, x, y)].eggs;
+            eggs = server->world->tiles[y][x].eggs;
             if (eggs == NULL)
                 continue;
             for (size_t i = 0; i < eggs->amount; i++) {

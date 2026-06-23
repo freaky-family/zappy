@@ -9,7 +9,7 @@
 
 void command_graphic_bct_coordinates(server_t *server, int graphic_i, int x, int y)
 {
-    tile_t *tile = &server->world->tiles[ZW_POS(server->world->width, x, y)];
+    tile_t *tile = &server->world->tiles[y][x];
 
     dprintf(*CLIENT_I(graphic_i)->fd,
     "bct %d %d %d %d %d %d %d %d %d" ZMSG_END_SEQ,

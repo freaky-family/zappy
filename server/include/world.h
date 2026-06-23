@@ -6,9 +6,6 @@
     #include <stddef.h>
     #include <time.h>
 
-    #define ZW_POS(width, x, y) width * y + x
-    #define ZW_POS_MOD(width, height, x, y) ((int) width * (y % (int) height)) + (x % (int) width)
-
     #define ZW_LAST_EGG(eggs) eggs->elems[eggs->amount - 1]
 
 typedef struct {
@@ -46,8 +43,9 @@ typedef struct world_s {
     unsigned int width;
     unsigned int height;
 
-    // All of the tiles
-    tile_t *tiles;
+    // 2D Array containing the tiles
+    // Ex: tiles[y][x]
+    tile_t **tiles;
 
     // Offset for world restocking
     double restock_offset;

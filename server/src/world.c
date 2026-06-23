@@ -83,7 +83,7 @@ static void world_initialize_tiles(world_t *world)
 {
     for (unsigned int y = 0; y < world->height; y++) {
         for (unsigned int x = 0; x < world->width; x++) {
-            tile_init(&world->tiles[ZW_POS(world->width, x, y)], x, y);
+            tile_init(&world->tiles[y][x], x, y);
         }
     }
 }
@@ -98,9 +98,14 @@ world_t *world_init(unsigned int width, unsigned int height)
     world->height = height;
     world->restock_offset = 0;
     timespec_get(&world->clock, TIME_UTC);
-    world->tiles = calloc(width * height, sizeof(tile_t));
+    world->tiles = calloc(height, sizeof(tile_t *));
     if (world->tiles == NULL)
         return NULL;
+    for (unsigned int y = 0; y < world->height; y++) {
+        world->tiles[y] = calloc(width, sizeof(tile_t));
+        if (world->tiles[y] == NULL)
+            return NULL;
+    }
     world->eggs = eggs_init();
     if (world->eggs == NULL)
         return NULL;
@@ -115,11 +120,11 @@ tile_t *world_generate_egg(world_t *world)
     int x = rand() % world->width;
     int y = rand() % world->height;
 
-    while (world->tiles[ZW_POS(world->width, x, y)].eggs->amount > 0) {
+    while (world->tiles[y][x].eggs->amount > 0) {
         x = rand() % world->width;
         y = rand() % world->height;
     }
-    tile = &world->tiles[ZW_POS(world->width, x, y)];
+    tile = &world->tiles[y][x];
     eggs_add_world_and_tile(world, tile);
     return tile;
 }
@@ -128,8 +133,9 @@ static void world_free_tiles(world_t *world)
 {
     for (unsigned int y = 0; y < world->height; y++) {
         for (unsigned int x = 0; x < world->width; x++) {
-            eggs_free(world->tiles[ZW_POS(world->width, x, y)].eggs);
+            eggs_free(world->tiles[y][x].eggs);
         }
+        free(world->tiles[y]);
     }
     free(world->tiles);
 }
