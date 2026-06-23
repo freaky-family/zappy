@@ -104,10 +104,10 @@ void stock_world_refill(world_t *world)
         for (unsigned int x = 0; x < world->width; x++) {
             current_world_stock.food += world->tiles[ZW_POS(world->width, x, y)].stock.food;
             current_world_stock.linemate += world->tiles[ZW_POS(world->width, x, y)].stock.linemate;
-            current_world_stock.deraumere += world->tiles[ZW_POS(world->width, x, y)].stock.deraumere; 
+            current_world_stock.deraumere += world->tiles[ZW_POS(world->width, x, y)].stock.deraumere;
             current_world_stock.sibur += world->tiles[ZW_POS(world->width, x, y)].stock.sibur;
-            current_world_stock.phiras += world->tiles[ZW_POS(world->width, x, y)].stock.phiras; 
-            current_world_stock.thystame += world->tiles[ZW_POS(world->width, x, y)].stock.thystame; 
+            current_world_stock.phiras += world->tiles[ZW_POS(world->width, x, y)].stock.phiras;
+            current_world_stock.thystame += world->tiles[ZW_POS(world->width, x, y)].stock.thystame;
         }
     }
 
@@ -116,7 +116,7 @@ void stock_world_refill(world_t *world)
 
 void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOUNT])
 {
-    vars[0] = (stock_name_var_t){"food", (unsigned int *)&stock->food};
+    vars[0] = (stock_name_var_t){"food", &stock->food};
     vars[1] = (stock_name_var_t){"linemate", &stock->linemate};
     vars[2] = (stock_name_var_t){"deraumere", &stock->deraumere};
     vars[3] = (stock_name_var_t){"sibur", &stock->sibur};
@@ -125,7 +125,7 @@ void stock_associate_vars(stock_t *stock, stock_name_var_t vars[STOCK_ITEMS_AMOU
     vars[6] = (stock_name_var_t){"thystame", &stock->thystame};
 }
 
-bool stock_verify_amount(stock_t *stock, const char *element, unsigned int amount)
+bool stock_verify_amount(stock_t *stock, const char *element, int amount)
 {
     stock_name_var_t stock_vars[STOCK_ITEMS_AMOUNT];
 

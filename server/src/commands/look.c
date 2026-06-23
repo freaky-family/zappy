@@ -78,12 +78,12 @@ static void buffer_add_tile_stock(server_t *server, string_vec_t *vec, tile_t *t
     if (is_there_a_next_stock_amount(stock_vars, -1))
         string_vec_append(vec, " ");
     for (size_t i = 0; i < STOCK_ITEMS_AMOUNT; i++) {
-        for (unsigned int amount = 0; amount < *stock_vars[i].element; amount++) {
+        for (int elem_amount = 0; elem_amount < *(stock_vars[i].element); elem_amount++) {
             string_vec_append(vec, (char *)stock_vars[i].str);
-            if (amount != *stock_vars[i].element - 1)
+            if (elem_amount != *(stock_vars[i].element) - 1)
                 string_vec_append(vec, " ");
         }
-        if (*stock_vars[i].element > 0 && is_there_a_next_stock_amount(stock_vars, i))
+        if (*(stock_vars[i].element) > 0 && is_there_a_next_stock_amount(stock_vars, i))
             string_vec_append(vec, " ");
     }
     if (*amount > 0) {
