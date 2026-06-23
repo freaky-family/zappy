@@ -8,7 +8,6 @@
 #include <Rectangle.hpp>
 #include <Text.hpp>
 #include <Vector2.hpp>
-#include <array>
 #include <cstddef>
 #include <raylib.h>
 #include <string>
