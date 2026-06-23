@@ -5,6 +5,7 @@
   <title>Case ({{ x }}, {{ y }})</title>
 </head>
 <body>
+  <link rel="stylesheet" href="/static/css/tilestyle.css">
   <h2>Case ({{ x }}, {{ y }})</h2>
   {% if players %}
     <ul>
@@ -21,6 +22,10 @@
   {% else %}
     <p>Aucune ressource connue sur cette case.</p>
   {% endif %}
-  <p><a href="/">Retour à la carte</a></p>
+  <p>
+    <a href="/">
+      Retour à la carte
+    </a>
+  </p>
 </body>
 </html>
