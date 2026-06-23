@@ -1,6 +1,6 @@
 #!/bin/bash
 
-filename="benchmark_output"
+filename="/tmp/benchmark_output"
 echo -e "\n\e[1;33mBenchmark tester Start\e[0;37m\n"
 
 if [[ $1 == "--help" ]]; then
@@ -14,17 +14,29 @@ ai_thread() {
 }
 
 server_thread() {
-    (sleep 6 ; echo "/quit") | ./$1 -p 4242 -x 30 -y 30 -n freaky tuff -c 1 -f 1000 > /tmp/$filename
+    (sleep 6 ; echo "/quit") | ./$1 -p 4242 -x 30 -y 30 -n freaky tuff -c 1 -f 1000 > "$filename$2"
     return
 }
 
 for i in $(seq 1 $1); do
     echo -e "Iteration $i"
-    server_thread $2 &
+    server_thread $2 $i &
     ai_thread $3
+done
 
-    #echo -e "Start reading"
-    #while read -r line; do
-    #    echo -e "line :$line"
-    #done < "$filename"
+echo ""
+
+for i in $(seq 1 $1); do
+    idx_line=0
+    while read -r line; do
+        if [[ $line == "Server shutting down." ]]; then
+            break
+        fi
+        if [ $idx_line == 17 ]; then
+            echo -e "$filename$i:"
+            echo -e "\e[1;37m$line\e[0;37m\n"
+        fi
+        ((idx_line+=1))
+    done < "$filename$i"
+    finish+=("$i")
 done
