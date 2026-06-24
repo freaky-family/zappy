@@ -47,8 +47,6 @@ class Freakster:
         self.direction = Direction.UP
         self.map_dim = (-1, -1)
         self.vision = []
-        self.cacaqueue = ["begin1", "begin2"]
-        self.receivedqueue = ["begin1", "begin2"]
 
         # Thread related
         self.received = None
@@ -119,7 +117,6 @@ class Freakster:
     def receive(self):
         if len(self.queue) != 0:
             val = self.queue.pop(0)
-            self.receivedqueue.append(val)
             return val
         s = b''
         decode = ""
@@ -138,11 +135,9 @@ class Freakster:
         self.queue = s.splitlines()
         ret = self.queue.pop(0)
         self.received = ret
-        self.receivedqueue.append(ret)
         return ret
 
     def send(self, s):
-        self.cacaqueue.append(s)
         try:
             self.socket.send(str.encode(s + "\n"))
         except BrokenPipeError:
@@ -194,7 +189,6 @@ class Freakster:
         try:
             self.mainloop()
         except SocketReceiveError:
-            #print(f"Thread terminate for Freakster:{self.freakyId}")
             return                   # thread terminate here
 
     # TODO: gérer la concurrence sur la variable self.received
@@ -248,28 +242,27 @@ class Freakster:
                 length += 2
             self.vision = new_vision
         else:
-            print(self.received, file=stderr)
             self.Look()
 
     def Inventory(self):
         self.send("Inventory")
         self.waitThread()
         inventory = self.received.replace(",", " ").replace("[", " ").replace("]", " ").split()
-        #print(f"inventory = {inventory}")
         try:
             for i in range(0, len(inventory), 2):
                 self.inv[inventory[i]] = int(inventory[i + 1])
         except Exception:
             self.Inventory()
-            # print(f"Send Queue: {self.cacaqueue}", file=stderr)
-            # print(f"Received Queue: {self.receivedqueue}", file=stderr)
-            # print(f"Exception in Inventory: {e}, self.received = {self.received}", file=stderr)
 
     def ConnectNbr(self):
         self.send("Connect_nbr")
         self.waitThread()
-        if self.received == "ok":
+        nb = 0
+        try:
+            nb = int(self.received)
+        except Exception:
             pass
+        return nb
 
     def Fork(self, role: Role):
         self.send("Fork")

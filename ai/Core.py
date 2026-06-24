@@ -34,9 +34,6 @@ def createFreakster(family, pollObject, socket, toAdd, role: Role):
 
 
 def slimeFreakster(ai, socketfd, pollObject, family):
-    # global nb_slimed
-    # print(f"slime freakster n° {nb_slimed}")
-    # nb_slimed += 1
     del family[socketfd]
     pollObject.unregister(socketfd)
     ai.threadEvent.set()
