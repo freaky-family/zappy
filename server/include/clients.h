@@ -69,12 +69,17 @@ typedef struct {
     bool is_command_running;
     // Start of the command execution
     struct timespec command_start;
+    // Time already elapsed since the start of the command, used for the freeze of the incantation
+    double command_freq_offset;
     // The command in exectution
     struct commands_s *command;
     // The food available for consuption (-1 if the client cannot die)
     double food_freq_offset;
     // Food clock
     struct timespec food_clock;
+
+    // Check for the player to be currently incantating, therefore its current state is frozen.
+    bool is_frozen;
 } client_data_t;
 
 client_data_t *client_data_init(int *fd);
@@ -90,11 +95,12 @@ typedef struct {
 
 clients_t *clients_init(void);
 void client_associate_team(clients_t *clients, int i, team_data_t *team);
-size_t clients_get_amount_at_level(clients_t *clients, unsigned int level);
+size_t clients_get_amount_at_level_on_tile(clients_t *clients, tile_t *tile, unsigned int level);
 int clients_find_by_player_nb(clients_t *clients, size_t player_nb);
 void clients_append(clients_t *clients, int *fd);
 void clients_delete(clients_t *clients, int i);
 void clients_free(clients_t *clients);
 int client_get_shortest_direction_tile(client_data_t *source, client_data_t *destination, world_t *world);
+void client_level_up(client_data_t *client);
 
 #endif

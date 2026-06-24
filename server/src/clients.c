@@ -33,9 +33,11 @@ client_data_t *client_data_init(int *fd)
     data->player_graphical_index = -1;
     // No need to init that
     // data->command_start;
+    data->command_freq_offset = 0.0;
     data->command = NULL;
     // Food variables init
     data->food_freq_offset = 0;
+    data->is_frozen = false;
     timespec_get(&data->food_clock, TIME_UTC);
     return data;
 }
@@ -151,14 +153,14 @@ void client_associate_team(clients_t *clients, int i, team_data_t *team)
     clients->elems[i]->team = team;
 }
 
-size_t clients_get_amount_at_level(clients_t *clients, unsigned int level)
+size_t clients_get_amount_at_level_on_tile(clients_t *clients, tile_t *tile, unsigned int level)
 {
     size_t amount = 0;
 
     if (clients == NULL)
         return amount;
     for (size_t i = CLIENT_INITIAL_INDEX; i < clients->amount; i++) {
-        if (clients->elems[i]->level == level)
+        if (clients->elems[i]->level == level && clients->elems[i]->tile == tile)
             amount++;
     }
     return amount;
@@ -248,5 +250,13 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
                 return apply_client_orientation(6, source->direction);
             }
         }
+    }
+}
+
+void client_level_up(client_data_t *client)
+{
+    client->level++;
+    if (client->level == 8) {
+        client->team->max_nb_player_lvl_8 += 1;
     }
 }
