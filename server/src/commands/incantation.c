@@ -40,15 +40,25 @@ bool command_incantation_check(server_t *server)
     return false;
 }
 
+static void command_incantation_send_graphical_level(server_t *server, int player_i)
+{
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
+        if (CLIENT_I(i)->is_graphical == true)
+            command_graphic_plv_index(server, i, player_i);
+    }
+}
+
 void command_incantation(server_t *server)
 {
     bool success = false;
+    unsigned int previous_level = CLIENT->level;
 
     if (level_up(server)) {
         for (size_t i = 0; i < server->players->amount; i++) {
-            if (PLAYER_I(i)->tile != CLIENT->tile || (PLAYER_I(i)->is_frozen == false && i != CLIENT->player_nb))
+            if (PLAYER_I(i)->tile != CLIENT->tile || (PLAYER_I(i)->is_frozen == false && i != CLIENT->player_nb) || PLAYER_I(i)->level != previous_level)
                 continue;
             client_level_up(PLAYER_I(i));
+            command_incantation_send_graphical_level(server, i);
             PLAYER_I(i)->is_frozen = false;
             timespec_get(&PLAYER_I(i)->command_start, TIME_UTC);
             dprintf(*PLAYER_I(i)->fd, "Current level: %d\n", CLIENT->level);

@@ -17,7 +17,6 @@ bool level_up(server_t *server)
     for (size_t i = 0; i < MAX_LEVEL - 1; i++) {
         if (CLIENT->level == conditions[i].level && conditions[i].condition(server)) {
             conditions[i].consume(&CLIENT->tile->stock);
-            client_level_up(CLIENT);
             return true;
         }
     }
