@@ -16,8 +16,11 @@ namespace zappy {
             void updatePos(tileCoordinates pos, int orientation) override final;
             int getOrientation();
 
-            bool isIncantating();
-            bool isMoving();
+            bool isIncantating() const;
+            bool isMoving() const;
+            bool isTaking() const;
+            bool isDropping() const;
+            bool isHitting() const;
 
             void updateLevel();
             void updateLevel(int level);
@@ -25,6 +28,9 @@ namespace zappy {
             std::map<std::string, int> &getInventory();
 
             void setIncantation(bool);
+            void setTaking(bool);
+            void setHitting(bool);
+            void setDropping(bool);
             int getLevel();
 
         private:
@@ -34,6 +40,9 @@ namespace zappy {
             std::string _teamName;
             bool _isIncantating;
             bool _moving;
+            bool _taking;
+            bool _dropping;
+            bool _hitting;
 
             std::map<std::string, int> _inventory;
     };

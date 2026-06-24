@@ -44,6 +44,7 @@ namespace zappy {
             std::vector<std::string> _broadcastToDisplay;
             std::map<std::string, raylib::Color> _colorMap;
             std::map<int, std::pair<int, int>> _playerAnimationsMap;
+            std::map<int, std::pair<int, int>> _dyingPlayerAnimationsMap;
             ShaderHolder _shaderHolder;
             int _currentShader;
             raylib::RenderTexture2D _renderTexture;
@@ -62,7 +63,9 @@ namespace zappy {
             void drawPlayers() override;
             void drawGEHInfos() override;
             void drawTextureRect(RenderTexture2D&);
+            void definePlayerAnimation(PlayerInfo &, std::pair<int, int> &);
             void updatePlayerAnimations(PlayerInfo &);
+            void updateDyingPlayerAnimaions(PlayerInfo &);
             void drawPlayerInfo(PlayerInfo &);
             void drawEggInfo(Egg &);
             void drawParticles(tileCoordinates, raylib::Color);

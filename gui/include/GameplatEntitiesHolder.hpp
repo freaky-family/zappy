@@ -10,6 +10,7 @@ namespace zappy {
     class GameplayEntitiesHolder {
         private:
             std::map<int, PlayerInfo> _players;
+            std::map<int, PlayerInfo> _dyingPlayers;
             std::map<int , Egg> _eggs;
             std::queue<std::pair<int, std::string>> _broadcast;
         public:
@@ -24,6 +25,10 @@ namespace zappy {
             PlayerInfo& getPlayer(int);
             void removePlayer(int);
             std::map<int, PlayerInfo>& getPlayers();
+
+            void addDyingPlayer(int, PlayerInfo);
+            void removeDyingPlayer(int);
+            std::map<int, PlayerInfo>& getDyingPlayers();
 
             void addEgg(int, Egg);
             Egg& getEgg(int);
