@@ -164,10 +164,13 @@ class Freakster:
             self.pos_y = -self.pos_y - 2
 
     def handleBroadcast(self):
-        message = re.match(r"message (\d), \"(.*)\"", self.received)
+        message = re.match(r"message (\d), (.*)", self.received)
         tile = int(message.group(1))
         message = message.group(2)
-        message = base64.b64decode(message).decode()
+        try:
+            message = base64.b64decode(message).decode()
+        except Exception:
+            return None
         message = self.xor(message, self.name)
         print(f"Freakster n°{self.freakyId} received message \"{message}\"")
         return (tile, message)
