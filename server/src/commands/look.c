@@ -74,7 +74,7 @@ static void buffer_add_tile_stock(server_t *server, string_vec_t *vec, tile_t *t
 
     stock_associate_vars(&tile->stock, stock_vars);
     if (is_player_on_tile(server, tile))
-        string_vec_append(vec, "player");
+        string_vec_append(vec, " player");
     if (is_there_a_next_stock_amount(stock_vars, -1))
         string_vec_append(vec, " ");
     for (size_t i = 0; i < STOCK_ITEMS_AMOUNT; i++) {
@@ -146,7 +146,7 @@ void command_look(server_t *server)
             }
         }
     }
-    string_vec_append(vec, "]");
+    string_vec_append(vec, " ]");
     send_look_message(server, vec);
     string_vec_free(vec);
 }
