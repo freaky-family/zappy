@@ -9,7 +9,7 @@
 zappy::PlayerInfo::PlayerInfo(int playerNb, tileCoordinates coord,
     int orientation, int level, std::string teamName) : APlayer( playerNb, coord, teamName, PlayerType::PLAYER),
     _orientation(orientation), _level(level), _teamName(teamName),
-    _isIncantating(false), _inventory()
+    _isIncantating(false), _moving(false), _taking(false), _dropping(false), _hitting(false), _inventory()
 {
 }
 
@@ -21,14 +21,29 @@ int zappy::PlayerInfo::getOrientation()
     return _orientation;
 }
 
-bool zappy::PlayerInfo::isIncantating()
+bool zappy::PlayerInfo::isIncantating() const
 {
     return _isIncantating;
 }
 
-bool zappy::PlayerInfo::isMoving()
+bool zappy::PlayerInfo::isMoving() const
 {
     return _moving;
+}
+
+bool zappy::PlayerInfo::isDropping() const
+{
+    return _dropping;
+}
+
+bool zappy::PlayerInfo::isTaking() const
+{
+    return _taking;
+}
+
+bool zappy::PlayerInfo::isHitting() const
+{
+    return _hitting;
 }
 
 void zappy::PlayerInfo::updatePos(zappy::tileCoordinates pos, int orientation)
@@ -81,6 +96,21 @@ std::map<std::string, int>& zappy::PlayerInfo::getInventory()
 void zappy::PlayerInfo::setIncantation(bool value)
 {
     _isIncantating = value;
+}
+
+void zappy::PlayerInfo::setDropping(bool value)
+{
+    _dropping = value;
+}
+
+void zappy::PlayerInfo::setTaking(bool value)
+{
+    _taking = value;
+}
+
+void zappy::PlayerInfo::setHitting(bool value)
+{
+    _hitting = value;
 }
 
 int zappy::PlayerInfo::getLevel()
