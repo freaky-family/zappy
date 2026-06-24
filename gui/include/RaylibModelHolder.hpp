@@ -11,6 +11,10 @@ namespace zappy {
     constexpr int ROBOT_INCANTATION = 0;
     constexpr int ROBOT_IDLE = 2;
     constexpr int ROBOT_RUN = 6;
+    constexpr int ROBOT_DEATH = 1;
+    constexpr int ROBOT_TAKE = 9;
+    constexpr int ROBOT_DROP = 7;
+    constexpr int ROBOT_HIT = 5;
     class RaylibModelHolder : IModelHolder {
         private:
             raylib::Model _materialModel;

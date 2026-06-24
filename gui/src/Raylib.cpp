@@ -14,6 +14,7 @@
 #include <Mouse.hpp>
 #include <Texture.hpp>
 #include <Vector3.hpp>
+#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <cstdio>
@@ -25,7 +26,7 @@
 #include "Utils.hpp"
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder &GEH): _map(map), _GEH(GEH),
-    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap(), _playerAnimationsMap(), _shaderHolder(), _currentShader(0), _renderTexture(), _animationToggle(false)
+    _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap(), _playerAnimationsMap(), _dyingPlayerAnimationsMap(), _shaderHolder(), _currentShader(0), _renderTexture(), _animationToggle(false)
 {
     srand(time(NULL));
     initWindow();
@@ -291,7 +292,6 @@ void zappy::RaylibGraphical::displayBroadcast()
     drawText("Broadcast", width - 225, height - 190, raylib::Color::Black());
     while (_GEH.getBroadcast().size() > 0) {
         std::pair<int, std::string> message = _GEH.popMessage();
-        // TODO get player name by id instead of just id
         std::string messageToDisplay = std::to_string(message.first) + ": " + message.second;
         _broadcastToDisplay.push_back(messageToDisplay);
     }
@@ -345,7 +345,36 @@ void zappy::RaylibGraphical::drawPlayers()
     for (auto &tileAndColor: map) {
         drawParticles(tileAndColor.first, tileAndColor.second);
     }
-    return;
+    auto dyingPlayers = _GEH.getDyingPlayers();
+    for (auto dyingPlayer: dyingPlayers) {
+        updateDyingPlayerAnimaions(dyingPlayer.second);
+    }
+}
+
+void zappy::RaylibGraphical::updateDyingPlayerAnimaions(PlayerInfo &info)
+{
+    const int playerID = info.getId();
+
+    try {
+        _dyingPlayerAnimationsMap.at(playerID);
+    } catch (std::out_of_range) {
+        _dyingPlayerAnimationsMap.insert({playerID, std::pair(ROBOT_DEATH, 0)});
+    }
+    const std::pair<int, int> mapDimensions = _map.getDimensions();
+    std::pair<int, int> &animIndexAndFrame = _dyingPlayerAnimationsMap.at(playerID);
+    const floatCoordinates playerCoords = info.getDisplayCoords();
+    Vector3 rotationAxis(0, 0.1, 0);
+    float rotationAngle = static_cast<float>(zappy::Utils::getOrientation(info.getOrientation())) + 90.0f;
+    Vector3 playerPosition(playerCoords.first - mapDimensions.first / 2.0f + 0.5, 0.1, playerCoords.second - mapDimensions.second / 2.0f + 0.5);
+    Vector3 playerScale(0.1, 0.1, 0.1);
+
+    _modelHolder.getPlayerModel().Draw(playerPosition, rotationAxis, rotationAngle, playerScale, getTeamColor(info));
+    ModelAnimation anim = _modelHolder.getPlayerAnimations()[animIndexAndFrame.first];
+    _modelHolder.getPlayerModel().UpdateAnimation(anim, animIndexAndFrame.second);
+    if (animIndexAndFrame.second == anim.keyframeCount) {
+        _GEH.removeDyingPlayer(playerID);
+    }
+    animIndexAndFrame.second++;
 }
 
 void zappy::RaylibGraphical::updatePlayerAnimations(PlayerInfo &info)
@@ -358,6 +387,34 @@ void zappy::RaylibGraphical::updatePlayerAnimations(PlayerInfo &info)
         _playerAnimationsMap.insert({playerID, std::pair(ROBOT_IDLE, 0)});
     }
     std::pair<int, int> &animIndexAndFrame = _playerAnimationsMap.at(playerID);
+    definePlayerAnimation(info, animIndexAndFrame);
+    ModelAnimation anim = _modelHolder.getPlayerAnimations()[animIndexAndFrame.first];
+    _modelHolder.getPlayerModel().UpdateAnimation(anim, animIndexAndFrame.second);
+    animIndexAndFrame.second++;
+    if (animIndexAndFrame.second > anim.keyframeCount)
+        animIndexAndFrame.second = 0;
+}
+
+void zappy::RaylibGraphical::definePlayerAnimation(PlayerInfo &info, std::pair<int, int> &animIndexAndFrame)
+{
+    if (info.isHitting()) {
+        animIndexAndFrame.first = ROBOT_HIT;
+        if (animIndexAndFrame.second == _modelHolder.getPlayerAnimations()[animIndexAndFrame.first].keyframeCount)
+            _GEH.getPlayer(info.getId()).setHitting(false);
+        return;
+    }
+    if (info.isTaking()) {
+        animIndexAndFrame.first = ROBOT_TAKE;
+        if (animIndexAndFrame.second == _modelHolder.getPlayerAnimations()[animIndexAndFrame.first].keyframeCount)
+            _GEH.getPlayer(info.getId()).setTaking(false);
+        return;
+    }
+    if (info.isDropping()) {
+        animIndexAndFrame.first = ROBOT_DROP;
+        if (animIndexAndFrame.second == _modelHolder.getPlayerAnimations()[animIndexAndFrame.first].keyframeCount)
+            _GEH.getPlayer(info.getId()).setDropping(false);
+        return;
+    }
     if (info.isMoving()) {
         animIndexAndFrame.first = ROBOT_RUN;
     } else if (info.isIncantating()) {
@@ -365,8 +422,6 @@ void zappy::RaylibGraphical::updatePlayerAnimations(PlayerInfo &info)
     } else {
         animIndexAndFrame.first = ROBOT_IDLE;
     }
-    _modelHolder.getPlayerModel().UpdateAnimation(_modelHolder.getPlayerAnimations()[animIndexAndFrame.first], animIndexAndFrame.second);
-    animIndexAndFrame.second++;
 }
 
 void zappy::RaylibGraphical::drawPlayerInfo(PlayerInfo &info)
