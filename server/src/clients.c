@@ -252,3 +252,11 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
         }
     }
 }
+
+void client_level_up(client_data_t *client)
+{
+    client->level++;
+    if (client->level == 8) {
+        client->team->max_nb_player_lvl_8 += 1;
+    }
+}

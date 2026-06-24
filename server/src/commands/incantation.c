@@ -48,6 +48,7 @@ void command_incantation(server_t *server)
         for (size_t i = 0; i < server->players->amount; i++) {
             if (PLAYER_I(i)->tile != CLIENT->tile || (PLAYER_I(i)->is_frozen == false && i != CLIENT->player_nb))
                 continue;
+            client_level_up(PLAYER_I(i));
             PLAYER_I(i)->is_frozen = false;
             timespec_get(&PLAYER_I(i)->command_start, TIME_UTC);
             dprintf(*PLAYER_I(i)->fd, "Current level: %d\n", CLIENT->level);

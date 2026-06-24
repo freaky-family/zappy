@@ -101,5 +101,6 @@ void clients_append(clients_t *clients, int *fd);
 void clients_delete(clients_t *clients, int i);
 void clients_free(clients_t *clients);
 int client_get_shortest_direction_tile(client_data_t *source, client_data_t *destination, world_t *world);
+void client_level_up(client_data_t *client);
 
 #endif
