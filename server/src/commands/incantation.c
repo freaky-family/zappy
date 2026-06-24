@@ -1,10 +1,12 @@
 #include "clients.h"
 #include "commands.h"
+#include "frequency.h"
 #include "level.h"
 #include "messages.h"
 #include "server.h"
 #include <stddef.h>
 #include <stdio.h>
+#include <time.h>
 
 bool command_incantation_check(server_t *server)
 {
@@ -18,6 +20,7 @@ bool command_incantation_check(server_t *server)
             if (player_array_amount >= CMDS_TEMP_ARRAY_SIZE)
                 break;
             PLAYER_I(i)->is_incantating = true;
+            PLAYER_I(i)->command_freq_offset = calculate_time_elapsed(PLAYER_I(i)->command_start);
             dprintf(*PLAYER_I(i)->fd, "Elevation underway\n");
             player_array[player_array_amount] = i;
             player_array_amount++;
@@ -43,6 +46,7 @@ void command_incantation(server_t *server)
             if (PLAYER_I(i)->tile != CLIENT->tile || PLAYER_I(i)->is_incantating == false)
                 continue;
             PLAYER_I(i)->is_incantating = false;
+            timespec_get(&PLAYER_I(i)->command_start, TIME_UTC);
             dprintf(*PLAYER_I(i)->fd, "Current level: %d\n", CLIENT->level);
         }
         success = true;

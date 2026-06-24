@@ -69,6 +69,8 @@ typedef struct {
     bool is_command_running;
     // Start of the command execution
     struct timespec command_start;
+    // Time already elapsed since the start of the command, used for the freeze of the incantation
+    double command_freq_offset;
     // The command in exectution
     struct commands_s *command;
     // The food available for consuption (-1 if the client cannot die)

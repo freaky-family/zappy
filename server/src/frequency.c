@@ -8,7 +8,7 @@
 #include <time.h>
 
 // Returns the time elapsed in seconds
-static double calculate_time_elapsed(struct timespec start)
+double calculate_time_elapsed(struct timespec start)
 {
     struct timespec now;
     timespec_get(&now, TIME_UTC);
@@ -20,16 +20,16 @@ static void verify_frequency(server_t *server, int i)
 {
     double time_elapsed = calculate_time_elapsed(PLAYER_I(i)->command_start);
 
-    if (time_elapsed >= (double)PLAYER_I(i)->command->time_limit / (double)server->freq) {
+    if (time_elapsed + PLAYER_I(i)->command_freq_offset >= (double)PLAYER_I(i)->command->time_limit / (double)server->freq) {
         unsigned int prev_index = server->index;
         int index = clients_find_by_player_nb(server->clients, i);
 
         if (index == -1)
             return;
         server->index = index;
-        // TODO: if it is incantating, need to NOT run the function (freeze)
         PLAYER_I(i)->command->function(server);
         PLAYER_I(i)->is_command_running = false;
+        PLAYER_I(i)->command_freq_offset = 0.0;
         PLAYER_I(i)->command = NULL;
         // Try finding if there's another command to run
         // Safe to run as we're in the server->index context
@@ -85,6 +85,9 @@ void frequency_handling(server_t *server)
                 i--;
                 continue;
             }
+        }
+        if (PLAYER_I(i)->is_incantating == true) {
+            continue;
         }
         if (PLAYER_I(i)->is_command_running == true) {
             verify_frequency(server, i);

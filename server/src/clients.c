@@ -33,6 +33,7 @@ client_data_t *client_data_init(int *fd)
     data->player_graphical_index = -1;
     // No need to init that
     // data->command_start;
+    data->command_freq_offset = 0.0;
     data->command = NULL;
     // Food variables init
     data->food_freq_offset = 0;
