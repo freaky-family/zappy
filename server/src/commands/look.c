@@ -59,22 +59,26 @@ static bool is_there_a_next_stock_amount(stock_name_var_t *stock_vars, int curre
     return false;
 }
 
-static bool is_player_on_tile(server_t *server, tile_t *tile)
+static int players_amount_on_tile(server_t *server, tile_t *tile)
 {
-    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
-        if (CLIENT_I(i)->tile == tile)
-            return true;
+    int player_amount = 0;
+
+    for (size_t i = 0; i < server->players->amount; i++) {
+        if (PLAYER_I(i)->tile == tile)
+            player_amount++;
     }
-    return false;
+    return player_amount;
 }
 
 static void buffer_add_tile_stock(server_t *server, string_vec_t *vec, tile_t *tile, unsigned int *amount)
 {
     stock_name_var_t stock_vars[STOCK_ITEMS_AMOUNT];
+    int player_amount = players_amount_on_tile(server, tile);
 
     stock_associate_vars(&tile->stock, stock_vars);
-    if (is_player_on_tile(server, tile))
+    for (int i = 0; i < player_amount; i++) {
         string_vec_append(vec, " player");
+    }
     if (is_there_a_next_stock_amount(stock_vars, -1))
         string_vec_append(vec, " ");
     for (size_t i = 0; i < STOCK_ITEMS_AMOUNT; i++) {
