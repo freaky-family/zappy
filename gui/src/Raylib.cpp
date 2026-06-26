@@ -250,6 +250,7 @@ void zappy::RaylibGraphical::updateCamera()
 
 void zappy::RaylibGraphical::fillGameInfos(std::map<std::string, int> &teamMap, std::array<int, 7> &resources)
 {
+    const std::pair<int, int> mapDimensions = _map.getDimensions();
     for (auto &player: _GEH.getPlayers()) {
         try {
             teamMap.at(player.second.getTeamName()) += 1;
@@ -257,17 +258,20 @@ void zappy::RaylibGraphical::fillGameInfos(std::map<std::string, int> &teamMap, 
             teamMap.insert({player.second.getTeamName(), 1});
         }
     }
-    for (auto &tile: _map.getTiles()) {
-        std::vector<std::shared_ptr<IRaylibEntities>> &entities = tile.second.getEntities();
-        if (entities.size() == 0)
-            continue;
-        resources[0] += entities[0]->getAmount();
-        resources[1] += entities[1]->getAmount();
-        resources[2] += entities[2]->getAmount();
-        resources[3] += entities[3]->getAmount();
-        resources[4] += entities[4]->getAmount();
-        resources[5] += entities[5]->getAmount();
-        resources[6] += entities[6]->getAmount();
+    for (int y = 0; y < mapDimensions.second; y++) {
+        for (int x = 0; x < mapDimensions.first; x++) {
+            Tile &tile = _map.getTile(tileCoordinates(x, y));
+            std::vector<std::shared_ptr<IRaylibEntities>> &entities = tile.getEntities();
+            if (entities.size() != 7)
+                continue;
+            resources[0] += entities[0]->getAmount();
+            resources[1] += entities[1]->getAmount();
+            resources[2] += entities[2]->getAmount();
+            resources[3] += entities[3]->getAmount();
+            resources[4] += entities[4]->getAmount();
+            resources[5] += entities[5]->getAmount();
+            resources[6] += entities[6]->getAmount();
+        }
     }
 }
 
@@ -350,6 +354,7 @@ void zappy::RaylibGraphical::drawLowObject()
     displayLowObjectGameInfos();
     drawLowObjectTiles();
     drawLowObjectPlayers();
+    displayLowObjectBroadcast();
 }
 
 void zappy::RaylibGraphical::drawLowObjectTiles()
@@ -407,9 +412,10 @@ void zappy::RaylibGraphical::drawLowObjectPlayers()
 
 void zappy::RaylibGraphical::displayLowObjectTileInfo(zappy::tileCoordinates coords)
 {
+    // Changer les positions pour afficher en dessous de la map
     Tile &tile = _map.getTile(coords);
     std::vector<std::shared_ptr<IRaylibEntities>> &entities = tile.getEntities();
-    if (entities.size() == 0)
+    if (entities.size() != 7)
         return;
     const int renderWidth = _window.GetRenderWidth();
 
@@ -444,7 +450,7 @@ void zappy::RaylibGraphical::displayTileInfo(zappy::tileCoordinates coords)
     Tile &tile = _map.getTile(coords);
     raylib::Rectangle rect(10, 10, 200, 170);
     std::vector<std::shared_ptr<IRaylibEntities>> &entities = tile.getEntities();
-    if (entities.size() == 0)
+    if (entities.size() != 7)
         return;
     std::array<std::string, 8> resources;
 
@@ -465,6 +471,26 @@ void zappy::RaylibGraphical::displayTileInfo(zappy::tileCoordinates coords)
     drawText(resources[4] + " Mendiane", 20, 115, raylib::Color::SkyBlue());
     drawText(resources[5] + " Phiras", 20, 135, raylib::Color::DarkBlue());
     drawText(resources[6] + " Thystame", 20, 155,raylib::Color::Purple());
+}
+
+void zappy::RaylibGraphical::displayLowObjectBroadcast()
+{
+    const int width = _window.GetRenderWidth();
+
+    drawText("Broadcast", width - 225, 330, raylib::Color::White());
+    while (_GEH.getBroadcast().size() > 0) {
+        std::pair<int, std::string> message = _GEH.popMessage();
+        std::string messageToDisplay = std::to_string(message.first) + ": " + message.second;
+        _broadcastToDisplay.push_back(messageToDisplay);
+    }
+    while (_broadcastToDisplay.size() > 30) {
+        _broadcastToDisplay.erase(_broadcastToDisplay.begin());
+    }
+    int pos = 350;
+    for (std::string msg: _broadcastToDisplay) {
+        drawText(msg, width - 315, pos, raylib::Color::White());
+        pos += 20;
+    }
 }
 
 void zappy::RaylibGraphical::displayBroadcast()

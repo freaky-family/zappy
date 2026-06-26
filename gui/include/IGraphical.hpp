@@ -23,5 +23,6 @@ namespace zappy {
             virtual void handleLowObjectInputs() = 0;
             virtual void displayLowObjectTileInfo(tileCoordinates) = 0;
             virtual void displayLowObjectGameInfos() = 0;
+            virtual void displayLowObjectBroadcast() = 0;
     };
 }

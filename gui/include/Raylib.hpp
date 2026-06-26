@@ -77,6 +77,7 @@ namespace zappy {
             void handleLowObjectInputs() override;
             void displayLowObjectTileInfo(tileCoordinates) override;
             void displayLowObjectGameInfos() override;
+            void displayLowObjectBroadcast() override;
             void fillGameInfos(std::map<std::string, int> &teamMap, std::array<int, 7> &resources);
             void drawTextureRect(RenderTexture2D&);
             void definePlayerAnimation(PlayerInfo &, std::pair<int, int> &);
