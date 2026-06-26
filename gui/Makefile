@@ -1,5 +1,5 @@
 CXX	:=  clang++
-CXXFLAGS    :=  -Wall -Wextra -std=c++20 -O3 -Ofast
+CXXFLAGS    :=  -Wall -Wextra -std=c++20 -O3
 CPPFLAGS	:=	-I ./include
 LDFLAGS	:=	-lraylib
 
@@ -31,6 +31,7 @@ SRC :=  src/main.cpp	\
 		src/Protocol.cpp \
 		src/APlayer.cpp \
 		src/Egg.cpp \
+		src/CircularBuffer.cpp \
 		src/PlayerInfo.cpp \
 		src/entities/AEntity.cpp	\
 		src/entities/Food.cpp	\
