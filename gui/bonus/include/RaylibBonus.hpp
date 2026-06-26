@@ -1,8 +1,8 @@
 #pragma once
 
+#include "CircularBuffer.hpp"
 #include "GameplatEntitiesHolder.hpp"
 #include "Raylib.hpp"
-#include "SafeQueue.hpp"
 #include <Color.hpp>
 #include <Rectangle.hpp>
 #include <array>
@@ -23,14 +23,14 @@ namespace zappy {
             RaylibBonus(Map &map, GameplayEntitiesHolder &GEH);
             ~RaylibBonus();
 
-            bool runScreens(SafeQueue<std::string> &, std::vector<std::string>&);
+            bool runScreens(CircularBuffer<std::string> &, std::vector<std::string>&);
             bool run() override;
 
         private:
             screen _screen;
 
-            bool runMenu(SafeQueue<std::string> &, std::vector<std::string> &);
-            bool runGameplay(SafeQueue<std::string> &);
+            bool runMenu(CircularBuffer<std::string> &, std::vector<std::string> &);
+            bool runGameplay(CircularBuffer<std::string> &);
             void displayItems();
 
             float _fontSize;
