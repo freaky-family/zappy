@@ -1,5 +1,4 @@
 #include "Protocol.hpp"
-#include <exception>
 #include <sstream>
 #include <string>
 #include <vector>
