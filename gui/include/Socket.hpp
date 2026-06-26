@@ -26,5 +26,7 @@ namespace zappy {
 
             int _clientSocket;
             struct sockaddr_in _address;
+
+            bool _closed;
     };
 }

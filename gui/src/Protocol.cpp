@@ -1,4 +1,5 @@
 #include "Protocol.hpp"
+#include <exception>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -16,7 +17,12 @@ zappy::Protocol::~Protocol()
 void zappy::Protocol::communicationLoop()
 {
     while (!_exit) {
-        std::string msg = _communication.runSocket(_timeUnit);
+        std::string msg("");
+        try {
+            msg = _communication.runSocket(_timeUnit);
+        } catch (std::exception &) {
+            break;
+        }
         parseMessages(msg);
     }
 }
