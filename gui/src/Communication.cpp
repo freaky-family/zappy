@@ -19,9 +19,7 @@ std::string zappy::Communication::runSocket(int timeout)
     std::string msg("");
     if (_socket->pollConnections(timeout) < 0)
         throw zappy::Exception("Poll: error");
-    for (int i = 0; i < 1; i++) {
-        msg += checkFd();
-    }
+    msg = checkFd();
     return msg;
 }
 
@@ -32,6 +30,7 @@ std::string zappy::Communication::checkFd()
         return readMessage();
     } else if (value == stateFd::CLOSE) {
         _socket->closeSocket();
+        throw zappy::Exception("Socket closed");
     }
     return std::string("");
 }

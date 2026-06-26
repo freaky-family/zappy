@@ -2,7 +2,7 @@
 #include "IEntity.hpp"
 #include "Player.hpp"
 #include "Tile.hpp"
-#include "Zappy.hpp"
+#include "ZappyBonus.hpp"
 #include "entities/Food.hpp"
 #include "entities/Materials.hpp"
 #include <cstddef>
@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-void zappy::Zappy::msz(std::vector<std::string> params)
+void zappy::ZappyBonus::msz(std::vector<std::string> params)
 {
     try {
         int x = std::stoi(params.at(1));
@@ -23,7 +23,7 @@ void zappy::Zappy::msz(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::bct(std::vector<std::string> params)
+void zappy::ZappyBonus::bct(std::vector<std::string> params)
 {
     int x, y = 0;
     int q[7] = {0};
@@ -45,12 +45,12 @@ void zappy::Zappy::bct(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::tna(std::vector<std::string> params)
+void zappy::ZappyBonus::tna(std::vector<std::string> params)
 {
     _teamsNames.push_back(params.at(1));
 }
 
-void zappy::Zappy::pnw(std::vector<std::string> params)
+void zappy::ZappyBonus::pnw(std::vector<std::string> params)
 {
     int playerNb, x, y, orientation, level = 0;
     std::string teamName;
@@ -76,7 +76,7 @@ void zappy::Zappy::pnw(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::ppo(std::vector<std::string> params)
+void zappy::ZappyBonus::ppo(std::vector<std::string> params)
 {
     int playerNb, x, y, orientation = 0;
 
@@ -93,7 +93,7 @@ void zappy::Zappy::ppo(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::plv(std::vector<std::string> params)
+void zappy::ZappyBonus::plv(std::vector<std::string> params)
 {
     int playerNb, level = 0;
 
@@ -108,7 +108,7 @@ void zappy::Zappy::plv(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::pin(std::vector<std::string> params)
+void zappy::ZappyBonus::pin(std::vector<std::string> params)
 {
     int playerNb = 0;
     int q[7] = {0};
@@ -139,21 +139,12 @@ void zappy::Zappy::pin(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::pex(std::vector<std::string> params)
+void zappy::ZappyBonus::pex(std::vector<std::string>)
 {
-    int playerNb;
-
-    try {
-        std::string str(params.at(1));
-        str.erase(str.begin());
-        playerNb = std::stoi(str);
-
-        _geh.getPlayer(playerNb).setHitting(true);
-    } catch (std::exception &) {
-    }
+    // Add to broadcast or animation
 }
 
-void zappy::Zappy::pbc(std::vector<std::string> params)
+void zappy::ZappyBonus::pbc(std::vector<std::string> params)
 {
     std::string msg("");
     int playerNb = 0;
@@ -173,12 +164,12 @@ void zappy::Zappy::pbc(std::vector<std::string> params)
 
 }
 
-void zappy::Zappy::pic(std::vector<std::string> params)
+void zappy::ZappyBonus::pic(std::vector<std::string> params)
 {
     try {
         std::string str;
         std::map<int , PlayerInfo> &players = _geh.getPlayers();
-        for (size_t i = 4; i < params.size(); i++) {
+        for (size_t i = 3; i < params.size(); i++) {
             str = params.at(i);
             str.erase(str.begin());
             int playerNb = std::stoi(str);
@@ -188,7 +179,7 @@ void zappy::Zappy::pic(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::pie(std::vector<std::string> params)
+void zappy::ZappyBonus::pie(std::vector<std::string> params)
 {
     int x, y = 0;
     bool result = false;
@@ -211,7 +202,7 @@ void zappy::Zappy::pie(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::pfk(std::vector<std::string> params)
+void zappy::ZappyBonus::pfk(std::vector<std::string> params)
 {
     try {
         int playerNb = 0;
@@ -223,20 +214,19 @@ void zappy::Zappy::pfk(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::pdr(std::vector<std::string> params)
+void zappy::ZappyBonus::pdr(std::vector<std::string> params)
 {
     try {
         int playerNb = 0;
         std::string str(params.at(1));
         str.erase(str.begin());
         playerNb = std::stoi(str);
-        _geh.getPlayer(playerNb).setDropping(true);
         _geh.addMessage(playerNb, "resource dropping");
     } catch (std::exception &) {
     }
 }
 
-void zappy::Zappy::pgt(std::vector<std::string> params)
+void zappy::ZappyBonus::pgt(std::vector<std::string> params)
 {
     try {
         int playerNb = 0;
@@ -244,12 +234,11 @@ void zappy::Zappy::pgt(std::vector<std::string> params)
         str.erase(str.begin());
         playerNb = std::stoi(str);
         _geh.addMessage(playerNb, "resource collecting");
-        _geh.getPlayer(playerNb).setTaking(true);
     } catch (std::exception &) {
     }
 }
 
-void zappy::Zappy::pdi(std::vector<std::string> params)
+void zappy::ZappyBonus::pdi(std::vector<std::string> params)
 {
     int playerNb = 0;
 
@@ -258,15 +247,13 @@ void zappy::Zappy::pdi(std::vector<std::string> params)
         str.erase(str.begin());
         playerNb = std::stoi(str);
 
-        PlayerInfo info = _geh.getPlayer(playerNb);
         _geh.removePlayer(playerNb);
         _geh.addMessage(playerNb, "Player died");
-        _geh.addDyingPlayer(playerNb, info);
     } catch (std::exception &) {
     }
 }
 
-void zappy::Zappy::enw(std::vector<std::string> params)
+void zappy::ZappyBonus::enw(std::vector<std::string> params)
 {
     int eggNb, x, y = 0;
 
@@ -282,7 +269,7 @@ void zappy::Zappy::enw(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::ebo(std::vector<std::string> params)
+void zappy::ZappyBonus::ebo(std::vector<std::string> params)
 {
     int eggNb = 0;
 
@@ -296,7 +283,7 @@ void zappy::Zappy::ebo(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::edi(std::vector<std::string> params)
+void zappy::ZappyBonus::edi(std::vector<std::string> params)
 {
     int eggNb = 0;
 
@@ -310,7 +297,7 @@ void zappy::Zappy::edi(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::sgt(std::vector<std::string> params)
+void zappy::ZappyBonus::sgt(std::vector<std::string> params)
 {
     try {
         int time = std::stoi(params.at(1));
@@ -319,7 +306,7 @@ void zappy::Zappy::sgt(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::sst(std::vector<std::string> params)
+void zappy::ZappyBonus::sst(std::vector<std::string> params)
 {
     // i'm not sure about this one
     try {
@@ -329,17 +316,16 @@ void zappy::Zappy::sst(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::seg(std::vector<std::string> params)
+void zappy::ZappyBonus::seg(std::vector<std::string> params)
 {
     try {
         std::string msg(params.at(1));
-        _geh.addMessage(-1, params.at(0) + " " + params.at(1));
         //TODO add to broadcast or event for the raylib
     } catch (std::exception &) {
     }
 }
 
-void zappy::Zappy::smg(std::vector<std::string> params)
+void zappy::ZappyBonus::smg(std::vector<std::string> params)
 {
     std::string msg("");
 
@@ -353,13 +339,13 @@ void zappy::Zappy::smg(std::vector<std::string> params)
     }
 }
 
-void zappy::Zappy::suc(std::vector<std::string>)
+void zappy::ZappyBonus::suc(std::vector<std::string>)
 {
     //does nothing ig
     std::cerr << "Unknown Command" << std::endl;
 }
 
-void zappy::Zappy::sbp(std::vector<std::string>)
+void zappy::ZappyBonus::sbp(std::vector<std::string>)
 {
     //same shit ig
     std::cerr << "Bad command parameter" << std::endl;
