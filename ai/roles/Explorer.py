@@ -42,6 +42,7 @@ class Explorer(Freakster):
                 if val[i] == -2:
                     maxVal = -2
                     idx = i
+                    break;
             if maxVal == -2:
                 self.attack(idx)
                 self.returnKremlin()
@@ -77,8 +78,10 @@ class Explorer(Freakster):
     def getValue(self, dic):
         val = 0
         if dic.get("player"):
-            if dic["player"] >= 4 and self.pos_x not in range(-1, 1) and self.pos_y not in range(-1, 1):
-                return -2
+            if dic["player"] >= 4:
+                print(f"4 player found: ({self.pos_x};{self.pos_y})")
+                if not (-1 <= self.pos_x <= 1 and -1 <= self.pos_y <= 1):
+                    return -2
             return -1
         for (key, value) in dic.items():
             if key != "food":
