@@ -1,7 +1,7 @@
 #include "Egg.hpp"
 #include "GameplatEntitiesHolder.hpp"
 
-zappy::GameplayEntitiesHolder::GameplayEntitiesHolder(): _players(), _broadcast()
+zappy::GameplayEntitiesHolder::GameplayEntitiesHolder(): _players(), _dyingPlayers(), _broadcast()
 {}
 
 zappy::GameplayEntitiesHolder::~GameplayEntitiesHolder()
@@ -42,6 +42,21 @@ void zappy::GameplayEntitiesHolder::removePlayer(int id)
 std::map<int, zappy::PlayerInfo>& zappy::GameplayEntitiesHolder::getPlayers()
 {
     return _players;
+}
+
+void zappy::GameplayEntitiesHolder::addDyingPlayer(int id, PlayerInfo playerInfo)
+{
+    _dyingPlayers.insert_or_assign(id, playerInfo);
+}
+
+void zappy::GameplayEntitiesHolder::removeDyingPlayer(int id)
+{
+    _dyingPlayers.erase(id);
+}
+
+std::map<int, zappy::PlayerInfo>& zappy::GameplayEntitiesHolder::getDyingPlayers()
+{
+    return _dyingPlayers;
 }
 
 void zappy::GameplayEntitiesHolder::addEgg(int id, Egg egg)
