@@ -82,7 +82,7 @@ class Freakster:
             self.level += 1
             self.waitThread()
         # faire la mm chose sur le eject et sur le dead?
-        if (self.received == "eject"):
+        if (self.received.startswith("eject")):
             self.handleEject()
             self.waitThread()
         if (self.received == "" or self.received == "dead"):
