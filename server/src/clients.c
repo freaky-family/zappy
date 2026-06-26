@@ -241,12 +241,18 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
         int vec_x = usable_destination_x - usable_source_x;
         int vec_y = usable_destination_y - usable_source_y;
         int vertical_vec_x = 0;
-        int vertical_vec_y = 1;
+        int vertical_vec_y = -1;
+
+        printf("from %d to %d\n", source->player_graphical_index, destination->player_graphical_index);
+        printf("vecx %d, vecy %d\n", vec_x, vec_y);
+        printf("vectical vecx %d, vectical vecy %d\n", vertical_vec_x, vertical_vec_y);
 
         double vec_scalar = (vec_x * vertical_vec_x) + (vec_y * vertical_vec_y);
         double vec_norm = sqrt(pow(vec_x, 2) + pow(vec_y, 2));
         double vertical_vec_norm = sqrt(pow(vertical_vec_x, 2) + pow(vertical_vec_y, 2));
         double angle = acos(vec_scalar / (vec_norm * vertical_vec_norm)) * 180.0 / M_PI;
+
+        angle = (vec_x < 0) ? 360 - angle : angle;
 
         printf("angle: %f\n", angle);
 
