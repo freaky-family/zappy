@@ -1,6 +1,6 @@
 from .Communication import SocketReceiveError
 from itertools import cycle
-from enum import Enum
+from enum import Enum, CONFORM, IntFlag, auto
 import base64
 import threading
 import re
@@ -21,7 +21,7 @@ class Role(Enum):
     COMMANDO = 7
 
 
-class Direction(Enum):
+class Direction(IntFlag, boundary=CONFORM):
     UP = 0
     RIGHT = 1
     DOWN = 2
@@ -142,14 +142,14 @@ class Freakster:
         except BrokenPipeError:
             raise SocketReceiveError("Server has stopped.")
 
-    def moveForward(self):
-        if self.direction == Direction.UP:
+    def moveForward(self, direction):
+        if direction == Direction.UP:
             self.pos_y += 1
-        if self.direction == Direction.RIGHT:
+        if direction == Direction.LEFT:
             self.pos_x += 1
-        if self.direction == Direction.DOWN:
+        if direction == Direction.DOWN:
             self.pos_y -= 1
-        if self.direction == Direction.LEFT:
+        if direction == Direction.RIGHT:
             self.pos_x -= 1
 
         if self.pos_x > (self.map_dim[0] / 2):
@@ -184,6 +184,16 @@ class Freakster:
 
 
     def handleEject(self):
+        array = self.received().split()
+        direction = int(array[1])
+        if (direction == 5):
+            self.moveForward(self.direction)
+        if (direction == 3):
+            self.moveForward(self.direction + Direction.RIGHT)
+        if (direction == 1):
+            self.moveForward(self.direction + Direction.DOWN)
+        if (direction == 7):
+            self.moveForward(self.direction + Direction.LEFT)
         pass
 
     def Loop(self):
@@ -196,7 +206,7 @@ class Freakster:
         self.send("Forward")
         self.waitThread()
         if (self.received == "ok"):
-            self.moveForward()
+            self.moveForward(self.direction)
             if len(self.vision) <= 1:
                 self.vision = []
             else:
@@ -210,7 +220,7 @@ class Freakster:
         self.send("Right")
         self.waitThread()
         if self.received == "ok":
-            self.direction = Direction((self.direction.value + 1) % 4)
+            self.direction = Direction(self.direction - 1)
             if self.vision != []:
                 self.vision = [self.vision[0]]
 
@@ -218,7 +228,7 @@ class Freakster:
         self.send("Left")
         self.waitThread()
         if self.received == "ok":
-            self.direction = Direction((self.direction.value - 1) % 4)
+            self.direction = Direction(self.direction + 1)
             if self.vision != []:
                 self.vision = [self.vision[0]]
 
