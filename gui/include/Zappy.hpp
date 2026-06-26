@@ -5,7 +5,6 @@
 #include "IGraphical.hpp"
 #include "Map.hpp"
 #include "Protocol.hpp"
-#include "SafeQueue.hpp"
 #include <functional>
 #include <map>
 #include <memory>
