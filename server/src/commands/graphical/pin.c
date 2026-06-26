@@ -13,13 +13,13 @@ void command_graphic_pin_index(server_t *server, int graphic_i, int player_i)
     dprintf(CLIENT_I(graphic_i)->fd, "pin #%d %d %d %d %d %d %d %d %d %d" ZMSG_END_SEQ,
         player->player_graphical_index,
         player->tile->x, player->tile->y,
-        player->tile->stock.food,
-        player->tile->stock.linemate,
-        player->tile->stock.deraumere,
-        player->tile->stock.sibur,
-        player->tile->stock.mendiane,
-        player->tile->stock.phiras,
-        player->tile->stock.thystame
+        player->stock.food,
+        player->stock.linemate,
+        player->stock.deraumere,
+        player->stock.sibur,
+        player->stock.mendiane,
+        player->stock.phiras,
+        player->stock.thystame
     );
 }
 
