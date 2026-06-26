@@ -16,6 +16,7 @@
 #include <Text.hpp>
 #include <Shader.hpp>
 #include <RenderTexture.hpp>
+#include <filesystem>
 #include "RaylibModelHolder.hpp"
 #include "RaylibParticles.hpp"
 #include "ShaderHolder.hpp"
@@ -43,9 +44,11 @@ namespace zappy {
             std::vector<std::string> _broadcastToDisplay;
             std::map<std::string, raylib::Color> _colorMap;
             std::map<int, std::pair<int, int>> _playerAnimationsMap;
+            std::map<int, std::pair<int, int>> _dyingPlayerAnimationsMap;
             ShaderHolder _shaderHolder;
             int _currentShader;
             raylib::RenderTexture2D _renderTexture;
+            bool _animationToggle;
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map, GameplayEntitiesHolder& GEH);
@@ -55,15 +58,17 @@ namespace zappy {
             void initCamera() override;
             bool run() override;
             void drawTiles() override;
-            void drawParticles(PlayerInfo &) override;
             void displayTileInfo(tileCoordinates) override;
             void displayBroadcast() override;
             void drawPlayers() override;
             void drawGEHInfos() override;
             void drawTextureRect(RenderTexture2D&);
+            void definePlayerAnimation(PlayerInfo &, std::pair<int, int> &);
             void updatePlayerAnimations(PlayerInfo &);
+            void updateDyingPlayerAnimaions(PlayerInfo &);
             void drawPlayerInfo(PlayerInfo &);
             void drawEggInfo(Egg &);
+            void drawParticles(tileCoordinates, raylib::Color);
             void highlightPlayerFOV(PlayerInfo &);
             bool getModelCollision(raylib::Model&, floatCoordinates, raylib::Ray, std::pair<int, int>, float height, Vector3, Vector3, float);
             // Maybe get this to interface by creating a zappy::Color object that could interpret more than a raylib color
