@@ -1,12 +1,12 @@
 #include "PlayerCommunication.hpp"
-#include "SafeQueue.hpp"
+#include "CircularBuffer.hpp"
 #include <exception>
 #include <iostream>
 #include <string>
 #include <unistd.h>
 
-zappy::PlayerCommunication::PlayerCommunication(int port, std::string hostname, bool &exit, SafeQueue<std::string> &queue) : _communication(port, hostname),
-    _safeQueue(queue), _exit(exit), _port(port), _hostname(hostname), _teamName()
+zappy::PlayerCommunication::PlayerCommunication(int port, std::string hostname, bool &exit, CircularBuffer<std::string> &queue) : _communication(port, hostname),
+    _circularBuffer(queue), _exit(exit), _port(port), _hostname(hostname), _teamName()
 {
 }
 
@@ -20,7 +20,8 @@ void zappy::PlayerCommunication::communicationLoop()
         std::string message("");
         std::string msg;
 
-        if (_safeQueue.tryPop(message)) {
+        if (_circularBuffer.canRead()) {
+            message = _circularBuffer.getElem();
             try {
                 _communication.sendMessage(message);
             } catch (std::exception &) {

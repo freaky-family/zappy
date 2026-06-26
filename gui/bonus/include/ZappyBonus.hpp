@@ -1,11 +1,11 @@
 #pragma once
 
+#include "CircularBuffer.hpp"
 #include "GameplatEntitiesHolder.hpp"
 #include "Map.hpp"
 #include "PlayerCommunication.hpp"
 #include "Protocol.hpp"
 #include "RaylibBonus.hpp"
-#include "SafeQueue.hpp"
 #include <functional>
 #include <string>
 #include <thread>
@@ -25,8 +25,8 @@ namespace zappy {
 
             GameplayEntitiesHolder _geh;
 
-            SafeQueue<std::vector<std::string>> _commandsQueue;
-            SafeQueue<std::string> _playerMovesQueue;
+            CircularBuffer<std::vector<std::string>> _commandsQueue;
+            CircularBuffer<std::string> _playerMovesQueue;
 
 
             bool _exit;

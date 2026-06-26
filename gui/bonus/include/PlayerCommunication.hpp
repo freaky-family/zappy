@@ -1,14 +1,14 @@
 #pragma once
 
+#include "CircularBuffer.hpp"
 #include "Communication.hpp"
-#include "SafeQueue.hpp"
 #include <string>
 
 namespace zappy {
     class PlayerCommunication {
         public:
             PlayerCommunication() = delete;
-            PlayerCommunication(int port, std::string hostname, bool &exit, SafeQueue<std::string> &queue);
+            PlayerCommunication(int port, std::string hostname, bool &exit, CircularBuffer<std::string> &queue);
             ~PlayerCommunication();
 
             void communicationLoop();
@@ -19,7 +19,7 @@ namespace zappy {
 
         private:
             Communication _communication;
-            SafeQueue<std::string> &_safeQueue;
+            CircularBuffer<std::string> &_circularBuffer;
 
             bool &_exit;
 

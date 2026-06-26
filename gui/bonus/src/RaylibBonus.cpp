@@ -1,8 +1,8 @@
 #include "RaylibBonus.hpp"
+#include "CircularBuffer.hpp"
 #include "GameplatEntitiesHolder.hpp"
 #include "Map.hpp"
 #include "Raylib.hpp"
-#include "SafeQueue.hpp"
 #include <Color.hpp>
 #include <Functions.hpp>
 #include <Keyboard.hpp>
@@ -30,7 +30,7 @@ zappy::RaylibBonus::RaylibBonus(zappy::Map &map, GameplayEntitiesHolder &GEH) : 
 zappy::RaylibBonus::~RaylibBonus()
 {}
 
-bool zappy::RaylibBonus::runMenu(zappy::SafeQueue<std::string> &queue, std::vector<std::string> &teams)
+bool zappy::RaylibBonus::runMenu(zappy::CircularBuffer<std::string> &buffer, std::vector<std::string> &teams)
 {
     std::vector<raylib::Rectangle> vecRec;
     raylib::Vector2 size = _window.GetSize();
@@ -40,7 +40,7 @@ bool zappy::RaylibBonus::runMenu(zappy::SafeQueue<std::string> &queue, std::vect
 
     if (raylib::Keyboard::IsKeyPressed(KEY_SPACE)) {
         _screen = screen::GAMEPLAY;
-        queue.push(teams.at(_index) + "\n");
+        buffer.addElement(teams.at(_index) + "\n");
         _index = 0;
     }
 
@@ -71,22 +71,22 @@ bool zappy::RaylibBonus::runMenu(zappy::SafeQueue<std::string> &queue, std::vect
     return false;
 }
 
-bool zappy::RaylibBonus::runGameplay(zappy::SafeQueue<std::string> &cmds)
+bool zappy::RaylibBonus::runGameplay(zappy::CircularBuffer<std::string> &cmds)
 {
     if (raylib::Keyboard::IsKeyPressed(KEY_W)) {
-        cmds.push("Forward\n");
-        cmds.push("Take food\n");
+        cmds.addElement("Forward\n");
+        cmds.addElement("Take food\n");
     }
     if (raylib::Keyboard::IsKeyPressed(KEY_A))
-        cmds.push("Left\n");
+        cmds.addElement("Left\n");
     if (raylib::Keyboard::IsKeyPressed(KEY_D))
-        cmds.push("Right\n");
+        cmds.addElement("Right\n");
 
     // maybe change some keybids
     if (raylib::Keyboard::IsKeyPressed(KEY_Q))
-        cmds.push("Eject\n");
+        cmds.addElement("Eject\n");
     if (raylib::Keyboard::IsKeyPressed(KEY_L))
-        cmds.push("Look\n");
+        cmds.addElement("Look\n");
 
     if (raylib::Keyboard::IsKeyPressed(KEY_LEFT)) {
         _index--;
@@ -97,13 +97,13 @@ bool zappy::RaylibBonus::runGameplay(zappy::SafeQueue<std::string> &cmds)
         _index = (_index + 1) % 6;
 
     if (raylib::Keyboard::IsKeyPressed(KEY_E)) {
-        cmds.push("Take " + _items.at(_index) + "\n");
+        cmds.addElement("Take " + _items.at(_index) + "\n");
     }
 
     return run();
 }
 
-bool zappy::RaylibBonus::runScreens(zappy::SafeQueue<std::string> &cmds, std::vector<std::string> &teams)
+bool zappy::RaylibBonus::runScreens(zappy::CircularBuffer<std::string> &cmds, std::vector<std::string> &teams)
 {
     switch (_screen) {
         case screen::MENU:
