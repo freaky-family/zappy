@@ -24,7 +24,7 @@ ai_thread() {
 }
 
 server_thread() {
-    (sleep $sleep ; echo "/quit") | ./$1 -p $port -x 30 -y 30 -n freaky -c 3 -f "$framerate" > "$filename$2"
+    (sleep $sleep ; echo "/quit") | ./$1 -p $port -x 30 -y 30 -n freaky -c 1 -f "$framerate" > "$filename$2"
     return
 }
 pid_array=()
@@ -39,7 +39,6 @@ for i in $(seq 1 $1); do
 done
 
 for element in "${pid_array[@]}"; do
-    # echo $element
     wait "$element"
 done
 echo ""

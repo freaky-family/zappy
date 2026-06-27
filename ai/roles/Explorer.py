@@ -1,5 +1,5 @@
-from ..AgenticIntelligenceKpiWorkflow import Freakster, Direction, Role
 from random import randint
+from ..AgenticIntelligenceKpiWorkflow import Freakster, Direction, Role
 
 EXPLORER_STASH = 15
 
@@ -33,7 +33,7 @@ class Explorer(Freakster):
             try:
                 for i in self.vision[1]:
                     val.append(self.getValue(i))
-            except Exception as e:
+            except IndexError as e:
                 print(f"vision: {self.vision} | {e}")
             for i in range(len(val)):
                 if val[i] > maxVal:
@@ -42,14 +42,14 @@ class Explorer(Freakster):
                 if val[i] == -2:
                     maxVal = -2
                     idx = i
-                    break;
+                    break
             if maxVal == -2:
                 self.attack(idx)
                 self.returnKremlin()
                 continue
-            if (maxVal == 0):
-                idx = randint(0, 2)
             cache = self.vision
+            if maxVal == 0:
+                idx = randint(0, 2)
             if idx == 1:
                 self.Forward()
             elif idx == 0:
@@ -62,7 +62,7 @@ class Explorer(Freakster):
                 self.Forward()
                 self.Left()
                 self.Forward()
-            if (len(cache) != 1):
+            if len(cache) != 1:
                 self.takeItems(cache[1][idx])
 
     def takeItems(self, dic):
@@ -71,7 +71,7 @@ class Explorer(Freakster):
         for (obj, value) in dic.items():
             if obj == "player":
                 continue
-            for i in range(value):
+            for _ in range(value):
                 if obj != "food":
                     self.Take(obj)
 
@@ -123,8 +123,7 @@ class Explorer(Freakster):
             pass
         for (key, value) in self.inv.items():
             if key != "food":
-                for i in range(value):
+                for _ in range(value):
                     self.Set(key)
         self.Forward()
         self.Forward()
-        return

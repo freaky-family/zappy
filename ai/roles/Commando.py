@@ -14,9 +14,8 @@ class Commando(Freakster):
         while True:
             self.Look()
             if self.vision[1][1].get("player") and self.vision[1][1]["player"] >= 4:
-                break;
+                break
             self.Right()
-        return
 
     def Broadcast(self, text):
         self.send(f"Broadcast {text}")
@@ -28,4 +27,3 @@ class Commando(Freakster):
         message = re.match(r"message (\d), (.*)", self.received)
         message = message.group(2)
         self.Broadcast(message)
-        return
