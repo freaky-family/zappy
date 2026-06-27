@@ -408,6 +408,10 @@ void zappy::RaylibGraphical::drawLowObjectPlayers()
         const tileCoordinates coords = egg.second.getCoords();
         DrawCircle((coords.first * 20 + 18) / (mapDimensions.first / 42.0f), (coords.second * 20 + 18) / (mapDimensions.second / 42.0f), 2 / ((mapDimensions.first / 42.0f) < (mapDimensions.second / 42.0f) ? (mapDimensions.first / 42.0f) : (mapDimensions.second / 42.0f)), getTeamColor(egg.second.getTeamName()));
     }
+    auto dyingPlayers = _GEH.getDyingPlayers();
+    for (auto dyingPlayer: dyingPlayers) {
+        _GEH.removeDyingPlayer(dyingPlayer.second.getId());
+    }
 }
 
 void zappy::RaylibGraphical::displayLowObjectTileInfo(zappy::tileCoordinates coords)
@@ -417,16 +421,16 @@ void zappy::RaylibGraphical::displayLowObjectTileInfo(zappy::tileCoordinates coo
     std::vector<std::shared_ptr<IRaylibEntities>> &entities = tile.getEntities();
     if (entities.size() != 7)
         return;
-    const int renderWidth = _window.GetRenderWidth();
+    const int renderHeight = _window.GetRenderHeight();
 
-    drawText("Tile " + std::to_string(coords.first) + " " + std::to_string(coords.second) + " infos", renderWidth - 335, 455, raylib::Color::White());
-    drawText(std::to_string(entities[0]->getAmount()) + " Food", renderWidth - 335, 475, raylib::Color::Brown());
-    drawText(std::to_string(entities[1]->getAmount()) + " Linemate", renderWidth - 335, 495, raylib::Color::Yellow());
-    drawText(std::to_string(entities[2]->getAmount()) + " Deraumere", renderWidth - 335, 515, raylib::Color::Green());
-    drawText(std::to_string(entities[3]->getAmount()) + " Sibur", renderWidth - 335, 535, raylib::Color::Red());
-    drawText(std::to_string(entities[4]->getAmount()) + " Mendiane", renderWidth - 335, 555, raylib::Color::SkyBlue());
-    drawText(std::to_string(entities[5]->getAmount()) + " Phiras", renderWidth - 335, 575, raylib::Color::DarkBlue());
-    drawText(std::to_string(entities[6]->getAmount()) + " Thystame", renderWidth - 335, 595,raylib::Color::Purple());
+    drawText("Tile " + std::to_string(coords.first) + " " + std::to_string(coords.second) + " infos", 15, renderHeight - 150, raylib::Color::White());
+    drawText(std::to_string(entities[0]->getAmount()) + " Food", 15, renderHeight - 130, raylib::Color::Brown());
+    drawText(std::to_string(entities[1]->getAmount()) + " Linemate", 15, renderHeight - 110, raylib::Color::Yellow());
+    drawText(std::to_string(entities[2]->getAmount()) + " Deraumere", 15, renderHeight - 90, raylib::Color::Green());
+    drawText(std::to_string(entities[3]->getAmount()) + " Sibur", 15, renderHeight - 70, raylib::Color::Red());
+    drawText(std::to_string(entities[4]->getAmount()) + " Mendiane", 150, renderHeight - 130, raylib::Color::SkyBlue());
+    drawText(std::to_string(entities[5]->getAmount()) + " Phiras", 150, renderHeight - 110, raylib::Color::DarkBlue());
+    drawText(std::to_string(entities[6]->getAmount()) + " Thystame", 150, renderHeight - 90,raylib::Color::Purple());
 }
 
 void zappy::RaylibGraphical::drawParticles(zappy::tileCoordinates coords, raylib::Color color)
