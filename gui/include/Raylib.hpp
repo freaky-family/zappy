@@ -55,6 +55,7 @@ namespace zappy {
             bool _animationToggle;
             bool _lowObject;
             bool _displayGameInfos;
+
         public:
             RaylibGraphical() = delete;
             RaylibGraphical(Map &map, GameplayEntitiesHolder& GEH);
@@ -94,5 +95,7 @@ namespace zappy {
 
             // TODO maybe add in interface
             void updateCamera();
+
+            bool endScreen(std::string teamName) override;
     };
 }
