@@ -50,5 +50,6 @@ namespace zappy {
             raylib::Texture2D& getBackground();
             int updateBackgroundScroll();
             raylib::Texture2D &getEndScreen();
+            int updateEndBackgroundScroll();
     };
 }
