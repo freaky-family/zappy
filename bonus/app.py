@@ -27,7 +27,7 @@ def teams() -> str:
     players_by_team = {}
     for p in state.players.values():
         players_by_team.setdefault(p.team, []).append(p)
-    return render_template('teams.html', teams=players_by_team)
+    return render_template('teams.html')
 
 if __name__ == '__main__':
     args = ArgumentParser(add_help=False)
