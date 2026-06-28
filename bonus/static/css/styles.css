@@ -29,7 +29,6 @@ td{
 }
 td.player {
     background: #1b2f4a;
-    border: 1px var(--color-blue);
     color: var(--color-blue);
 }
 td.defaultp {
@@ -73,7 +72,7 @@ td.default{
     background: var(--color-bkgdef);
 }
 td.playerl{
-    background: #162238;
+    background: #1b2f4a;
 }
 
 a.t {
