@@ -238,7 +238,6 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
     long vec_x = (long)destination->tile->x - (long)source->tile->x;
     long opposite_vec_x = vec_x + ((vec_x < 0) ? (long)world->width : -(long)world->width);
 
-    printf("vec_x %ld, opposite_vec_x %ld\n", vec_x, opposite_vec_x);
     if (ABS(vec_x) < ABS(opposite_vec_x)) {
         shortest_vec_x = vec_x;
     } else {
@@ -249,16 +248,11 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
     long vec_y = (long)destination->tile->y - (long)source->tile->y;
     long opposite_vec_y = vec_y + ((vec_y < 0) ? (long)world->height : -(long)world->height);
 
-    printf("vec_x %ld, opposite_vec_x %ld\n", vec_y, opposite_vec_y);
     if (ABS(vec_y) < ABS(opposite_vec_y)) {
         shortest_vec_y = vec_y;
     } else {
         shortest_vec_y = opposite_vec_y;
     }
-
-    printf("from %d to %d\n", source->player_graphical_index, destination->player_graphical_index);
-    printf("vecx %d, vecy %d\n", shortest_vec_x, shortest_vec_y);
-    printf("vectical vecx %d, vectical vecy %d\n", vertical_vec_x, vertical_vec_y);
 
     double vec_scalar = (shortest_vec_x * vertical_vec_x) + (shortest_vec_y * vertical_vec_y);
     double vec_norm = sqrt(pow(shortest_vec_x, 2) + pow(shortest_vec_y, 2));
@@ -268,17 +262,12 @@ int client_get_shortest_direction_tile(client_data_t *source, client_data_t *des
     // reverse clock wise
     angle = (shortest_vec_x > 0) ? 360 - angle : angle;
 
-    printf("angle: %f\n", angle);
-
     angle += 45.0 / 2.0;
     angle = (angle < 0) ? angle + 360 : angle;
 
-    printf("modified angle: %f\n", angle);
-
     int direction = (int)angle / 45 + 1;
-    printf("before client orientation applied direction %d\n", direction);
 
-    return apply_client_orientation(direction, source->direction); 
+    return apply_client_orientation(direction, source->direction);
 }
 
 void client_level_up(client_data_t *client)
