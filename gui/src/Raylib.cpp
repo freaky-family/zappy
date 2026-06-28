@@ -757,7 +757,7 @@ bool zappy::RaylibGraphical::endScreen(std::string teamName)
 {
     bool exit = false;
     Vector2 size = _window.GetSize();
-    std::string Title = "The winner is:" + teamName;
+    std::string Title = "The winner team is:" + teamName;
     const float font = 35;
 
     if (_window.ShouldClose()) {
