@@ -32,7 +32,7 @@ function make_cell(x, y, player_text, r)
     if (player_text)
         td.className = 'player';
     a.href = `/tile/${x}/${y}`;
-    a.textContent = player_text || '';
+    a.textContent = player_text ? [...player_text].join(' ') : '';
     td.append(a);
     td.append(make_table(r, player_text));
     return td;
@@ -58,7 +58,7 @@ async function poll()
     document.getElementById('info').textContent =
         `${data.width}x${data.height} | teams: ${data.teams.join(', ')} | players: ${Object.keys(data.players).length}`;
     for (const [id, p] of Object.entries(data.players))
-        cells[`${p.x},${p.y}`] = (cells[`${p.x},${p.y}`] || '') + `#${id}`;
+        (cells[`${p.x},${p.y}`] = cells[`${p.x},${p.y}`] || new Set()).add(p.team);
     const map = document.getElementById('map');
     map.innerHTML = '';
     for (let y = 0; y < data.height; y++) {
@@ -68,5 +68,5 @@ async function poll()
         map.append(tr);
     }
 }
-setInterval(poll, 1000);
+setInterval(poll, 100);
 poll();
