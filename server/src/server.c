@@ -159,6 +159,7 @@ bool zappy_server(args_t *args)
 {
     server_t *server = server_init(args);
 
+    signal(SIGPIPE, SIG_IGN);
     if (server == NULL)
         return false;
     server->control_fd = socket_init(args->port);
