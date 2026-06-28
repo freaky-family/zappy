@@ -44,9 +44,10 @@ void client_quit(server_t *server)
     if (fd != server->control_fd && fd != server->signal_fd) {
         if (close(fd) == -1)
             perror("close");
-        if (CLIENT->is_graphical == false && CLIENT->current_step == LOGGED_IN)
+        if (CLIENT->is_graphical == false && CLIENT->current_step == LOGGED_IN) {
             client_send_death_message(server);
-        players_delete(server->players, CLIENT->player_index);
+            players_delete(server->players, CLIENT->player_index);
+        }
         poller_delete(server->poller, server->index);
         clients_delete(server->clients, server->index);
         server->index--;
