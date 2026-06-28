@@ -156,7 +156,6 @@ void zappy::RaylibGraphical::drawText(std::string str, int X, int Y, raylib::Col
 bool zappy::RaylibGraphical::getModelCollision(raylib::Model &model, floatCoordinates pos, raylib::Ray ray, std::pair<int, int> mapDimensions, float height, Vector3 scale, Vector3 rotation, float angle)
 {
     for (int i = 0; i < model.meshCount; i++) {
-        // TODO ajouter la matrice de rotation
         raylib::Matrix matT = MatrixTranslate(pos.first - mapDimensions.first / 2.0 + 0.5, height, pos.second - mapDimensions.second / 2.0 + 0.5);
         raylib::Matrix matS = MatrixScale(scale.x, scale.y, scale.z);
         raylib::Matrix matR = MatrixRotate(rotation, angle);
