@@ -82,6 +82,14 @@ int zappy::RaylibModelHolder::updateBackgroundScroll()
     return _bkgScroll;
 }
 
+int zappy::RaylibModelHolder::updateEndBackgroundScroll()
+{
+    _bkgScroll += 0.75f;
+    if (_bkgScroll >= _endBg.height * 0.5)
+        _bkgScroll = 0;
+    return _bkgScroll;
+}
+
 raylib::Texture2D& zappy::RaylibModelHolder::getBackground()
 {
     return _bkg;

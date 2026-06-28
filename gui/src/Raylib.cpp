@@ -766,10 +766,10 @@ bool zappy::RaylibGraphical::endScreen(std::string teamName)
 
     _window.BeginDrawing();
     _window.ClearBackground(raylib::Color::RayWhite());
-    int scroll = _modelHolder.updateBackgroundScroll();
+    int scroll = _modelHolder.updateEndBackgroundScroll();
     raylib::Texture2D& bkg = _modelHolder.getEndScreen();
-    bkg.Draw(Vector2(0, scroll), 0.0f, 1.0f, raylib::Color::White());
-    bkg.Draw(Vector2(0, -(bkg.height * 2) + scroll), 0.0f, 1.0f, raylib::Color::White());
+    bkg.Draw(Vector2(0, scroll), 0.0f, 0.5f, raylib::Color::White());
+    bkg.Draw(Vector2(0, -(bkg.height * 0.5) + scroll), 0.0f, 0.5f, raylib::Color::White());
 
     raylib::DrawText(Title, size.x / 2 - (Title.length() * font) / 4, size.y / 2, font, BLACK);
 
