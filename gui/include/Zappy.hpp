@@ -37,6 +37,10 @@ namespace zappy {
 
             void launchProtocol();
 
+            bool _ended;
+
+            std::string _winner;
+
 
             // Commandes
             void msz(std::vector<std::string> params);

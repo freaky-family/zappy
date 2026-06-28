@@ -19,6 +19,7 @@
 #include <optional>
 #include <raylib.h>
 #include <raymath.h>
+#include <string>
 #include <utility>
 #include <vector>
 #include "Utils.hpp"
@@ -750,4 +751,24 @@ raylib::Color zappy::RaylibGraphical::getTeamColor(std::string name)
         _colorMap.insert({name, color});
     }
     return color;
+}
+
+bool zappy::RaylibGraphical::endScreen(std::string teamName)
+{
+    bool exit = false;
+    Vector2 size = _window.GetSize();
+    std::string Title = "The winner is:" + teamName;
+    const float font = 25;
+
+    if (_window.ShouldClose()) {
+        exit = true;
+    }
+
+    _window.BeginDrawing();
+    _window.ClearBackground(raylib::Color::RayWhite());
+
+    raylib::DrawText(Title, size.x / 2 - (Title.length() * font) / 2, size.y / 2, font, BLACK);
+
+    _window.EndDrawing();
+    return exit;
 }
