@@ -16,6 +16,23 @@ double calculate_time_elapsed(struct timespec start)
     return (double)(now.tv_sec - start.tv_sec) + (double)(now.tv_nsec - start.tv_nsec) / 1000000000.0;
 }
 
+// Previously, this code was found in verify_frequency:
+// Would pop a command from the command queue only if a command was run before it.
+// In a case where we're logging in and immediately sending a command, it would not work.
+//
+// Verifying if there's a command to be popped and executed everytime we're checking for events fixes this
+static void try_running_command_handler(server_t *server, int i)
+{
+    unsigned int prev_index = server->index;
+    int index = clients_find_by_player_index(server->clients, i);
+
+    if (index == -1)
+        return;
+    server->index = index;
+    client_command_handler(server);
+    server->index = prev_index;
+}
+
 static void verify_frequency(server_t *server, int i)
 {
     double time_elapsed = calculate_time_elapsed(PLAYER_I(i)->command_start);
@@ -31,9 +48,6 @@ static void verify_frequency(server_t *server, int i)
         PLAYER_I(i)->is_command_running = false;
         PLAYER_I(i)->command_freq_offset = 0.0;
         PLAYER_I(i)->command = NULL;
-        // Try finding if there's another command to run
-        // Safe to run as we're in the server->index context
-        client_command_handler(server);
         server->index = prev_index;
     }
 }
@@ -90,6 +104,7 @@ void frequency_handling(server_t *server)
         if (PLAYER_I(i)->is_command_running == true) {
             verify_frequency(server, i);
         }
+        try_running_command_handler(server, i);
     }
 }
 
