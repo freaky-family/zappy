@@ -182,18 +182,18 @@ class Freakster:
         if self.received != "ok":
             pass
 
-
     def handleEject(self):
-        array = self.received().split()
+        print(self.received)
+        array = self.received.split()
         direction = int(array[1])
         if (direction == 5):
             self.moveForward(self.direction)
         if (direction == 3):
-            self.moveForward(self.direction + Direction.RIGHT)
+            self.moveForward(self.direction + Direction.LEFT)
         if (direction == 1):
             self.moveForward(self.direction + Direction.DOWN)
         if (direction == 7):
-            self.moveForward(self.direction + Direction.LEFT)
+            self.moveForward(self.direction + Direction.RIGHT)
         pass
 
     def Loop(self):
@@ -315,6 +315,27 @@ class Freakster:
 
     def xor(self, message, key):
         return ''.join(chr(ord(c)^ord(k)) for c,k in zip(message, cycle(key)))
+
+    def returnKremlin(self):
+        if self.pos_x == 0 and self.pos_y == 0:
+            return
+        if self.pos_x < 0 and self.pos_x <= self.map_dim[0]:
+            while self.direction != Direction.RIGHT:
+                self.Right()
+        else:
+            while self.direction != Direction.LEFT:
+                self.Left()
+        while self.pos_x != 0:
+            self.Forward()
+
+        if self.pos_y < 0 and self.pos_y <= self.map_dim[1]:
+            while self.direction != Direction.UP:
+                self.Left()
+        else:
+            while self.direction != Direction.DOWN:
+                self.Right()
+        while self.pos_y != 0:
+            self.Forward()
 
 def fill_case(s):
     d = {}

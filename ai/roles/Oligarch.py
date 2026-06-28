@@ -2,7 +2,6 @@ from ..AgenticIntelligenceKpiWorkflow import Freakster, Role, OLIGARCH_STASH
 
 
 class Oligarch(Freakster):
-
     def mainloop(self):
         self.Look()
         nb_player = self.vision[0][0]["player"]
@@ -18,6 +17,7 @@ class Oligarch(Freakster):
         # on pourrait faire un dernier fork, mais après les oligarques ont moins le temps de prendre
         # de la bouffe et donc ça peut être un peu dangereux
         while (True):
+            self.returnKremlin()
             self.Inventory()
             while (self.inv["food"] < OLIGARCH_STASH):
                 if (not self.Take("food")):

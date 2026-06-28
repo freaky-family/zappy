@@ -98,25 +98,7 @@ class Explorer(Freakster):
         self.Fork(Role.COMMANDO)
 
     def returnKremlin(self):
-        # go back to base
-        if self.pos_x < 0 and self.pos_x <= self.map_dim[0]:
-            while self.direction != Direction.RIGHT:
-                self.Right()
-        else:
-            while self.direction != Direction.LEFT:
-                self.Left()
-        while self.pos_x != 0:
-            self.Forward()
-
-        if self.pos_y < 0 and self.pos_y <= self.map_dim[1]:
-            while self.direction != Direction.UP:
-                self.Left()
-        else:
-            while self.direction != Direction.DOWN:
-                self.Right()
-        while self.pos_y != 0:
-            self.Forward()
-
+        super().returnKremlin()
         # refills and drop
         self.Inventory()
         while (self.Take("food") and self.inv["food"] <= EXPLORER_STASH):
