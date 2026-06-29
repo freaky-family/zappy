@@ -11,9 +11,9 @@ zappy::Linemate::Linemate(zappy::tileCoordinates tile, int amount) : Material(Ma
 zappy::Linemate::~Linemate()
 {}
 
-raylib::Color zappy::Linemate::getMaterialColor()
+std::tuple<int, int, int> zappy::Linemate::getMaterialColor()
 {
-    return raylib::Color::Yellow();
+    return std::tuple(253, 249, 0);
 }
 
 std::pair<float, float> zappy::Linemate::getMaterialPosition(std::pair<int, int> dimensions)

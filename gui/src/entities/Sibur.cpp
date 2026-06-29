@@ -11,9 +11,9 @@ zappy::Sibur::Sibur(zappy::tileCoordinates tile, int amount) : Material(Material
 zappy::Sibur::~Sibur()
 {}
 
-raylib::Color zappy::Sibur::getMaterialColor()
+std::tuple<int, int, int> zappy::Sibur::getMaterialColor()
 {
-    return raylib::Color::Red();
+    return std::tuple(230, 41, 55);
 }
 
 std::pair<float, float> zappy::Sibur::getMaterialPosition(std::pair<int, int> dimensions)

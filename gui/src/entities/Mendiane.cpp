@@ -11,9 +11,9 @@ zappy::Mendiane::Mendiane(zappy::tileCoordinates tile, int amount) : Material(Ma
 zappy::Mendiane::~Mendiane()
 {}
 
-raylib::Color zappy::Mendiane::getMaterialColor()
+std::tuple<int, int, int> zappy::Mendiane::getMaterialColor()
 {
-    return raylib::Color::SkyBlue();
+    return std::tuple(102, 191, 255);
 }
 
 std::pair<float, float> zappy::Mendiane::getMaterialPosition(std::pair<int, int> dimensions)

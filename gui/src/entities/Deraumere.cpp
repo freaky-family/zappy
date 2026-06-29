@@ -11,9 +11,9 @@ zappy::Deraumere::Deraumere(zappy::tileCoordinates tile, int amount) : Material(
 zappy::Deraumere::~Deraumere()
 {}
 
-raylib::Color zappy::Deraumere::getMaterialColor()
+std::tuple<int, int, int> zappy::Deraumere::getMaterialColor()
 {
-    return raylib::Color::Green();
+    return std::tuple(0, 228, 48);
 }
 
 std::pair<float, float> zappy::Deraumere::getMaterialPosition(std::pair<int, int> dimensions)

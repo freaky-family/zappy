@@ -11,9 +11,9 @@ zappy::Phiras::Phiras(zappy::tileCoordinates tile, int amount) : Material(Materi
 zappy::Phiras::~Phiras()
 {}
 
-raylib::Color zappy::Phiras::getMaterialColor()
+std::tuple<int, int, int> zappy::Phiras::getMaterialColor()
 {
-    return raylib::Color::DarkBlue();
+    return std::tuple(0, 82, 172);
 }
 
 std::pair<float, float> zappy::Phiras::getMaterialPosition(std::pair<int, int> dimensions)
