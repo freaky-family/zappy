@@ -11,7 +11,7 @@ namespace zappy {
             Linemate(tileCoordinates, int);
             ~Linemate();
 
-            raylib::Color getMaterialColor() override;
+            std::tuple<int, int, int> getMaterialColor() override;
             std::pair<float, float> getMaterialPosition(std::pair<int, int>) override;
     };
 }

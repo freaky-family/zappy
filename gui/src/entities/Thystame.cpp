@@ -11,9 +11,9 @@ zappy::Thystame::Thystame(zappy::tileCoordinates tile, int amount) : Material(Ma
 zappy::Thystame::~Thystame()
 {}
 
-raylib::Color zappy::Thystame::getMaterialColor()
+std::tuple<int, int, int> zappy::Thystame::getMaterialColor()
 {
-    return raylib::Color::DarkBlue();
+    return std::tuple(200, 122, 255);
 }
 
 std::pair<float, float> zappy::Thystame::getMaterialPosition(std::pair<int, int> dimensions)
