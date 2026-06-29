@@ -7,5 +7,6 @@ class FoodFactory(Freakster):
         while (True):
             self.Fork(Role.SACRIFICE)
             self.Inventory()
-            if (self.inv["food"] < OLIGARCH_STASH):
-                self.Take("food")
+            while (self.inv["food"] < OLIGARCH_STASH):
+                if (not self.Take("food")):
+                    break
