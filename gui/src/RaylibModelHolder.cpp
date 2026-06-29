@@ -33,9 +33,9 @@ void zappy::RaylibModelHolder::initModels()
     initModel(_foodModel, std::string(FOOD_MODEL));
     initModel(_eggModel, std::string(EGG_MODEL));
     initPlayerModelAndAnimations(std::string(ROBOT));
-    zappy::TUFF::getTextures(_materialTextureMap, std::string(MATERIAL_TEXTURES));
-    zappy::TUFF::getTextures(_eggTextureMap, std::string(EGG_TEXTURES));
-    zappy::TUFF::getTextures(_foodTextureMap, std::string(FOOD_TEXTURES));
+    zappy::TUFF::getRaylibTextures(_materialTextureMap, std::string(MATERIAL_TEXTURES));
+    zappy::TUFF::getRaylibTextures(_eggTextureMap, std::string(EGG_TEXTURES));
+    zappy::TUFF::getRaylibTextures(_foodTextureMap, std::string(FOOD_TEXTURES));
     for (auto &materialTexture: _materialTextureMap) {
         _materialModel.materials[0].maps[materialTexture.first].texture = materialTexture.second;
     }

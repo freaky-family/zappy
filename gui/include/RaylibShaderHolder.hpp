@@ -9,10 +9,10 @@ namespace zappy {
     constexpr std::string_view FISHEYE = "assets/shaders/fisheye.fs";
     constexpr std::string_view POSTERIZATION = "assets/shaders/posterization.fs";
     constexpr std::string_view BLOOM = "assets/shaders/bloom.fs";
-    class ShaderHolder {
+    class RaylibShaderHolder {
         public:
-            ShaderHolder();
-            ~ShaderHolder();
+            RaylibShaderHolder();
+            ~RaylibShaderHolder();
 
             void initShaders();
             void initShader(std::string, std::optional<std::string>);
