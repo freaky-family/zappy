@@ -79,7 +79,7 @@ namespace zappy {
             void displayLowObjectTileInfo(tileCoordinates) override;
             void displayLowObjectGameInfos() override;
             void displayLowObjectBroadcast() override;
-            void fillGameInfos(std::map<std::string, int> &teamMap, std::array<int, 7> &resources);
+            std::map<std::string, std::pair<int, int>> fillGameInfos(std::map<std::string, int> &teamMap, std::array<int, 7> &resources);
             void drawTextureRect(RenderTexture2D&);
             void definePlayerAnimation(PlayerInfo &, std::pair<int, int> &);
             void updatePlayerAnimations(PlayerInfo &);
@@ -92,10 +92,15 @@ namespace zappy {
             // Maybe get this to interface by creating a zappy::Color object that could interpret more than a raylib color
             raylib::Color getTeamColor(std::string);
             void drawText(std::string str, int X, int Y, raylib::Color color);
+            void drawLowObjectEntity(std::shared_ptr<IEntity> &, const std::pair<int, int>&) override;
+            void drawEntity(std::shared_ptr<IEntity> &, const std::pair<int, int>&) override;
 
             // TODO maybe add in interface
             void updateCamera();
 
             bool endScreen(std::string teamName) override;
+
+        private:
+            raylib::Vector3 convertVector3D(zappy::Vector3D vec);
     };
 }

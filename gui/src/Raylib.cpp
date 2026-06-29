@@ -23,6 +23,8 @@
 #include <utility>
 #include <vector>
 #include "Utils.hpp"
+#include "entities/Food.hpp"
+#include "entities/Materials.hpp"
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder &GEH): _map(map), _GEH(GEH),
     _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap(), _playerAnimationsMap(), _dyingPlayerAnimationsMap(), _shaderHolder(), _currentShader(0), _renderTexture(), _animationToggle(false), _lowObject(false), _displayGameInfos(false)
@@ -139,14 +141,60 @@ void zappy::RaylibGraphical::drawTiles()
         for (int x = 0; x < mapDimensions.first; x++) {
             zappy::Tile& tile = _map.getTile(tileCoordinates(x, y));
 
-            _modelHolder.getGrassModel().Draw(tile.getDisplayCoordinates(), 1, tile.isSelected() ? raylib::Color::Blue() : raylib::Color::White());
-            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::Black());
+            raylib::Vector3 displayCoordinates = convertVector3D(tile.getDisplayCoordinates());
+
+            _modelHolder.getGrassModel().Draw(displayCoordinates, 1, tile.isSelected() ? raylib::Color::Blue() : raylib::Color::White());
+            DrawCubeWires(displayCoordinates, 1.0f, 0.1f, 1.0f, raylib::Color::Black());
 
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             for (auto &entity: entities) {
-                entity->draw(_modelHolder, mapDimensions);
+                drawEntity(entity, mapDimensions);
             }
         }
+    }
+}
+
+void zappy::RaylibGraphical::drawEntity(std::shared_ptr<zappy::IEntity> &entity, const std::pair<int, int> &mapDimensions)
+{
+    const tileCoordinates coords = entity->getCoords();
+    const int amount = entity->getAmount();
+    if (amount == 0)
+        return;
+    Food *food = dynamic_cast<Food*>(entity.get());
+    zappy::Material *mat = dynamic_cast<zappy::Material*>(entity.get());
+
+    if (food != nullptr) {
+        float heightVal = 0.05;
+        for (int i = 0; i < (amount > 20 ? 20 : amount); i++) {
+            _modelHolder.getFoodModel().Draw(Vector3(coords.first - (mapDimensions.first / 2.0f) - 0.2 + 0.5f, heightVal, coords.second - (mapDimensions.second / 2.0f) + 0.5f), 1.0f);
+            heightVal += 0.05;
+        }
+    }
+    if (mat != nullptr) {
+        const std::tuple color = mat->getMaterialColor();
+        const std::pair<float, float> position = mat->getMaterialPosition(mapDimensions);
+        _modelHolder.getMaterialModel().Draw(Vector3(position.first, 0.05, position.second), 0.5f, raylib::Color(std::get<0>(color), std::get<1>(color), std::get<2>(color)));
+    }
+}
+
+void zappy::RaylibGraphical::drawLowObjectEntity(std::shared_ptr<IEntity> &entity, const std::pair<int, int>& mapDimensions)
+{
+    const tileCoordinates coords = entity->getCoords();
+    const int amount = entity->getAmount();
+    Food *food = dynamic_cast<Food*>(entity.get());
+    zappy::Material *mat = dynamic_cast<zappy::Material*>(entity.get());
+
+    if (food != nullptr) {
+        std::string str = std::to_string(amount);
+        raylib::DrawText(str.c_str(), (coords.first * 20 + 1) / (mapDimensions.first / 42.0f), (coords.second * 20 + 1) / (mapDimensions.second / 42.0f), 10, raylib::Color::Brown());
+    }
+    if (mat != nullptr) {
+        if (mapDimensions.first > 20 || mapDimensions.second > 20)
+            return;
+        std::string str = std::to_string(amount);
+        const int posYAdd = (static_cast<int>(mat->getMaterialType()) + 2) * (20 / 7);
+        const std::tuple color = mat->getMaterialColor();
+        raylib::DrawText(str.c_str(), (coords.first * 20 + 1) / (mapDimensions.first / 42.0f), (coords.second * 20 + posYAdd) / (mapDimensions.second / 42.0f), 3 / ((mapDimensions.first / 42.0f) < (mapDimensions.second / 42.0f) ? (mapDimensions.first / 42.0f) : (mapDimensions.second / 42.0f)), raylib::Color(std::get<0>(color), std::get<1>(color), std::get<2>(color)));
     }
 }
 
@@ -216,7 +264,7 @@ void zappy::RaylibGraphical::updateCamera()
 
                 // Reset selected tiles
                 tile.setSelectedState(false);
-                const Vector3 &tileDisplayCoords = tile.getDisplayCoordinates();
+                const raylib::Vector3 &tileDisplayCoords = convertVector3D(tile.getDisplayCoordinates());
                 RayCollision collision = GetRayCollisionBox(ray, {{tileDisplayCoords.x - 1.0f/2.0f, tileDisplayCoords.y - 0.1f/2.0f, tileDisplayCoords.z - 1.0f/2.0f}, {tileDisplayCoords.x + 1.0f/2.0f, tileDisplayCoords.y + 0.1f/2.0f, tileDisplayCoords.z + 1.0f/2.0f}});
 
                 if (collision.hit == true) {
@@ -230,7 +278,7 @@ void zappy::RaylibGraphical::updateCamera()
         // Set new camera target target
         if (closestDistance.has_value() == true) {
             closestTileHit->setSelectedState(true);
-            _cameraTargetTarget = closestTileHit->getDisplayCoordinates();
+            _cameraTargetTarget = convertVector3D(closestTileHit->getDisplayCoordinates());
             _tickUntilCameraTarget = TICK_TO_CAMERA_TARGET;
         } else {
             _cameraTargetTarget = {0, 0, 0};
@@ -249,14 +297,30 @@ void zappy::RaylibGraphical::updateCamera()
     }
 }
 
-void zappy::RaylibGraphical::fillGameInfos(std::map<std::string, int> &teamMap, std::array<int, 7> &resources)
+std::map<std::string, std::pair<int, int>> zappy::RaylibGraphical::fillGameInfos(std::map<std::string, int> &teamMap, std::array<int, 7> &resources)
 {
+    std::map<std::string, std::pair<int, int>> highLevelMap;
+
     const std::pair<int, int> mapDimensions = _map.getDimensions();
     for (auto &player: _GEH.getPlayers()) {
         try {
             teamMap.at(player.second.getTeamName()) += 1;
         } catch (std::out_of_range) {
             teamMap.insert({player.second.getTeamName(), 1});
+        }
+        try {
+            highLevelMap.at(player.second.getTeamName());
+        } catch (std::out_of_range) {
+            highLevelMap.insert({player.second.getTeamName(), std::pair(0, 0)});
+        }
+        const int playerLevel = player.second.getLevel();
+        for (auto &pair: highLevelMap) {
+            if (playerLevel == pair.second.first)
+                pair.second.second++;
+            if (playerLevel > pair.second.first) {
+                pair.second.first = playerLevel;
+                pair.second.second = 1;
+            }
         }
     }
     for (int y = 0; y < mapDimensions.second; y++) {
@@ -274,6 +338,7 @@ void zappy::RaylibGraphical::fillGameInfos(std::map<std::string, int> &teamMap, 
             resources[6] += entities[6]->getAmount();
         }
     }
+    return highLevelMap;
 }
 
 void zappy::RaylibGraphical::displayGameInfos()
@@ -283,17 +348,19 @@ void zappy::RaylibGraphical::displayGameInfos()
     std::map<std::string, int> teamMap;
     std::array<int, 7> resources;
     resources.fill(0);
-    fillGameInfos(teamMap, resources);
+    std::map<std::string, std::pair<int, int>> highLevelMap = fillGameInfos(teamMap, resources);
     const int width = _window.GetRenderWidth();
     const int height = _window.GetRenderHeight();
-    raylib::Rectangle rect(width - 325, height - 500, 300, 300);
+    raylib::Rectangle rect(width - 325, height - 600, 300, 400);
     rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
     rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
-    drawText("Game Infos", width - 225, height - 490, raylib::Color::Black());
-    int pos = height - 470;
+    drawText("Game Infos", width - 225, height - 590, raylib::Color::Black());
+    int pos = height - 570;
     for (auto &team: teamMap) {
         drawText("Team " + team.first + " : " + std::to_string(team.second) + " players", width - 320, pos, getTeamColor(team.first));
-        pos += 20;
+        auto &correspondingTeam = highLevelMap.at(team.first);
+        drawText("Highest level " + std::to_string(correspondingTeam.first) + " : " + std::to_string(correspondingTeam.second) + " players", width - 320, pos + 20, getTeamColor(team.first));
+        pos += 40;
     }
     drawText(std::to_string(resources[0]) + " Food", width - 320, pos, raylib::Color::Brown());
     drawText(std::to_string(resources[1]) + " Linemate", width - 320, pos + 20, raylib::Color::Yellow());
@@ -309,13 +376,15 @@ void zappy::RaylibGraphical::displayLowObjectGameInfos()
     std::map<std::string, int> teamMap;
     std::array<int, 7> resources;
     resources.fill(0);
-    fillGameInfos(teamMap, resources);
+    std::map<std::string, std::pair<int, int>> highLevelMap = fillGameInfos(teamMap, resources);
     const int width = _window.GetRenderWidth();
     drawText("Game Infos", width - 335, 20, raylib::Color::White());
     int pos = 40;
     for (auto &team: teamMap) {
         drawText("Team " + team.first + " : " + std::to_string(team.second) + " players", width - 335, pos, getTeamColor(team.first));
-        pos += 20;
+        auto &correspondingTeam = highLevelMap.at(team.first);
+        drawText("Highest level " + std::to_string(correspondingTeam.first) + " : " + std::to_string(correspondingTeam.second) + " players", width - 335, pos + 20, getTeamColor(team.first));
+        pos += 40;
     }
     drawText(std::to_string(resources[0]) + " Food", width - 335, pos, raylib::Color::Brown());
     drawText(std::to_string(resources[1]) + " Linemate", width - 335, pos + 20, raylib::Color::Yellow());
@@ -370,7 +439,7 @@ void zappy::RaylibGraphical::drawLowObjectTiles()
             rect.DrawLines(raylib::Color::White());
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             for (auto &entity: entities) {
-                entity->drawLowObject(mapDimensions);
+                drawLowObjectEntity(entity, mapDimensions);
             }
             if (tile.isSelected()) {
                 displayLowObjectTileInfo(tile.getCoords());
@@ -482,16 +551,16 @@ void zappy::RaylibGraphical::displayLowObjectBroadcast()
 {
     const int width = _window.GetRenderWidth();
 
-    drawText("Broadcast", width - 225, 330, raylib::Color::White());
+    drawText("Broadcast", width - 225, 410, raylib::Color::White());
     while (_GEH.getBroadcast().size() > 0) {
         std::pair<int, std::string> message = _GEH.popMessage();
         std::string messageToDisplay = std::to_string(message.first) + ": " + message.second;
         _broadcastToDisplay.push_back(messageToDisplay);
     }
-    while (_broadcastToDisplay.size() > 30) {
+    while (_broadcastToDisplay.size() > 28) {
         _broadcastToDisplay.erase(_broadcastToDisplay.begin());
     }
-    int pos = 350;
+    int pos = 430;
     for (std::string msg: _broadcastToDisplay) {
         drawText(msg, width - 315, pos, raylib::Color::White());
         pos += 20;
@@ -512,7 +581,7 @@ void zappy::RaylibGraphical::displayBroadcast()
         std::string messageToDisplay = std::to_string(message.first) + ": " + message.second;
         _broadcastToDisplay.push_back(messageToDisplay);
     }
-    while (_broadcastToDisplay.size() > 6) {
+    while (_broadcastToDisplay.size() > 7) {
         _broadcastToDisplay.erase(_broadcastToDisplay.begin());
     }
     int pos = height - 175;
@@ -729,12 +798,13 @@ void zappy::RaylibGraphical::highlightPlayerFOV(PlayerInfo &info)
     }
     for (int i = 0; i < level; i++) {
         Tile tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates(coords.first + vals.fx * (i + 1), coords.second + vals.fy * (i + 1)), mapDimensions));
-        DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
+        DrawCubeWires(convertVector3D(tile.getDisplayCoordinates()), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
         for (int j = 0; j < i + 1; j++) {
             tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates((coords.first + vals.fx * (i + 1)) - (vals.sx * (j + 1)) , (coords.second + vals.fy * (i + 1)) - (vals.sy * (j + 1))), mapDimensions));
-            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
+            DrawCubeWires(convertVector3D(tile.getDisplayCoordinates()), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
+
             tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates((coords.first + vals.fx * (i + 1)) + (vals.sx * (j + 1)) , (coords.second + vals.fy * (i + 1)) + (vals.sy * (j + 1))), mapDimensions));
-            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
+            DrawCubeWires(convertVector3D(tile.getDisplayCoordinates()), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
         }
     }
 }
@@ -777,4 +847,9 @@ bool zappy::RaylibGraphical::endScreen(std::string teamName)
 
     _window.EndDrawing();
     return exit;
+}
+
+raylib::Vector3 zappy::RaylibGraphical::convertVector3D(zappy::Vector3D vec)
+{
+    return raylib::Vector3 {vec.x, vec.y, vec.z};
 }

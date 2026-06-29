@@ -1,8 +1,6 @@
 #include "entities/Phiras.hpp"
 #include "IEntity.hpp"
 #include "entities/Materials.hpp"
-#include <Color.hpp>
-#include <raylib.h>
 #include <utility>
 
 zappy::Phiras::Phiras(zappy::tileCoordinates tile, int amount) : Material(MaterialType::Phiras, tile, amount)
@@ -11,13 +9,13 @@ zappy::Phiras::Phiras(zappy::tileCoordinates tile, int amount) : Material(Materi
 zappy::Phiras::~Phiras()
 {}
 
-raylib::Color zappy::Phiras::getMaterialColor()
+std::tuple<int, int, int> zappy::Phiras::getMaterialColor()
 {
-    return raylib::Color::DarkBlue();
+    return std::tuple(0, 82, 172);
 }
 
-Vector3 zappy::Phiras::getMaterialPosition(std::pair<int, int> dimensions)
+std::pair<float, float> zappy::Phiras::getMaterialPosition(std::pair<int, int> dimensions)
 {
     float zComponent = _coords.second - (dimensions.second / 2.0f) - 0.4;
-    return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, 0.05, zComponent + 0.6 + 0.5f);
+    return std::pair<float, float>(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, zComponent + 0.6 + 0.5f);
 }

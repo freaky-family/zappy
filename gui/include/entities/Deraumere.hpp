@@ -2,7 +2,7 @@
 
 #include "IEntity.hpp"
 #include "entities/Materials.hpp"
-#include <Color.hpp>
+
 
 namespace zappy {
     class Deraumere : public Material {
@@ -11,7 +11,7 @@ namespace zappy {
             Deraumere(tileCoordinates, int);
             ~Deraumere();
 
-            raylib::Color getMaterialColor() override;
-            Vector3 getMaterialPosition(std::pair<int, int>) override;
+            std::tuple<int, int, int> getMaterialColor() override;
+            std::pair<float, float> getMaterialPosition(std::pair<int, int>) override;
     };
 }

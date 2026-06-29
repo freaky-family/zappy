@@ -2,9 +2,10 @@
 
 #include "APlayer.hpp"
 #include "IEntity.hpp"
+#include "PositionHolder.hpp"
 #include <map>
 #include <string>
-#include "PositionHolder.hpp"
+#include <vector>
 
 namespace zappy {
     class PlayerInfo : public APlayer{

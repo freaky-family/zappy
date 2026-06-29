@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IEntity.hpp"
-#include "IModelHolder.hpp"
 #include "entities/AEntity.hpp"
 
 namespace zappy {
@@ -10,8 +9,5 @@ namespace zappy {
             Food() = delete;
             Food(tileCoordinates, int);
             ~Food();
-
-            void draw(IModelHolder&, std::pair<int, int>) override;
-            void drawLowObject(std::pair<int, int>) override;
     };
 }

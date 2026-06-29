@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IEntity.hpp"
+#include <memory>
 
 namespace zappy {
     class IGraphical {
@@ -23,6 +24,8 @@ namespace zappy {
             virtual void displayLowObjectTileInfo(tileCoordinates) = 0;
             virtual void displayLowObjectGameInfos() = 0;
             virtual void displayLowObjectBroadcast() = 0;
+            virtual void drawLowObjectEntity(std::shared_ptr<IEntity> &, const std::pair<int, int> &) = 0;
+            virtual void drawEntity(std::shared_ptr<IEntity> &, const std::pair<int, int> &) = 0;
 
             virtual bool endScreen(std::string) = 0;
     };

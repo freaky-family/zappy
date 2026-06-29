@@ -1,8 +1,6 @@
 #include "entities/Thystame.hpp"
 #include "IEntity.hpp"
 #include "entities/Materials.hpp"
-#include <Color.hpp>
-#include <raylib.h>
 #include <utility>
 
 zappy::Thystame::Thystame(zappy::tileCoordinates tile, int amount) : Material(MaterialType::Thystame, tile, amount)
@@ -11,13 +9,13 @@ zappy::Thystame::Thystame(zappy::tileCoordinates tile, int amount) : Material(Ma
 zappy::Thystame::~Thystame()
 {}
 
-raylib::Color zappy::Thystame::getMaterialColor()
+std::tuple<int, int, int> zappy::Thystame::getMaterialColor()
 {
-    return raylib::Color::DarkBlue();
+    return std::tuple(200, 122, 255);
 }
 
-Vector3 zappy::Thystame::getMaterialPosition(std::pair<int, int> dimensions)
+std::pair<float, float> zappy::Thystame::getMaterialPosition(std::pair<int, int> dimensions)
 {
     float zComponent = _coords.second - (dimensions.second / 2.0f) - 0.4;
-    return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, 0.05, zComponent + 0.6 + 0.5f);
+    return std::pair<float, float>(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, zComponent + 0.6 + 0.5f);
 }
