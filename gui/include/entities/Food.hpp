@@ -10,8 +10,5 @@ namespace zappy {
             Food() = delete;
             Food(tileCoordinates, int);
             ~Food();
-
-            void draw(IModelHolder&, std::pair<int, int>) override;
-            void drawLowObject(std::pair<int, int>) override;
     };
 }
