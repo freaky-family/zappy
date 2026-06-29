@@ -12,6 +12,6 @@ namespace zappy {
             ~Linemate();
 
             raylib::Color getMaterialColor() override;
-            Vector3 getMaterialPosition(std::pair<int, int>) override;
+            std::pair<float, float> getMaterialPosition(std::pair<int, int>) override;
     };
 }

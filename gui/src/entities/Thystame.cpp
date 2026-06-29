@@ -16,8 +16,8 @@ raylib::Color zappy::Thystame::getMaterialColor()
     return raylib::Color::DarkBlue();
 }
 
-Vector3 zappy::Thystame::getMaterialPosition(std::pair<int, int> dimensions)
+std::pair<float, float> zappy::Thystame::getMaterialPosition(std::pair<int, int> dimensions)
 {
     float zComponent = _coords.second - (dimensions.second / 2.0f) - 0.4;
-    return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, 0.05, zComponent + 0.6 + 0.5f);
+    return std::pair<float, float>(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, zComponent + 0.6 + 0.5f);
 }

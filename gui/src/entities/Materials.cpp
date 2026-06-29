@@ -26,8 +26,8 @@ void zappy::Material::draw(zappy::IModelHolder& modelHolder, std::pair<int, int>
     RaylibModelHolder *raylibModelHolder = dynamic_cast<RaylibModelHolder*>(&modelHolder);
     if (raylibModelHolder != nullptr) {
         const raylib::Color color = getMaterialColor();
-        const Vector3 position = getMaterialPosition(dimensions);
-        raylibModelHolder->getMaterialModel().Draw(position, 0.5f, color);
+        const std::pair<float, float> position = getMaterialPosition(dimensions);
+        raylibModelHolder->getMaterialModel().Draw(Vector3(position.first, 0.05, position.second), 0.5f, color);
     }
 }
 
