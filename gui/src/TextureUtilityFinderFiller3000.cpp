@@ -10,7 +10,7 @@ zappy::TUFF::TUFF()
 zappy::TUFF::~TUFF()
 {}
 
-void zappy::TUFF::getTextures(std::map<int, raylib::Texture2D>& textureMap, std::string filepath)
+void zappy::TUFF::getRaylibTextures(std::map<int, raylib::Texture2D>& textureMap, std::string filepath)
 {
     std::string realPath = zappy::Utils::pathVerify(filepath);
     for (auto file: std::filesystem::directory_iterator(realPath)) {

@@ -18,7 +18,7 @@
 #include <RenderTexture.hpp>
 #include "RaylibModelHolder.hpp"
 #include "RaylibParticles.hpp"
-#include "ShaderHolder.hpp"
+#include "RaylibShaderHolder.hpp"
 
 namespace zappy {
     constexpr float TICK_TO_CAMERA_TARGET = 60;
@@ -49,7 +49,7 @@ namespace zappy {
             std::map<std::string, raylib::Color> _colorMap;
             std::map<int, std::pair<int, int>> _playerAnimationsMap;
             std::map<int, std::pair<int, int>> _dyingPlayerAnimationsMap;
-            ShaderHolder _shaderHolder;
+            RaylibShaderHolder _shaderHolder;
             int _currentShader;
             raylib::RenderTexture2D _renderTexture;
             bool _animationToggle;

@@ -1,17 +1,16 @@
-#include "ShaderHolder.hpp"
-#include <filesystem>
+#include "RaylibShaderHolder.hpp"
 #include "Utils.hpp"
 #include <string>
 
-zappy::ShaderHolder::ShaderHolder(): _shaderVec()
+zappy::RaylibShaderHolder::RaylibShaderHolder(): _shaderVec()
 {
     _shaderVec.push_back(std::nullopt);
 }
 
-zappy::ShaderHolder::~ShaderHolder()
+zappy::RaylibShaderHolder::~RaylibShaderHolder()
 {}
 
-void zappy::ShaderHolder::initShaders()
+void zappy::RaylibShaderHolder::initShaders()
 {
     initShader(std::string(PIXELIZER), std::nullopt);
     initShader(std::string(SOBEL), std::nullopt);
@@ -20,7 +19,7 @@ void zappy::ShaderHolder::initShaders()
     initShader(std::string(BLOOM), std::nullopt);
 }
 
-void zappy::ShaderHolder::initShader(std::string filepath, std::optional<std::string> optfilepath)
+void zappy::RaylibShaderHolder::initShader(std::string filepath, std::optional<std::string> optfilepath)
 {
     std::string realPath = zappy::Utils::pathVerify(filepath);
     if (optfilepath.has_value()) {
@@ -31,7 +30,7 @@ void zappy::ShaderHolder::initShader(std::string filepath, std::optional<std::st
     _shaderVec.push_back(LoadShader(0, realPath.c_str()));
 }
 
-void zappy::ShaderHolder::unloadShaders()
+void zappy::RaylibShaderHolder::unloadShaders()
 {
     for (auto &shader: _shaderVec) {
         if (shader.has_value())
@@ -39,7 +38,7 @@ void zappy::ShaderHolder::unloadShaders()
     }
 }
 
-std::optional<raylib::Shader> &zappy::ShaderHolder::getShader(int &index)
+std::optional<raylib::Shader> &zappy::RaylibShaderHolder::getShader(int &index)
 {
     if (static_cast<std::size_t>(index) >= _shaderVec.size()) {
         index = 0;
