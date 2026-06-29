@@ -144,15 +144,19 @@ class Freakster:
             raise SocketReceiveError("Server has stopped.")
 
     def moveForward(self, direction):
+        print(f"[moveForward] dir: {direction}")
+        direction = Direction(direction)
+        print(f"[moveForward] newdir: {direction}")
         if direction == Direction.UP:
             self.pos_y += 1
         if direction == Direction.LEFT:
-            self.pos_x += 1
+            self.pos_x -= 1
         if direction == Direction.DOWN:
             self.pos_y -= 1
         if direction == Direction.RIGHT:
-            self.pos_x -= 1
+            self.pos_x += 1
 
+        print(f"[moveForward] pos: {self.pos_x}:{self.pos_y}")
         if self.pos_x > (self.map_dim[0] / 2):
             self.pos_x = -self.pos_x + 2
         if self.pos_x < -(self.map_dim[0] / 2):
@@ -161,6 +165,8 @@ class Freakster:
             self.pos_y = -self.pos_y + 2
         if self.pos_y < -(self.map_dim[1] / 2):
             self.pos_y = -self.pos_y - 2
+
+        print(f"[moveForward] after normalize pos: {self.pos_x}:{self.pos_y}\n")
 
     def handleBroadcast(self):
         message = re.match(r"message (\d), (.*)", self.received)
@@ -183,19 +189,18 @@ class Freakster:
             pass
 
     def handleEject(self):
-        print(self.received)
         array = self.received.split()
+        print(f"recive: {self.received}")
         direction = int(array[1])
-        if (direction == 5):
+        if direction == 5:
             self.moveForward(self.direction)
-        if (direction == 3):
-            self.moveForward(self.direction + Direction.LEFT)
-        if (direction == 1):
-            self.moveForward(self.direction + Direction.DOWN)
-        if (direction == 7):
+        if direction == 3:
             self.moveForward(self.direction + Direction.RIGHT)
-
-        print(f"new coo: {self.pos_x}:{self.pos_y} | direction: {self.direction}")
+        if direction == 1:
+            self.moveForward(self.direction + Direction.DOWN)
+        if direction == 7:
+            self.moveForward(self.direction + Direction.LEFT)
+        print(f"new coo: {self.pos_x}:{self.pos_y} | direction = {self.direction}")
 
     def Loop(self):
         try:
@@ -216,6 +221,7 @@ class Freakster:
                     self.vision[i].pop(0)
                     self.vision[i - 1] = self.vision[i]
                 self.vision.pop()
+        print(f"After Forward: {self.pos_x}:{self.pos_y}")
 
     def Right(self):
         self.send("Right")
@@ -319,7 +325,7 @@ class Freakster:
     def returnKremlin(self):
         if self.pos_x == 0 and self.pos_y == 0:
             return
-        if self.pos_x >= 0:
+        if self.pos_x < 0:
             while self.direction != Direction.RIGHT:
                 self.Right()
         else:
@@ -336,6 +342,8 @@ class Freakster:
                 self.Right()
         while self.pos_y != 0:
             self.Forward()
+        while self.direction != Direction.DOWN:
+            self.Right()
 
 def fill_case(s):
     d = {}
