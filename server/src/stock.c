@@ -1,4 +1,5 @@
 #include "stock.h"
+#include "clients.h"
 #include "commands.h"
 #include "server.h"
 #include "world.h"
@@ -28,8 +29,10 @@ void stock_initialize_client(stock_t *stock)
 
 static void send_tile_restock_to_gui(server_t *server, int x, int y)
 {
-    for (size_t i = 0; i < server->clients->amount; i++) {
-        command_graphic_bct_coordinates(server, i, x, y);
+    for (size_t i = CLIENT_INITIAL_INDEX; i < server->clients->amount; i++) {
+        if (CLIENT_I(i)->is_graphical) {
+            command_graphic_bct_coordinates(server, i, x, y);
+        }
     }
 }
 
