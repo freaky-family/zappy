@@ -38,5 +38,5 @@ void zappy::Material::drawLowObject(std::pair<int, int> dimensions)
     std::string str = std::to_string(_amount);
     const int posYAdd = (static_cast<int>(_type) + 2) * (20 / 7);
     const std::tuple color = getMaterialColor();
-    raylib::DrawText(str.c_str(), (_coords.first * 20 + 1) / (dimensions.first / 42.0f), (_coords.second * 20 + posYAdd) / (dimensions.second / 42.0f), 3 / ((dimensions.first / 42.0f) < (dimensions.second / 42.0f) ? (dimensions.first / 42.0f) : (dimensions.second / 42.0f)), raylib::Color((std::get<0>(color), std::get<1>(color), std::get<2>(color))));
+    raylib::DrawText(str.c_str(), (_coords.first * 20 + 1) / (dimensions.first / 42.0f), (_coords.second * 20 + posYAdd) / (dimensions.second / 42.0f), 3 / ((dimensions.first / 42.0f) < (dimensions.second / 42.0f) ? (dimensions.first / 42.0f) : (dimensions.second / 42.0f)), raylib::Color(std::get<0>(color), std::get<1>(color), std::get<2>(color)));
 }
