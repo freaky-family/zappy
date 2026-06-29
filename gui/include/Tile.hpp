@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IEntity.hpp"
+#include "Utils.hpp"
 #include <memory>
 #include <utility>
 #include <vector>
@@ -9,7 +10,7 @@ namespace zappy {
     class Tile {
         private:
             tileCoordinates _coords;
-            Vector3 _displayCoordinates;
+            Vector3D _displayCoordinates;
             std::vector<std::shared_ptr<IEntity>> _entities;
             bool _selected;
         public:
@@ -18,8 +19,8 @@ namespace zappy {
             ~Tile();
 
             tileCoordinates getCoords() const;
-            Vector3 getDisplayCoordinates() const;
-            void setDisplayCoordinates(Vector3 displayCoordinates);
+            Vector3D getDisplayCoordinates() const;
+            void setDisplayCoordinates(Vector3D displayCoordinates);
             void addEntity(std::shared_ptr<IEntity>);
             void removeEntity(std::shared_ptr<IEntity>);
             std::vector<std::shared_ptr<IEntity>>& getEntities();
