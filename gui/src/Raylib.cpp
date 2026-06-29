@@ -249,14 +249,30 @@ void zappy::RaylibGraphical::updateCamera()
     }
 }
 
-void zappy::RaylibGraphical::fillGameInfos(std::map<std::string, int> &teamMap, std::array<int, 7> &resources)
+std::map<std::string, std::pair<int, int>> zappy::RaylibGraphical::fillGameInfos(std::map<std::string, int> &teamMap, std::array<int, 7> &resources)
 {
+    std::map<std::string, std::pair<int, int>> highLevelMap;
+
     const std::pair<int, int> mapDimensions = _map.getDimensions();
     for (auto &player: _GEH.getPlayers()) {
         try {
             teamMap.at(player.second.getTeamName()) += 1;
         } catch (std::out_of_range) {
             teamMap.insert({player.second.getTeamName(), 1});
+        }
+        try {
+            highLevelMap.at(player.second.getTeamName());
+        } catch (std::out_of_range) {
+            highLevelMap.insert({player.second.getTeamName(), std::pair(0, 0)});
+        }
+        const int playerLevel = player.second.getLevel();
+        for (auto &pair: highLevelMap) {
+            if (playerLevel == pair.second.first)
+                pair.second.second++;
+            if (playerLevel > pair.second.first) {
+                pair.second.first = playerLevel;
+                pair.second.second = 1;
+            }
         }
     }
     for (int y = 0; y < mapDimensions.second; y++) {
@@ -274,6 +290,7 @@ void zappy::RaylibGraphical::fillGameInfos(std::map<std::string, int> &teamMap, 
             resources[6] += entities[6]->getAmount();
         }
     }
+    return highLevelMap;
 }
 
 void zappy::RaylibGraphical::displayGameInfos()
@@ -283,17 +300,19 @@ void zappy::RaylibGraphical::displayGameInfos()
     std::map<std::string, int> teamMap;
     std::array<int, 7> resources;
     resources.fill(0);
-    fillGameInfos(teamMap, resources);
+    std::map<std::string, std::pair<int, int>> highLevelMap = fillGameInfos(teamMap, resources);
     const int width = _window.GetRenderWidth();
     const int height = _window.GetRenderHeight();
-    raylib::Rectangle rect(width - 325, height - 500, 300, 300);
+    raylib::Rectangle rect(width - 325, height - 600, 300, 400);
     rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
     rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
-    drawText("Game Infos", width - 225, height - 490, raylib::Color::Black());
-    int pos = height - 470;
+    drawText("Game Infos", width - 225, height - 590, raylib::Color::Black());
+    int pos = height - 570;
     for (auto &team: teamMap) {
         drawText("Team " + team.first + " : " + std::to_string(team.second) + " players", width - 320, pos, getTeamColor(team.first));
-        pos += 20;
+        auto &correspondingTeam = highLevelMap.at(team.first);
+        drawText("Highest level " + std::to_string(correspondingTeam.first) + " : " + std::to_string(correspondingTeam.second) + " players", width - 320, pos + 20, getTeamColor(team.first));
+        pos += 40;
     }
     drawText(std::to_string(resources[0]) + " Food", width - 320, pos, raylib::Color::Brown());
     drawText(std::to_string(resources[1]) + " Linemate", width - 320, pos + 20, raylib::Color::Yellow());
@@ -309,13 +328,15 @@ void zappy::RaylibGraphical::displayLowObjectGameInfos()
     std::map<std::string, int> teamMap;
     std::array<int, 7> resources;
     resources.fill(0);
-    fillGameInfos(teamMap, resources);
+    std::map<std::string, std::pair<int, int>> highLevelMap = fillGameInfos(teamMap, resources);
     const int width = _window.GetRenderWidth();
     drawText("Game Infos", width - 335, 20, raylib::Color::White());
     int pos = 40;
     for (auto &team: teamMap) {
         drawText("Team " + team.first + " : " + std::to_string(team.second) + " players", width - 335, pos, getTeamColor(team.first));
-        pos += 20;
+        auto &correspondingTeam = highLevelMap.at(team.first);
+        drawText("Highest level " + std::to_string(correspondingTeam.first) + " : " + std::to_string(correspondingTeam.second) + " players", width - 335, pos + 20, getTeamColor(team.first));
+        pos += 40;
     }
     drawText(std::to_string(resources[0]) + " Food", width - 335, pos, raylib::Color::Brown());
     drawText(std::to_string(resources[1]) + " Linemate", width - 335, pos + 20, raylib::Color::Yellow());
@@ -482,16 +503,16 @@ void zappy::RaylibGraphical::displayLowObjectBroadcast()
 {
     const int width = _window.GetRenderWidth();
 
-    drawText("Broadcast", width - 225, 330, raylib::Color::White());
+    drawText("Broadcast", width - 225, 410, raylib::Color::White());
     while (_GEH.getBroadcast().size() > 0) {
         std::pair<int, std::string> message = _GEH.popMessage();
         std::string messageToDisplay = std::to_string(message.first) + ": " + message.second;
         _broadcastToDisplay.push_back(messageToDisplay);
     }
-    while (_broadcastToDisplay.size() > 30) {
+    while (_broadcastToDisplay.size() > 28) {
         _broadcastToDisplay.erase(_broadcastToDisplay.begin());
     }
-    int pos = 350;
+    int pos = 430;
     for (std::string msg: _broadcastToDisplay) {
         drawText(msg, width - 315, pos, raylib::Color::White());
         pos += 20;
@@ -512,7 +533,7 @@ void zappy::RaylibGraphical::displayBroadcast()
         std::string messageToDisplay = std::to_string(message.first) + ": " + message.second;
         _broadcastToDisplay.push_back(messageToDisplay);
     }
-    while (_broadcastToDisplay.size() > 6) {
+    while (_broadcastToDisplay.size() > 7) {
         _broadcastToDisplay.erase(_broadcastToDisplay.begin());
     }
     int pos = height - 175;
