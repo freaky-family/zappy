@@ -141,8 +141,10 @@ void zappy::RaylibGraphical::drawTiles()
         for (int x = 0; x < mapDimensions.first; x++) {
             zappy::Tile& tile = _map.getTile(tileCoordinates(x, y));
 
-            _modelHolder.getGrassModel().Draw(tile.getDisplayCoordinates(), 1, tile.isSelected() ? raylib::Color::Blue() : raylib::Color::White());
-            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, raylib::Color::Black());
+            raylib::Vector3 displayCoordinates = convertVector3D(tile.getDisplayCoordinates());
+
+            _modelHolder.getGrassModel().Draw(displayCoordinates, 1, tile.isSelected() ? raylib::Color::Blue() : raylib::Color::White());
+            DrawCubeWires(displayCoordinates, 1.0f, 0.1f, 1.0f, raylib::Color::Black());
 
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             for (auto &entity: entities) {
@@ -262,7 +264,7 @@ void zappy::RaylibGraphical::updateCamera()
 
                 // Reset selected tiles
                 tile.setSelectedState(false);
-                const Vector3 &tileDisplayCoords = tile.getDisplayCoordinates();
+                const raylib::Vector3 &tileDisplayCoords = convertVector3D(tile.getDisplayCoordinates());
                 RayCollision collision = GetRayCollisionBox(ray, {{tileDisplayCoords.x - 1.0f/2.0f, tileDisplayCoords.y - 0.1f/2.0f, tileDisplayCoords.z - 1.0f/2.0f}, {tileDisplayCoords.x + 1.0f/2.0f, tileDisplayCoords.y + 0.1f/2.0f, tileDisplayCoords.z + 1.0f/2.0f}});
 
                 if (collision.hit == true) {
@@ -276,7 +278,7 @@ void zappy::RaylibGraphical::updateCamera()
         // Set new camera target target
         if (closestDistance.has_value() == true) {
             closestTileHit->setSelectedState(true);
-            _cameraTargetTarget = closestTileHit->getDisplayCoordinates();
+            _cameraTargetTarget = convertVector3D(closestTileHit->getDisplayCoordinates());
             _tickUntilCameraTarget = TICK_TO_CAMERA_TARGET;
         } else {
             _cameraTargetTarget = {0, 0, 0};
@@ -796,12 +798,13 @@ void zappy::RaylibGraphical::highlightPlayerFOV(PlayerInfo &info)
     }
     for (int i = 0; i < level; i++) {
         Tile tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates(coords.first + vals.fx * (i + 1), coords.second + vals.fy * (i + 1)), mapDimensions));
-        DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
+        DrawCubeWires(convertVector3D(tile.getDisplayCoordinates()), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
         for (int j = 0; j < i + 1; j++) {
             tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates((coords.first + vals.fx * (i + 1)) - (vals.sx * (j + 1)) , (coords.second + vals.fy * (i + 1)) - (vals.sy * (j + 1))), mapDimensions));
-            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
+            DrawCubeWires(convertVector3D(tile.getDisplayCoordinates()), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
+
             tile = _map.getTile(zappy::Utils::handleTileOverflow(tileCoordinates((coords.first + vals.fx * (i + 1)) + (vals.sx * (j + 1)) , (coords.second + vals.fy * (i + 1)) + (vals.sy * (j + 1))), mapDimensions));
-            DrawCubeWires(tile.getDisplayCoordinates(), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
+            DrawCubeWires(convertVector3D(tile.getDisplayCoordinates()), 1.0f, 0.1f, 1.0f, getTeamColor(info.getTeamName()));
         }
     }
 }
@@ -844,4 +847,9 @@ bool zappy::RaylibGraphical::endScreen(std::string teamName)
 
     _window.EndDrawing();
     return exit;
+}
+
+raylib::Vector3 zappy::RaylibGraphical::convertVector3D(zappy::Vector3D vec)
+{
+    return raylib::Vector3 {vec.x, vec.y, vec.z};
 }

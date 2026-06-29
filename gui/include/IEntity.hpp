@@ -1,6 +1,5 @@
 #pragma once
 
-#include "IModelHolder.hpp"
 #include <utility>
 namespace zappy {
 

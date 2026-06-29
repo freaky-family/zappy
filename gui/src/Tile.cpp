@@ -17,12 +17,12 @@ zappy::tileCoordinates zappy::Tile::getCoords() const
     return _coords;
 }
 
-Vector3 zappy::Tile::getDisplayCoordinates() const
+zappy::Vector3D zappy::Tile::getDisplayCoordinates() const
 {
     return _displayCoordinates;
 }
 
-void zappy::Tile::setDisplayCoordinates(Vector3 displayCoordinates)
+void zappy::Tile::setDisplayCoordinates(zappy::Vector3D displayCoordinates)
 {
     _displayCoordinates = displayCoordinates;
 }

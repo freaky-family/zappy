@@ -94,4 +94,10 @@ namespace zappy {
                 return filepath;
             };
     };
+
+    struct Vector3D {
+        float x;
+        float y;
+        float z;
+    };
 }

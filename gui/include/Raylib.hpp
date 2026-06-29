@@ -99,5 +99,8 @@ namespace zappy {
             void updateCamera();
 
             bool endScreen(std::string teamName) override;
+
+        private:
+            raylib::Vector3 convertVector3D(zappy::Vector3D vec);
     };
 }
