@@ -24,7 +24,7 @@ namespace zappy {
             ~Material();
 
             virtual raylib::Color getMaterialColor() = 0;
-            virtual Vector3 getMaterialPosition(std::pair<int, int>) = 0;
+            virtual std::pair<float, float> getMaterialPosition(std::pair<int, int>) = 0;
             MaterialType getMaterialType() const;
             void draw(IModelHolder&, std::pair<int, int>) override;
             void drawLowObject(std::pair<int, int>) override;

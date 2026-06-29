@@ -16,8 +16,8 @@ raylib::Color zappy::Linemate::getMaterialColor()
     return raylib::Color::Yellow();
 }
 
-Vector3 zappy::Linemate::getMaterialPosition(std::pair<int, int> dimensions)
+std::pair<float, float> zappy::Linemate::getMaterialPosition(std::pair<int, int> dimensions)
 {
     float zComponent = _coords.second - (dimensions.second / 2.0f) - 0.4;
-    return Vector3(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, 0.05, zComponent + 0.5f);
+    return std::pair<float, float>(_coords.first - (dimensions.first / 2.0f) - 0.4 + 0.5f, zComponent + 0.5f);
 }
