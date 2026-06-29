@@ -19,6 +19,7 @@
 #include <optional>
 #include <raylib.h>
 #include <raymath.h>
+#include <string>
 #include <utility>
 #include <vector>
 #include "Utils.hpp"
@@ -29,6 +30,7 @@ zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder 
     srand(time(NULL));
     initWindow();
     initCamera();
+    InitAudioDevice();
     _modelHolder.initModels();
     _renderTexture.Load(1200, 1000);
     _shaderHolder.initShaders();
@@ -750,4 +752,29 @@ raylib::Color zappy::RaylibGraphical::getTeamColor(std::string name)
         _colorMap.insert({name, color});
     }
     return color;
+}
+
+bool zappy::RaylibGraphical::endScreen(std::string teamName)
+{
+    bool exit = false;
+    Vector2 size = _window.GetSize();
+    std::string Title = "The winner team is " + teamName;
+    const float font = 35;
+
+    if (_window.ShouldClose()) {
+        exit = true;
+    }
+
+    _modelHolder.updateMusic();
+    _window.BeginDrawing();
+    _window.ClearBackground(raylib::Color::RayWhite());
+    int scroll = _modelHolder.updateEndBackgroundScroll();
+    raylib::Texture2D& bkg = _modelHolder.getEndScreen();
+    bkg.Draw(Vector2(0, scroll), 0.0f, 0.5f, raylib::Color::White());
+    bkg.Draw(Vector2(0, -(bkg.height * 0.5) + scroll), 0.0f, 0.5f, raylib::Color::White());
+
+    raylib::DrawText(Title, size.x / 2 - (Title.length() * font) / 4, size.y / 2, font, BLACK);
+
+    _window.EndDrawing();
+    return exit;
 }

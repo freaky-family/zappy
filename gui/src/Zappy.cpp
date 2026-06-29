@@ -8,7 +8,7 @@
 #include <vector>
 
 zappy::Zappy::Zappy(int port, std::string hostname) : _map(0, 0), _geh(), _recvBuffer(4092), _exit(false), _timeUnit(10), _protocol(port, hostname, _exit, _recvBuffer, _recvBuffer, _timeUnit),
-    _graphical(std::make_unique<zappy::RaylibGraphical>(_map, _geh)), _protocolThread(&Zappy::launchProtocol, this), _commands()
+    _graphical(std::make_unique<zappy::RaylibGraphical>(_map, _geh)), _protocolThread(&Zappy::launchProtocol, this), _commands(), _teamsNames(), _ended(false), _winner()
 {
     _commands.insert({"msz", std::bind(&zappy::Zappy::msz, this, std::placeholders::_1)});
     _commands.insert({"bct", std::bind(&zappy::Zappy::bct, this, std::placeholders::_1)});
@@ -51,7 +51,10 @@ void zappy::Zappy::loop()
             } catch (std::exception &) {
             }
         }
-        _exit = _graphical->run();
+        if (!_ended)
+            _exit = _graphical->run();
+        else
+            _exit = _graphical->endScreen(_winner);
     }
 }
 

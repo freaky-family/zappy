@@ -5,7 +5,7 @@
 #include <ModelAnimation.hpp>
 #include <Texture.hpp>
 #include <map>
-#include <memory>
+#include <raylib.h>
 
 namespace zappy {
     constexpr int ROBOT_INCANTATION = 0;
@@ -30,6 +30,12 @@ namespace zappy {
             raylib::Texture2D _bkg;
             raylib::Texture2D _grassTexture;
             float _bkgScroll;
+
+            raylib::Texture2D _endBg;
+
+            Music _music;
+            bool _playing;
+
         public:
             RaylibModelHolder();
             ~RaylibModelHolder();
@@ -47,5 +53,8 @@ namespace zappy {
             ModelAnimation* getPlayerAnimations();
             raylib::Texture2D& getBackground();
             int updateBackgroundScroll();
+            raylib::Texture2D &getEndScreen();
+            int updateEndBackgroundScroll();
+            void updateMusic();
     };
 }
