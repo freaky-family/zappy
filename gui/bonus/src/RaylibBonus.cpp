@@ -178,7 +178,7 @@ bool zappy::RaylibBonus::run()
         std::optional<raylib::Shader> &shader = _shaderHolder.getShader(_currentShader);
         if (shader.has_value())
             BeginShaderMode(shader.value());
-        DrawTextureRec(_renderTexture.texture, (Rectangle){ 0, 0, static_cast<float>(_renderTexture.texture.width), static_cast<float>(-_renderTexture.texture.height) }, (Vector2){ 0, 0 }, WHITE);
+        DrawTextureRec(_renderTexture.texture, { 0, 0, static_cast<float>(_renderTexture.texture.width), static_cast<float>(-_renderTexture.texture.height) }, (Vector2){ 0, 0 }, WHITE);
         if (shader.has_value())
             EndShaderMode();
         for (auto &tile: _map.getTiles()) {
