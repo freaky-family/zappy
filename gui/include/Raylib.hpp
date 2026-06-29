@@ -101,6 +101,8 @@ namespace zappy {
             bool endScreen(std::string teamName) override;
 
         private:
+            std::array<int, 7> entitiesToResources(std::vector<std::shared_ptr<IEntity>> &);
+            void drawMaterials(std::array<int, 7> resources, int x, int initialY);
             raylib::Vector3 convertVector3D(zappy::Vector3D vec);
     };
 }

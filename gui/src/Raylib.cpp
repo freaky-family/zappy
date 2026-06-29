@@ -326,16 +326,14 @@ std::map<std::string, std::pair<int, int>> zappy::RaylibGraphical::fillGameInfos
     for (int y = 0; y < mapDimensions.second; y++) {
         for (int x = 0; x < mapDimensions.first; x++) {
             Tile &tile = _map.getTile(tileCoordinates(x, y));
+
+            // Cannot use entitiesToResources here as it adds to the current resources
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             if (entities.size() != 7)
                 continue;
-            resources[0] += entities[0]->getAmount();
-            resources[1] += entities[1]->getAmount();
-            resources[2] += entities[2]->getAmount();
-            resources[3] += entities[3]->getAmount();
-            resources[4] += entities[4]->getAmount();
-            resources[5] += entities[5]->getAmount();
-            resources[6] += entities[6]->getAmount();
+            for (unsigned int i = 0; i < 7; i++) {
+                resources[i] += entities[i]->getAmount();
+            }
         }
     }
     return highLevelMap;
@@ -352,23 +350,20 @@ void zappy::RaylibGraphical::displayGameInfos()
     const int width = _window.GetRenderWidth();
     const int height = _window.GetRenderHeight();
     raylib::Rectangle rect(width - 325, height - 600, 300, 400);
+
     rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
     rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
     drawText("Game Infos", width - 225, height - 590, raylib::Color::Black());
     int pos = height - 570;
+
     for (auto &team: teamMap) {
         drawText("Team " + team.first + " : " + std::to_string(team.second) + " players", width - 320, pos, getTeamColor(team.first));
         auto &correspondingTeam = highLevelMap.at(team.first);
         drawText("Highest level " + std::to_string(correspondingTeam.first) + " : " + std::to_string(correspondingTeam.second) + " players", width - 320, pos + 20, getTeamColor(team.first));
         pos += 40;
     }
-    drawText(std::to_string(resources[0]) + " Food", width - 320, pos, raylib::Color::Brown());
-    drawText(std::to_string(resources[1]) + " Linemate", width - 320, pos + 20, raylib::Color::Yellow());
-    drawText(std::to_string(resources[2]) + " Deraumere", width - 320, pos + 40, raylib::Color::Green());
-    drawText(std::to_string(resources[3]) + " Sibur", width - 320, pos + 60, raylib::Color::Red());
-    drawText(std::to_string(resources[4]) + " Mendiane", width - 320, pos + 80, raylib::Color::SkyBlue());
-    drawText(std::to_string(resources[5]) + " Phiras", width - 320, pos + 100, raylib::Color::DarkBlue());
-    drawText(std::to_string(resources[6]) + " Thystame", width - 320, pos + 120,raylib::Color::Purple());
+
+    drawMaterials(resources, width - 320, pos);
 }
 
 void zappy::RaylibGraphical::displayLowObjectGameInfos()
@@ -386,14 +381,7 @@ void zappy::RaylibGraphical::displayLowObjectGameInfos()
         drawText("Highest level " + std::to_string(correspondingTeam.first) + " : " + std::to_string(correspondingTeam.second) + " players", width - 335, pos + 20, getTeamColor(team.first));
         pos += 40;
     }
-    drawText(std::to_string(resources[0]) + " Food", width - 335, pos, raylib::Color::Brown());
-    drawText(std::to_string(resources[1]) + " Linemate", width - 335, pos + 20, raylib::Color::Yellow());
-    drawText(std::to_string(resources[2]) + " Deraumere", width - 335, pos + 40, raylib::Color::Green());
-    drawText(std::to_string(resources[3]) + " Sibur", width - 335, pos + 60, raylib::Color::Red());
-    drawText(std::to_string(resources[4]) + " Mendiane", width - 335, pos + 80, raylib::Color::SkyBlue());
-    drawText(std::to_string(resources[5]) + " Phiras", width - 335, pos + 100, raylib::Color::DarkBlue());
-    drawText(std::to_string(resources[6]) + " Thystame", width - 335, pos + 120,raylib::Color::Purple());
-
+    drawMaterials(resources, width - 335, pos);
 }
 
 void zappy::RaylibGraphical::handleLowObjectInputs()
@@ -494,6 +482,8 @@ void zappy::RaylibGraphical::displayLowObjectTileInfo(zappy::tileCoordinates coo
     const int renderHeight = _window.GetRenderHeight();
 
     drawText("Tile " + std::to_string(coords.first) + " " + std::to_string(coords.second) + " infos", 15, renderHeight - 150, raylib::Color::White());
+
+    // Cannot use drawMaterials here as the X and Y are on different columns
     drawText(std::to_string(entities[0]->getAmount()) + " Food", 15, renderHeight - 130, raylib::Color::Brown());
     drawText(std::to_string(entities[1]->getAmount()) + " Linemate", 15, renderHeight - 110, raylib::Color::Yellow());
     drawText(std::to_string(entities[2]->getAmount()) + " Deraumere", 15, renderHeight - 90, raylib::Color::Green());
@@ -526,25 +516,13 @@ void zappy::RaylibGraphical::displayTileInfo(zappy::tileCoordinates coords)
     std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
     if (entities.size() != 7)
         return;
-    std::array<std::string, 8> resources;
+    std::array<int, 7> resources = entitiesToResources(entities);
 
     rect.Draw(Fade(raylib::Color::Gray(), 0.5f));
     rect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
     drawText("Tile " + std::to_string(coords.first) + " " + std::to_string(coords.second) + " infos", 15, 15, raylib::Color::Black());
-    resources[0] = std::to_string(entities[0]->getAmount());
-    resources[1] = std::to_string(entities[1]->getAmount());
-    resources[2] = std::to_string(entities[2]->getAmount());
-    resources[3] = std::to_string(entities[3]->getAmount());
-    resources[4] = std::to_string(entities[4]->getAmount());
-    resources[5] = std::to_string(entities[5]->getAmount());
-    resources[6] = std::to_string(entities[6]->getAmount());
-    drawText(resources[0] + " Food", 20, 35, raylib::Color::Brown());
-    drawText(resources[1] + " Linemate", 20, 55, raylib::Color::Yellow());
-    drawText(resources[2] + " Deraumere", 20, 75, raylib::Color::Green());
-    drawText(resources[3] + " Sibur", 20, 95, raylib::Color::Red());
-    drawText(resources[4] + " Mendiane", 20, 115, raylib::Color::SkyBlue());
-    drawText(resources[5] + " Phiras", 20, 135, raylib::Color::DarkBlue());
-    drawText(resources[6] + " Thystame", 20, 155,raylib::Color::Purple());
+
+    drawMaterials(resources, 20, 35);
 }
 
 void zappy::RaylibGraphical::displayLowObjectBroadcast()
@@ -728,14 +706,20 @@ void zappy::RaylibGraphical::drawPlayerInfo(PlayerInfo &info)
     raylib::Rectangle otherRect(posX * 7.95, 20, 185, 180);
     otherRect.Draw(Fade(getTeamColor(info.getTeamName()), 0.5f));
     otherRect.DrawLines(Fade(raylib::Color::Black(), 0.8f));
+
     drawText("Player Inventory", posX * 8, 30, raylib::Color::Black());
-    drawText(std::to_string(inventory.at("food")) + " Food", posX * 8, 50, raylib::Color::Brown());
-    drawText(std::to_string(inventory.at("Linemate")) + " Linemate", posX * 8, 70, raylib::Color::Yellow());
-    drawText(std::to_string(inventory.at("Deraumere")) + " Deraumere", posX * 8, 90, raylib::Color::Green());
-    drawText(std::to_string(inventory.at("Sibur")) + " Sibur", posX * 8, 110, raylib::Color::Red());
-    drawText(std::to_string(inventory.at("Mendiane")) + " Mendiane", posX * 8, 130, raylib::Color::SkyBlue());
-    drawText(std::to_string(inventory.at("Phiras")) + " Phiras", posX * 8, 150, raylib::Color::DarkBlue());
-    drawText(std::to_string(inventory.at("Thystame")) + " Thystame", posX * 8, 170,raylib::Color::Purple());
+
+    std::array<int, 7> resources = {{
+        inventory.at("food"),
+        inventory.at("Linemate"),
+        inventory.at("Deraumere"),
+        inventory.at("Sibur"),
+        inventory.at("Mendiane"),
+        inventory.at("Phiras"),
+        inventory.at("Thystame"),
+    }};
+
+    drawMaterials(resources, posX * 8, 50);
 }
 
 void zappy::RaylibGraphical::drawEggInfo(Egg &egg)
@@ -849,7 +833,32 @@ bool zappy::RaylibGraphical::endScreen(std::string teamName)
     return exit;
 }
 
+void zappy::RaylibGraphical::drawMaterials(std::array<int, 7> resources, int x, int initialY)
+{
+    drawText(std::to_string(resources[0]) + " Food", x, initialY, raylib::Color::Brown());
+    drawText(std::to_string(resources[1]) + " Linemate", x, initialY + 20, raylib::Color::Yellow());
+    drawText(std::to_string(resources[2]) + " Deraumere", x, initialY + 40, raylib::Color::Green());
+    drawText(std::to_string(resources[3]) + " Sibur", x, initialY + 60, raylib::Color::Red());
+    drawText(std::to_string(resources[4]) + " Mendiane", x, initialY + 80, raylib::Color::SkyBlue());
+    drawText(std::to_string(resources[5]) + " Phiras", x, initialY + 100, raylib::Color::DarkBlue());
+    drawText(std::to_string(resources[6]) + " Thystame", x, initialY + 120,raylib::Color::Purple());
+}
+
 raylib::Vector3 zappy::RaylibGraphical::convertVector3D(zappy::Vector3D vec)
 {
     return raylib::Vector3 {vec.x, vec.y, vec.z};
+}
+
+std::array<int, 7> zappy::RaylibGraphical::entitiesToResources(std::vector<std::shared_ptr<IEntity>> &entities)
+{
+    std::array<int, 7> resources;
+    resources.fill(0);
+
+    if (entities.size() != 7)
+        return resources;
+
+    for (unsigned int i = 0; i < 7; i++) {
+        resources[i] = entities[i]->getAmount();
+    }
+    return resources;
 }
