@@ -16,11 +16,11 @@ void zappy::Food::draw(zappy::IModelHolder& modelHolder, std::pair<int, int> dim
 {
     if (_amount == 0)
         return;
+    int amount = _amount;
+    if (amount > 20)
+        amount = 20;
     RaylibModelHolder *raylibModelHolder = dynamic_cast<RaylibModelHolder*>(&modelHolder);
     if (raylibModelHolder != nullptr) {
-        int amount = _amount;
-        if (amount > 20)
-            amount = 20;
         float heightVal = 0.05;
         for (int i = 0; i < amount; i++) {
             raylibModelHolder->getFoodModel().Draw(Vector3(_coords.first - (dimensions.first / 2.0f) - 0.2 + 0.5f, heightVal, _coords.second - (dimensions.second / 2.0f) + 0.5f), 1.0f);

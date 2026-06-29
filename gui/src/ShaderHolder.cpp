@@ -13,8 +13,11 @@ zappy::ShaderHolder::~ShaderHolder()
 
 void zappy::ShaderHolder::initShaders()
 {
-    initShader("assets/shaders/pixelizer.fs", std::nullopt);
-    initShader("assets/shaders/sobel.fs", std::nullopt);
+    initShader(std::string(PIXELIZER), std::nullopt);
+    initShader(std::string(SOBEL), std::nullopt);
+    initShader(std::string(FISHEYE), std::nullopt);
+    initShader(std::string(POSTERIZATION), std::nullopt);
+    initShader(std::string(BLOOM), std::nullopt);
 }
 
 void zappy::ShaderHolder::initShader(std::string filepath, std::optional<std::string> optfilepath)

@@ -15,6 +15,18 @@ namespace zappy {
     constexpr int ROBOT_TAKE = 9;
     constexpr int ROBOT_DROP = 7;
     constexpr int ROBOT_HIT = 5;
+
+    constexpr std::string_view MATERIAL_MODEL = "assets/OBJ/stylized_crystal_SM.obj";
+    constexpr std::string_view FOOD_MODEL = "assets/OBJ/turkey_leg.obj";
+    constexpr std::string_view EGG_MODEL = "assets/OBJ/egg.obj";
+    constexpr std::string_view ROBOT = "assets/robot.glb";
+    constexpr std::string_view MATERIAL_TEXTURES = "assets/Textures/PNG";
+    constexpr std::string_view EGG_TEXTURES = "assets/Textures/Egg_Textures2K";
+    constexpr std::string_view FOOD_TEXTURES = "assets/Textures/food_texture";
+    constexpr std::string_view BACKGROUND = "assets/bkg.png";
+    constexpr std::string_view CONFETTI = "assets/confetti.png";
+    constexpr std::string_view GRASS = "assets/grass.png";
+    constexpr std::string_view MUSIC = "assets/win.mp3";
     class RaylibModelHolder : public IModelHolder {
         private:
             raylib::Model _materialModel;

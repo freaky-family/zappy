@@ -29,13 +29,13 @@ void zappy::RaylibModelHolder::initPlayerModelAndAnimations(std::string filepath
 
 void zappy::RaylibModelHolder::initModels()
 {
-    initModel(_materialModel, "assets/OBJ/stylized_crystal_SM.obj");
-    initModel(_foodModel, "assets/OBJ/turkey_leg.obj");
-    initModel(_eggModel, "assets/OBJ/egg.obj");
-    initPlayerModelAndAnimations("assets/robot.glb");
-    zappy::TUFF::getTextures(_materialTextureMap, "assets/Textures/PNG");
-    zappy::TUFF::getTextures(_eggTextureMap, "assets/Textures/Egg_Textures2K");
-    zappy::TUFF::getTextures(_foodTextureMap, "assets/Textures/food_texture");
+    initModel(_materialModel, std::string(MATERIAL_MODEL));
+    initModel(_foodModel, std::string(FOOD_MODEL));
+    initModel(_eggModel, std::string(EGG_MODEL));
+    initPlayerModelAndAnimations(std::string(ROBOT));
+    zappy::TUFF::getTextures(_materialTextureMap, std::string(MATERIAL_TEXTURES));
+    zappy::TUFF::getTextures(_eggTextureMap, std::string(EGG_TEXTURES));
+    zappy::TUFF::getTextures(_foodTextureMap, std::string(FOOD_TEXTURES));
     for (auto &materialTexture: _materialTextureMap) {
         _materialModel.materials[0].maps[materialTexture.first].texture = materialTexture.second;
     }
@@ -45,12 +45,12 @@ void zappy::RaylibModelHolder::initModels()
     for (auto &eggTexture: _eggTextureMap) {
         _eggModel.materials[0].maps[eggTexture.first].texture = eggTexture.second;
     }
-    _bkg.Load(zappy::Utils::pathVerify("assets/bkg.png"));
-    _endBg.Load(zappy::Utils::pathVerify("assets/confetti.png"));
-    _grassTexture.Load(zappy::Utils::pathVerify("assets/grass.png"));
+    _bkg.Load(zappy::Utils::pathVerify(std::string(BACKGROUND)));
+    _endBg.Load(zappy::Utils::pathVerify(std::string(CONFETTI)));
+    _grassTexture.Load(zappy::Utils::pathVerify(std::string(GRASS)));
     _grassModel = LoadModelFromMesh(GenMeshCube(1, 0.1f, 1));
     _grassModel.materials[0].maps[MATERIAL_MAP_ALBEDO].texture = _grassTexture;
-    _music = LoadMusicStream(zappy::Utils::pathVerify("assets/win.mp3").c_str());
+    _music = LoadMusicStream(zappy::Utils::pathVerify(std::string(MUSIC)).c_str());
 }
 
 void zappy::RaylibModelHolder::unloadModels()
