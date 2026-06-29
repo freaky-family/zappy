@@ -92,6 +92,8 @@ namespace zappy {
             // Maybe get this to interface by creating a zappy::Color object that could interpret more than a raylib color
             raylib::Color getTeamColor(std::string);
             void drawText(std::string str, int X, int Y, raylib::Color color);
+            void drawLowObjectEntity(std::shared_ptr<IEntity> &, const std::pair<int, int>&) override;
+            void drawEntity(std::shared_ptr<IEntity> &, const std::pair<int, int>&) override;
 
             // TODO maybe add in interface
             void updateCamera();

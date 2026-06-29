@@ -23,6 +23,8 @@
 #include <utility>
 #include <vector>
 #include "Utils.hpp"
+#include "entities/Food.hpp"
+#include "entities/Materials.hpp"
 
 zappy::RaylibGraphical::RaylibGraphical(zappy::Map &map, GameplayEntitiesHolder &GEH): _map(map), _GEH(GEH),
     _window(), _camera(), _modelHolder(), _cameraTargetTarget({0, 0, 0}), _tickUntilCameraTarget(0), _particles(), _colorMap(), _playerAnimationsMap(), _dyingPlayerAnimationsMap(), _shaderHolder(), _currentShader(0), _renderTexture(), _animationToggle(false), _lowObject(false), _displayGameInfos(false)
@@ -144,9 +146,53 @@ void zappy::RaylibGraphical::drawTiles()
 
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             for (auto &entity: entities) {
-                entity->draw(_modelHolder, mapDimensions);
+                drawEntity(entity, mapDimensions);
             }
         }
+    }
+}
+
+void zappy::RaylibGraphical::drawEntity(std::shared_ptr<zappy::IEntity> &entity, const std::pair<int, int> &mapDimensions)
+{
+    const tileCoordinates coords = entity->getCoords();
+    const int amount = entity->getAmount();
+    if (amount == 0)
+        return;
+    Food *food = dynamic_cast<Food*>(entity.get());
+    zappy::Material *mat = dynamic_cast<zappy::Material*>(entity.get());
+
+    if (food != nullptr) {
+        float heightVal = 0.05;
+        for (int i = 0; i < (amount > 20 ? 20 : amount); i++) {
+            _modelHolder.getFoodModel().Draw(Vector3(coords.first - (mapDimensions.first / 2.0f) - 0.2 + 0.5f, heightVal, coords.second - (mapDimensions.second / 2.0f) + 0.5f), 1.0f);
+            heightVal += 0.05;
+        }
+    }
+    if (mat != nullptr) {
+        const std::tuple color = mat->getMaterialColor();
+        const std::pair<float, float> position = mat->getMaterialPosition(mapDimensions);
+        _modelHolder.getMaterialModel().Draw(Vector3(position.first, 0.05, position.second), 0.5f, raylib::Color(std::get<0>(color), std::get<1>(color), std::get<2>(color)));
+    }
+}
+
+void zappy::RaylibGraphical::drawLowObjectEntity(std::shared_ptr<IEntity> &entity, const std::pair<int, int>& mapDimensions)
+{
+    const tileCoordinates coords = entity->getCoords();
+    const int amount = entity->getAmount();
+    Food *food = dynamic_cast<Food*>(entity.get());
+    zappy::Material *mat = dynamic_cast<zappy::Material*>(entity.get());
+
+    if (food != nullptr) {
+        std::string str = std::to_string(amount);
+        raylib::DrawText(str.c_str(), (coords.first * 20 + 1) / (mapDimensions.first / 42.0f), (coords.second * 20 + 1) / (mapDimensions.second / 42.0f), 10, raylib::Color::Brown());
+    }
+    if (mat != nullptr) {
+        if (mapDimensions.first > 20 || mapDimensions.second > 20)
+            return;
+        std::string str = std::to_string(amount);
+        const int posYAdd = (static_cast<int>(mat->getMaterialType()) + 2) * (20 / 7);
+        const std::tuple color = mat->getMaterialColor();
+        raylib::DrawText(str.c_str(), (coords.first * 20 + 1) / (mapDimensions.first / 42.0f), (coords.second * 20 + posYAdd) / (mapDimensions.second / 42.0f), 3 / ((mapDimensions.first / 42.0f) < (mapDimensions.second / 42.0f) ? (mapDimensions.first / 42.0f) : (mapDimensions.second / 42.0f)), raylib::Color(std::get<0>(color), std::get<1>(color), std::get<2>(color)));
     }
 }
 
@@ -391,7 +437,7 @@ void zappy::RaylibGraphical::drawLowObjectTiles()
             rect.DrawLines(raylib::Color::White());
             std::vector<std::shared_ptr<IEntity>> &entities = tile.getEntities();
             for (auto &entity: entities) {
-                entity->drawLowObject(mapDimensions);
+                drawLowObjectEntity(entity, mapDimensions);
             }
             if (tile.isSelected()) {
                 displayLowObjectTileInfo(tile.getCoords());
