@@ -250,7 +250,6 @@ void zappy::RaylibBonus::updateCamera()
             _camera.Update(CAMERA_CUSTOM);
         }
 
-        // cameraPosition = Vector3(10, 10, 10);
         cameraTarget = Vector3(playerFloatPosition.first - _map.getDimensions().first / 2.0f + 0.5, 0.5, playerFloatPosition.second - _map.getDimensions().second / 2.0f + 0.5);
     }
     _camera.SetTarget(cameraTarget);
