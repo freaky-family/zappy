@@ -89,7 +89,7 @@ static bool has_won(server_t *server, team_data_t *team_data)
         }
     }
 
-    if (player_level_8 >= 8) {
+    if (player_level_8 >= 6) {
         return true;
     } else {
         team_data->max_nb_player_lvl_8 = player_level_8;
@@ -109,7 +109,7 @@ static void send_graphics_seg(server_t *server, const char *team_name)
 static void win_condition(server_t *server, bool *running)
 {
     for (size_t i = 0; i < server->teams->amount; i++) {
-        if (TEAM_I(i)->max_nb_player_lvl_8 >= 8) {
+        if (TEAM_I(i)->max_nb_player_lvl_8 >= 6) {
             if (has_won(server, TEAM_I(i)) == true) {
                 *running = false;
                 send_graphics_seg(server, TEAM_I(i)->name);
