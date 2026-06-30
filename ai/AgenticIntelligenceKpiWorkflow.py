@@ -17,8 +17,7 @@ class Role(Enum):
     STRANDED = 3
     FOOD_FACTORY = 4
     SACRIFICE = 5
-    SPETSNAZ = 6
-    COMMANDO = 7
+    COMMANDO = 6
 
 
 class Direction(IntFlag, boundary=CONFORM):
