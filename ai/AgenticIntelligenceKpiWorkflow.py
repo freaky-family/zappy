@@ -285,24 +285,24 @@ class Freakster:
     def Look(self):
         self.send("Look")
         self.waitThread()
-        try:
-            s = self.received.replace("[", "").replace("]", "")
-            arr = s.split(",")
-            length = 1
-            new_vision = []
-            while arr != []:
-                case_content = []
-                for _ in range(length):
-                    if arr[0] == '' or arr[0] == ' ':
-                        case_content.append({})
-                    else:
-                        case_content.append(fill_case(arr[0].strip().split(" ")))
-                    arr.pop(0)
-                new_vision.append(case_content)
-                length += 2
-            self.vision = new_vision
-        except Exception:
-            self.Look()
+        #try:
+        s = self.received.replace("[", "").replace("]", "")
+        arr = s.split(",")
+        length = 1
+        new_vision = []
+        while arr != []:
+            case_content = []
+            for _ in range(length):
+                if arr[0] == '' or arr[0] == ' ':
+                    case_content.append({})
+                else:
+                    case_content.append(fill_case(arr[0].strip().split(" ")))
+                arr.pop(0)
+            new_vision.append(case_content)
+            length += 2
+        self.vision = new_vision
+        #except Exception:
+        #    self.Look()
 
     def Inventory(self):
         self.send("Inventory")
