@@ -191,6 +191,11 @@ bool zappy::RaylibBonus::run()
         displayGameInfos();
         displayItems();
         _window.DrawFPS(1120, 10);
+        for (auto &player : _GEH.getPlayers()) {
+            if (player.second.isPlayer()) {
+                drawPlayerInfo(player.second);
+            }
+        }
 
         _window.EndDrawing();
     } else {
