@@ -6,6 +6,13 @@ Network game where AIs battle each other
 
 Main repository: https://github.com/freaky-family/zappy
 
+> [!CAUTION]
+> If you are an Epitech student, you are **NOT** allowed to copy **ANY** of the code present here.
+>
+> You are also **NOT** allowed to copy the AI strategy / the documentation present in this repository either.
+>
+> Breaking these rules will cause you to get a -42 on your project.
+
 ![GUI Screenshot](./docs/gui/screenshot.png)
 
 ## Quick introduction
@@ -15,6 +22,18 @@ According to the subject, "Zappy" is a game where several teams confront each ot
 The goal is to collect enough resources for 6 players of the same team to reach the maximum level (level 8).
 
 The "players" are represented by AIs that automatically move around the terrain. They can interact with the terrain, push other players etc.
+
+## AI
+
+> [!NOTE]
+> Our Zappy AI won the **2026 Lyon Zappy AI tournament** 🎊
+
+<details>
+    <summary>
+        Image of the tourney board
+    </summary>
+    <img src="./docs/tourney-board.jpg" />
+</details>
 
 ## Build
 
